@@ -27,8 +27,7 @@
 <t>This memo specifies a prime-order group, ristretto255, suitable for
 safely implementing higher-level and complex cryptographic protocols.
 The ristretto255 group can be implemented using Curve25519, allowing
-existing Curve25519 implementations to be reused and extended to provide
-a prime-order group.</t>
+existing Curve25519 implementation reuse for a prime-order group.</t>
 </abstract>
 
 </front>
@@ -39,14 +38,14 @@ a prime-order group.</t>
 <t>Ristretto is a technique for constructing prime-order groups with
 non-malleable encodings from non-prime-order elliptic curves.  It
 extends the <xref target="Decaf"></xref> approach to cofactor elimination to support
-cofactor-8 curves such as Curve25519 <xref target="RFC7748"></xref>. In particular, this
-allows an existing Curve25519 library to provide a prime-order group
+cofactor-8 curves such as Curve25519 <xref target="RFC7748"></xref>. In particular,
+this enables a prime-order group using an existing Curve25519 library
 with only a thin abstraction layer.</t>
 <t>Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
-every Edwards curve has a point of order 4, so that the group of
-points on the curve is not of prime order but has a small cofactor.</t>
+every Edwards curve has a point of order 4. Thus, the group of
+points on the curve is not of prime order and has a small cofactor.</t>
 <t>This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.</t>
@@ -55,10 +54,10 @@ subtle issues.  For instance, Ed25519 implementations may have
 different validation behaviour between batched and singleton
 verification, and at least as specified in <xref target="RFC8032"></xref>, the set of
 valid signatures is not defined by the standard.</t>
-<t>For more complex protocols, careful analysis is required for each
-protocol, as the original security proofs may no longer apply, and the
+<t>More complex protocols require careful analysis as the original
+security proofs may no longer apply, and the
 tweaks for one protocol may have disastrous effects when applied to
-another (for instance, the octuple-spend vulnerability in <xref target="Monero"></xref>).</t>
+another (see the octuple-spend vulnerability in <xref target="Monero"></xref>).</t>
 <t>Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
 matches the abstraction commonly assumed in protocol specifications,
@@ -427,7 +426,7 @@ group elements except via decoding and the one-way map. They are however
 allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.</t>
-<t>It is <bcp14>RECOMMENDED</bcp14> that implementations don't perform a decoding and
+<t>It is <bcp14>RECOMMENDED</bcp14> that implementations do not perform a decoding and
 encoding operation for each group operation, as it is inefficient and
 unnecessary. Implementations <bcp14>SHOULD</bcp14> instead provide an opaque type
 to hold the internal representation through multiple operations.</t>
