@@ -70,9 +70,10 @@ the ristretto255 group, which MAY be implemented using Curve25519.</t>
 <t>The abstraction layer imposes minor overhead, and certain operations
 (like equality) are faster than corresponding operations on the elliptic
 curve points used internally.</t>
-<t>It is also possible and allowed for interoperable ristretto255
-implementations to use a different elliptic curve internally, but that
-construction is out-of-scope for this document.</t>
+<t>There are other elliptic curves that can be used internally to
+implement ristretto255, and those implementations would be
+interoperable with a Curve25519-based one, but those constructions are
+out-of-scope for this document.</t>
 <t>The Ristretto construction is described and justified in detail at
 <eref target="https://ristretto.group">https://ristretto.group</eref>.</t>
 </section>
@@ -117,10 +118,10 @@ bytestrings. Decoding the output of the encoding function always
 succeeds and returns an equivalent element to the encoding input.</t>
 <t>The equality check reports whether two representations of an abstract
 element are equivalent.</t>
-<t>The one-way map is a function from fixed-length uniformly distributed
-bytestrings to uniformly distributed abstract elements. This map is not
-invertible and is suitable for hash-to-group operations and to select
-random elements.</t>
+<t>The one-way map is a function from uniformly distributed bytestrings
+of a fixed length to uniformly distributed abstract elements. This map
+is not invertible and is suitable for hash-to-group operations and to
+select random elements.</t>
 <t>Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many time as the order of
 the group returns the identity element. Adding the identity element to
@@ -351,6 +352,8 @@ representations themselves might not be identical.</t>
 <t>Unlike the equality check for an elliptic curve point in projective
 coordinates, the equality check for a ristretto255 group element does
 not require an inversion.</t>
+<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on encodings for
+an equivalent, although less efficient, result.</t>
 </section>
 
 <section anchor="from_uniform_bytes"><name>FromUniformBytes</name>
@@ -416,12 +419,12 @@ ristretto255 elements are represented by curve points, but they are not
 curve points. The API needs to reflect that: the type representing an
 element of the group <bcp14>SHOULD</bcp14> be opaque and <bcp14>MUST NOT</bcp14> expose the
 underlying curve point or field elements.</t>
-<t>It should be possible for a ristretto255 implementation to change its
+<t>It is expected that a ristretto255 implementation can change its
 underlying curve without causing any breaking change. The ristretto255
 construction is carefully designed so that this will be the case, as
 long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
-implementations <bcp14>MUST NOT</bcp14> define the ristretto255 functions as
+implementations <bcp14>MUST NOT</bcp14> define any external ristretto255 interface as
 operating on arbitrary curve points, and they <bcp14>MUST NOT</bcp14> construct
 group elements except via decoding and the one-way map. They are however
 allowed to apply any optimization strategy to the internal
@@ -462,19 +465,10 @@ checking is never necessary, and invalid states are unrepresentable.</t>
 
 <back>
 <references><name>Normative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 </references>
 <references><name>Informative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
-  </front>
-</reference>
 <reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
   <front>
     <title>[Cfrg] 25519 naming</title>
@@ -499,6 +493,15 @@ checking is never necessary, and invalid states are unrepresentable.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
+  </front>
+</reference>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
   </front>
 </reference>
 </references>

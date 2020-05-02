@@ -115,9 +115,10 @@ The abstraction layer imposes minor overhead, and certain operations
 (like equality) are faster than corresponding operations on the elliptic
 curve points used internally.
 
-It is also possible and allowed for interoperable ristretto255
-implementations to use a different elliptic curve internally, but that
-construction is out-of-scope for this document.
+There are other elliptic curves that can be used internally to
+implement ristretto255, and those implementations would be
+interoperable with a Curve25519-based one, but those constructions are
+out-of-scope for this document.
 
 The Ristretto construction is described and justified in detail at
 https://ristretto.group.
@@ -199,10 +200,10 @@ succeeds and returns an equivalent element to the encoding input.
 The equality check reports whether two representations of an abstract
 element are equivalent.
 
-The one-way map is a function from fixed-length uniformly distributed
-bytestrings to uniformly distributed abstract elements. This map is not
-invertible and is suitable for hash-to-group operations and to select
-random elements.
+The one-way map is a function from uniformly distributed bytestrings
+of a fixed length to uniformly distributed abstract elements. This map
+is not invertible and is suitable for hash-to-group operations and to
+select random elements.
 
 Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many time as the order of
@@ -416,6 +417,9 @@ Unlike the equality check for an elliptic curve point in projective
 coordinates, the equality check for a ristretto255 group element does
 not require an inversion.
 
+Implementations **MAY** also perform byte comparisons on encodings for
+an equivalent, although less efficient, result.
+
 ### FromUniformBytes {#from_uniform_bytes}
 
 Define the function MAP(t) on field element t as:
@@ -477,12 +481,12 @@ curve points. The API needs to reflect that: the type representing an
 element of the group **SHOULD** be opaque and **MUST NOT** expose the
 underlying curve point or field elements.
 
-It should be possible for a ristretto255 implementation to change its
+It is expected that a ristretto255 implementation can change its
 underlying curve without causing any breaking change. The ristretto255
 construction is carefully designed so that this will be the case, as
 long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
-implementations **MUST NOT** define the ristretto255 functions as
+implementations **MUST NOT** define any external ristretto255 interface as
 operating on arbitrary curve points, and they **MUST NOT** construct
 group elements except via decoding and the one-way map. They are however
 allowed to apply any optimization strategy to the internal
