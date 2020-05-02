@@ -5,13 +5,13 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 2 October 2020                                                 
+Expires: 3 November 2020                                                
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
                                                                         
                                                             I. Lovecruft
-                                                           31 March 2020
+                                                              2 May 2020
 
 
                          The ristretto255 Group
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 October 2020.
+   This Internet-Draft will expire on 3 November 2020.
 
 Copyright Notice
 
@@ -97,7 +97,7 @@ Table of Contents
    Edwards curves provide a number of implementation benefits for
    cryptography, such as complete addition formulas with no exceptional
    points and the fastest known formulas for curve operations.  However,
-   every Edwards curve has a point of order 4, so that the group of
+   every Edwards curve has a point of order 4.  Thus, the group of
    points on the curve is not of prime order but has a small cofactor.
 
    This abstraction mismatch is usually handled by means of ad-hoc
@@ -110,11 +110,10 @@ Table of Contents
    verification, and at least as specified in [RFC8032], the set of
    valid signatures is not defined by the standard.
 
-   For more complex protocols, careful analysis is required for each
-   protocol, as the original security proofs may no longer apply, and
-   the tweaks for one protocol may have disastrous effects when applied
-   to another (for instance, the octuple-spend vulnerability in
-   [Monero]).
+   For more complex protocols, careful analysis is required as the
+   original security proofs may no longer apply, and the tweaks for one
+   protocol may have disastrous effects when applied to another (for
+   instance, the octuple-spend vulnerability in [Monero]).
 
    Decaf and Ristretto fix this abstraction mismatch in one place for
    all protocols, providing an abstraction to protocol implementors that
@@ -498,7 +497,7 @@ Table of Contents
    strategy to the internal representations as long as it doesn't change
    the exposed behavior of the API.
 
-   It is RECOMMENDED that implementations don't perform a decoding and
+   It is RECOMMENDED that implementations do not perform a decoding and
    encoding operation for each group operation, as it is inefficient and
    unnecessary.  Implementations SHOULD instead provide an opaque type
    to hold the internal representation through multiple operations.
@@ -514,7 +513,7 @@ Table of Contents
    expected to be safer for use in any situation where Curve25519 is
    used to implement a protocol requiring a prime-order group.  Note
    that the safety of the abstraction can be defeated by implementations
-   that don't follow the guidance in Section 5.
+   that do not follow the guidance in Section 5.
 
    There is no function to test whether an elliptic curve point is a
    valid internal representation of a group element.  The decoding
@@ -546,14 +545,6 @@ Table of Contents
 
 10.  Informative References
 
-   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
-              "Twisted Edwards Curves Revisited", 2008,
-              <https://eprint.iacr.org/2008/522>.
-
-   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
-              compression", 2015,
-              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
-
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
               2016, <https://www.rfc-editor.org/info/rfc7748>.
@@ -571,6 +562,14 @@ Table of Contents
    [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
               <https://mailarchive.ietf.org/arch/msg/cfrg/-
               9LEdnzVrE5RORux3Oo_oDDRksU/>.
+
+   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
+              "Twisted Edwards Curves Revisited", 2008,
+              <https://eprint.iacr.org/2008/522>.
+
+   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
+              compression", 2015,
+              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
 
 Appendix A.  Test vectors
 

@@ -45,7 +45,7 @@ with only a thin abstraction layer.</t>
 <t>Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
-every Edwards curve has a point of order 4, so that the group of
+every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.</t>
 <t>This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
@@ -55,10 +55,10 @@ subtle issues.  For instance, Ed25519 implementations may have
 different validation behaviour between batched and singleton
 verification, and at least as specified in <xref target="RFC8032"></xref>, the set of
 valid signatures is not defined by the standard.</t>
-<t>For more complex protocols, careful analysis is required for each
-protocol, as the original security proofs may no longer apply, and the
-tweaks for one protocol may have disastrous effects when applied to
-another (for instance, the octuple-spend vulnerability in <xref target="Monero"></xref>).</t>
+<t>For more complex protocols, careful analysis is required as the
+original security proofs may no longer apply, and the tweaks for one
+protocol may have disastrous effects when applied to another (for
+instance, the octuple-spend vulnerability in <xref target="Monero"></xref>).</t>
 <t>Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
 matches the abstraction commonly assumed in protocol specifications,
@@ -427,7 +427,7 @@ group elements except via decoding and the one-way map. They are however
 allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.</t>
-<t>It is <bcp14>RECOMMENDED</bcp14> that implementations don't perform a decoding and
+<t>It is <bcp14>RECOMMENDED</bcp14> that implementations do not perform a decoding and
 encoding operation for each group operation, as it is inefficient and
 unnecessary. Implementations <bcp14>SHOULD</bcp14> instead provide an opaque type
 to hold the internal representation through multiple operations.</t>
@@ -443,7 +443,7 @@ abstraction they expect: a prime-order group. Therefore, it's expected
 to be safer for use in any situation where Curve25519 is used to
 implement a protocol requiring a prime-order group. Note that the
 safety of the abstraction can be defeated by
-implementations that don't follow the guidance in <xref target="api"></xref>.</t>
+implementations that do not follow the guidance in <xref target="api"></xref>.</t>
 <t>There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element.  The decoding
 function always returns a valid internal representation, or an error, and
@@ -466,6 +466,22 @@ checking is never necessary, and invalid states are unrepresentable.</t>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
+  </front>
+</reference>
+<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
+  <front>
+    <title>[Cfrg] 25519 naming</title>
+    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
+    <date year="2014"></date>
+  </front>
+</reference>
 <reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
   <front>
     <title>Twisted Edwards Curves Revisited</title>
@@ -483,22 +499,6 @@ checking is never necessary, and invalid states are unrepresentable.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
-  </front>
-</reference>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
-  </front>
-</reference>
-<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
-  <front>
-    <title>[Cfrg] 25519 naming</title>
-    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
-    <date year="2014"></date>
   </front>
 </reference>
 </references>

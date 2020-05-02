@@ -83,7 +83,7 @@ compression</title>
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
-every Edwards curve has a point of order 4, so that the group of
+every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.
 
 This abstraction mismatch is usually handled by means of ad-hoc
@@ -96,10 +96,10 @@ different validation behaviour between batched and singleton
 verification, and at least as specified in [@RFC8032], the set of
 valid signatures is not defined by the standard.
 
-For more complex protocols, careful analysis is required for each
-protocol, as the original security proofs may no longer apply, and the
-tweaks for one protocol may have disastrous effects when applied to
-another (for instance, the octuple-spend vulnerability in [@Monero]).
+For more complex protocols, careful analysis is required as the
+original security proofs may no longer apply, and the tweaks for one
+protocol may have disastrous effects when applied to another (for
+instance, the octuple-spend vulnerability in [@Monero]).
 
 Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
@@ -489,7 +489,7 @@ allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.
 
-It is **RECOMMENDED** that implementations don't perform a decoding and
+It is **RECOMMENDED** that implementations do not perform a decoding and
 encoding operation for each group operation, as it is inefficient and
 unnecessary. Implementations **SHOULD** instead provide an opaque type
 to hold the internal representation through multiple operations.
@@ -505,7 +505,7 @@ abstraction they expect: a prime-order group. Therefore, it's expected
 to be safer for use in any situation where Curve25519 is used to
 implement a protocol requiring a prime-order group. Note that the
 safety of the abstraction can be defeated by
-implementations that don't follow the guidance in (#api).
+implementations that do not follow the guidance in (#api).
 
 There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element.  The decoding
