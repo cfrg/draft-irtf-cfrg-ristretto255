@@ -85,7 +85,6 @@ cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
 every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.
-
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.
@@ -105,15 +104,12 @@ Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
 matches the abstraction commonly assumed in protocol specifications,
 while still allowing the use of high-performance curve
-implementations internally.
+implementations internally. The abstraction layer imposes minor
+overhead, and only in the encoding and decoding phases.
 
 While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which MAY be implemented using Curve25519.
-
-The abstraction layer imposes minor overhead, and certain operations
-(like equality) are faster than corresponding operations on the elliptic
-curve points used internally.
 
 There are other elliptic curves that can be used internally to
 implement ristretto255, and those implementations would be
@@ -150,13 +146,12 @@ specific Diffie-Hellman mechanism. This document uses the term
 in [@Naming].
 
 Elliptic curve points in this document are represented in extended
-Edwards coordinates in the (x, y, z, t) format [@Twisted]. All formulas
-specify field operations unless otherwise noted.
+Edwards coordinates in the (x, y, z, t) format [@Twisted]. Field
+elements are values modulo p, the Curve25519 prime `2^255 - 19`, as
+specified in Section 4.1 of [@RFC7748]. All formulas specify field
+operations unless otherwise noted.
 
-Field elements are values modulo p, the Curve25519 prime `2^255 - 19`,
-as specified in Section 4.1 of [@RFC7748].
-
-The | symbol represents a constant-time OR.
+The | symbol represents a constant-time logical OR.
 
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
@@ -269,8 +264,8 @@ This document references the following constants:
 ### Negative field elements
 
 As in [@RFC8032], given a field element e, define IS\_NEGATIVE(e) as
-TRUE if the least significant bit of the encoding of e is 1, and FALSE
-otherwise. This **SHOULD** be implemented in constant time.
+TRUE if the least non-negative integer representing e is odd, and
+FALSE if it is even. This **SHOULD** be implemented in constant time.
 
 ### Constant time operations
 
@@ -281,8 +276,9 @@ operations, which **SHOULD** be implemented in constant time:
 * CT\_SELECT(v IF cond ELSE u): Return v if cond is TRUE, else return u.
 * CT\_ABS(u): Return -u if u is negative, else return u.
 
-Note that CT\_ABS can be implemented as
-`CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)` if necessary.
+Note that CT\_ABS **MAY** be implemented as
+
+    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
 ### Square root of a ratio of field elements
 
@@ -292,7 +288,9 @@ On input field elements u and v, the function SQRT\_RATIO\_M1(u, v) returns:
 * (TRUE, zero) if u is zero;
 * (FALSE, zero) if v is zero and u is non-zero;
 * (FALSE, +sqrt(SQRT\_M1\*(u/v))) if u and v are non-zero, and u/v is
-  non-square (so SQRT\_M1\*(u/v) is square).
+  non-square (so SQRT\_M1\*(u/v) is square),
+
+where +sqrt(x) indicates the non-negative square root of x.
 
 The computation is similar to Section 5.1.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
@@ -305,7 +303,7 @@ SQRT\_RATIO\_M1(u, v) is defined as follows:
 ```
 v3 = v^2  * v
 v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8)
+r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
 check = v * r^2
 
 correct_sign_sqrt   = CT_EQ(check,          u)
@@ -330,7 +328,11 @@ return (was_square, r)
 All elements are encoded as a 32-byte string. Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
-   representation. If the resulting value is >= p, decoding fails.
+   representation. If the length of the string is not 32 bytes, or if
+   the resulting value is >= p, decoding fails.
+   * Note: unlike [@RFC7748] field element decoding, the most
+     significant bit is not masked, and will necessarily be unset. The
+     test vectors in (#invalid) exercise these edge cases.
 2. If IS\_NEGATIVE(s) returns TRUE, decoding fails.
 3. Process s as follows:
 
@@ -353,12 +355,13 @@ t = x * y
 ```
 
 4. If was\_square is FALSE, or IS\_NEGATIVE(t) returns TRUE, or y = 0,
-   decoding fails. Otherwise, return the internal representation in
-   extended coordinates (x, y, 1, t).
+   decoding fails. Otherwise, return the group element represented by
+   the internal representation (x, y, 1, t).
 
 ### Encode {#encoding}
 
-An internal representation (x0, y0, z0, t0) is encoded as follows:
+A group element with internal representation (x0, y0, z0, t0) is
+encoded as follows:
 
 1. Process the internal representation into a field element s as follows:
 
@@ -389,8 +392,7 @@ y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 s = CT_ABS(den_inv * (z - y))
 ```
 
-2. Return the canonical (reduced modulo p) 32-byte little-endian
-   encoding of s.
+2. Return the 32-byte little-endian encoding of s, reduced modulo p.
 
 Note that decoding and then re-encoding a valid group element will
 yield an identical bytestring.
@@ -404,7 +406,7 @@ correspond to the same group element. Note that internal representations
 For two internal representations (x1, y1, z1, t1) and (x2, y2, z2, t2),
 if
 
-    (x1 * y2 == y1 * x2 | y1 * y2 == x1 * x2)
+    (x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
 
 evaluates to TRUE, then return TRUE. Otherwise, return FALSE.
 
@@ -420,9 +422,27 @@ not require an inversion.
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
-### FromUniformBytes {#from_uniform_bytes}
+### One-way map {#from_uniform_bytes}
 
-Define the function MAP(t) on field element t as:
+The one-way map operates an uniformly distributed 64-byte strings. To
+obtain such an input from an arbitrary length bytestring, applications
+should use a domain-separated hash construction, the choice of which
+is out-of-scope for this document.
+
+The one-way map on an input string b proceeds as follows:
+
+1. Compute P1 as MAP(b[ 0..32]).
+2. Compute P2 as MAP(b[32..64]).
+3. Return P1 + P2.
+
+The MAP function is defined on a 32-bytes string as:
+
+1. Interpret the least significant 255 bits of the string as an
+   integer r in little-endian representation. Reduce r modulo p to
+   obtain a field element t.
+   * Note: similarly to [@RFC7748] field element decoding, the most
+     significant bit of the representations of r0 and r1 is masked.
+2. Process t as follows:
 
 ```
 r = SQRT_M1 * t^2
@@ -440,19 +460,10 @@ w0 = 2 * s * v
 w1 = N * SQRT_AD_MINUS_ONE
 w2 = 1 - s^2
 w3 = 1 + s^2
-
-return (w0*w3, w2*w1, w1*w3, w0*w2)
 ```
 
-Then, given a uniformly distributed 64-byte string b:
-
-1. Interpret the least significant 255 bits of b[ 0..32] as an
-   integer r0 in little-endian representation. Reduce r0 modulo p.
-2. Interpret the least significant 255 bits of b[32..64] as an
-   integer r1 in little-endian representation. Reduce r1 modulo p.
-3. Compute group element P1 as MAP(r0)
-4. Compute group element P2 as MAP(r1).
-5. Return the group element P1 + P2.
+3. Return the group element represented by the internal representation
+   (w0*w3, w2*w1, w1*w3, w0*w2).
 
 ## Scalar field
 
@@ -565,7 +576,7 @@ Note that because
 these test vectors allow testing the encoding function and
 the implementation of addition simultaneously.
 
-## Invalid encodings
+## Invalid encodings {#invalid}
 
 These are examples of encodings that **MUST** be rejected according to
 (#decoding).
@@ -613,8 +624,8 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 
 ## Group elements from uniform bytestrings
 
-The following pairs are inputs to `FromUniformBytes`, and their encoded
-outputs.
+The following pairs are inputs to the one-way map
+(#from_uniform_bytes), and their encoded outputs.
 
 ```
 I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
@@ -646,7 +657,7 @@ I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
 ```
 
-The following `FromUniformBytes` inputs all produce the same encoded
+The following one-way map inputs all produce the same encoded
 output.
 
 ```
