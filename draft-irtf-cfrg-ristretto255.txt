@@ -5,13 +5,13 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 3 November 2020                                                
+Expires: 4 November 2020                                                
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
                                                                         
                                                             I. Lovecruft
-                                                              2 May 2020
+                                                              3 May 2020
 
 
                          The ristretto255 Group
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 November 2020.
+   This Internet-Draft will expire on 4 November 2020.
 
 Copyright Notice
 
@@ -152,12 +152,12 @@ Table of Contents
    recommended in [Naming].
 
    Elliptic curve points in this document are represented in extended
-   Edwards coordinates in the (x, y, z, t) format [Twisted].  Field
-   elements are values modulo p, the Curve25519 prime "2^255 - 19", as
+   Edwards coordinates in the "(x, y, z, t)" format [Twisted].  Field
+   elements are values modulo p, the Curve25519 prime 2^255 - 19, as
    specified in Section 4.1 of [RFC7748].  All formulas specify field
    operations unless otherwise noted.
 
-   The | symbol represents a constant-time logical OR.
+   The "|" symbol represents a constant-time logical OR.
 
 3.  The group abstraction
 
@@ -239,30 +239,30 @@ Table of Contents
 
    This document references the following constants:
 
-   *  D = 37095705934669439343138083508754565189542113879843219016388785
-      533085940283555
+   *  "D" = 370957059346694393431380835087545651895421138798432190163887
+      85533085940283555
 
       -  This is the Edwards d parameter for Curve25519, as specified in
          Section 4.1 of [RFC7748].
 
-   *  SQRT_M1 = 19681161376707505956807079304988542015446066515923890162
-      744021073123829784752
+   *  "SQRT_M1" = 196811613767075059568070793049885420154460665159238901
+      62744021073123829784752
 
-   *  SQRT_AD_MINUS_ONE = 2506306895338462347411141415870215270124453150
-      2492656460079210482610430750235
+   *  "SQRT_AD_MINUS_ONE" = 25063068953384623474111414158702152701244531
+      502492656460079210482610430750235
 
-   *  INVSQRT_A_MINUS_D = 5446930700890931692099581386874514160539359729
-      2927456921205312896311721017578
+   *  "INVSQRT_A_MINUS_D" = 54469307008909316920995813868745141605393597
+      292927456921205312896311721017578
 
-   *  ONE_MINUS_D_SQ = 1159843021668779879193775521855586647937357759715
-      417654439879720876111806838
+   *  "ONE_MINUS_D_SQ" = 11598430216687798791937755218555866479373577597
+      15417654439879720876111806838
 
-   *  D_MINUS_ONE_SQ = 4044083434630853685810104246932319082624839914623
-      8708352240133220865137265952
+   *  "D_MINUS_ONE_SQ" = 40440834346308536858101042469323190826248399146
+      238708352240133220865137265952
 
 4.1.1.  Negative field elements
 
-   As in [RFC8032], given a field element e, define IS_NEGATIVE(e) as
+   As in [RFC8032], given a field element e, define "IS_NEGATIVE(e)" as
    TRUE if the least non-negative integer representing e is odd, and
    FALSE if it is even.  This SHOULD be implemented in constant time.
 
@@ -271,32 +271,32 @@ Table of Contents
    We assume that the field element implementation supports the
    following operations, which SHOULD be implemented in constant time:
 
-   *  CT_EQ(u, v): Return TRUE if u = v, FALSE otherwise.
+   *  "CT_EQ(u, v)": return TRUE if u = v, FALSE otherwise.
 
-   *  CT_SELECT(v IF cond ELSE u): Return v if cond is TRUE, else return
-      u.
+   *  "CT_SELECT(v IF cond ELSE u)": return v if cond is TRUE, else
+      return u.
 
-   *  CT_ABS(u): Return -u if u is negative, else return u.
+   *  "CT_ABS(u)": return -u if u is negative, else return u.
 
-   Note that CT_ABS MAY be implemented as
+   Note that "CT_ABS" MAY be implemented as:
 
    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
 4.1.3.  Square root of a ratio of field elements
 
-   On input field elements u and v, the function SQRT_RATIO_M1(u, v)
+   On input field elements u and v, the function "SQRT_RATIO_M1(u, v)"
    returns:
 
-   *  (TRUE, +sqrt(u/v)) if u and v are non-zero, and u/v is square;
+   *  "(TRUE, +sqrt(u/v))" if u and v are non-zero, and u/v is square;
 
-   *  (TRUE, zero) if u is zero;
+   *  "(TRUE, zero)" if u is zero;
 
-   *  (FALSE, zero) if v is zero and u is non-zero;
+   *  "(FALSE, zero)" if v is zero and u is non-zero;
 
-   *  (FALSE, +sqrt(SQRT_M1*(u/v))) if u and v are non-zero, and u/v is
-      non-square (so SQRT_M1*(u/v) is square),
+   *  "(FALSE, +sqrt(SQRT_M1*(u/v)))" if u and v are non-zero, and u/v
+      is non-square (so "SQRT_M1*(u/v)" is square),
 
-   where +sqrt(x) indicates the non-negative square root of x.
+   where "+sqrt(x)" indicates the non-negative square root of x.
 
    The computation is similar to Section 5.1.3 of [RFC8032], with the
    difference that if the input is non-square, the function returns a
@@ -305,7 +305,7 @@ Table of Contents
    The function can be refactored from an existing Ed25519
    implementation.
 
-   SQRT_RATIO_M1(u, v) is defined as follows:
+   "SQRT_RATIO_M1(u, v)" is defined as follows:
 
    v3 = v^2  * v
    v7 = v3^2 * v
@@ -341,7 +341,7 @@ Table of Contents
           significant bit is not masked, and will necessarily be unset.
           The test vectors in Appendix A.2 exercise these edge cases.
 
-   2.  If IS_NEGATIVE(s) returns TRUE, decoding fails.
+   2.  If "IS_NEGATIVE(s)" returns TRUE, decoding fails.
 
    3.  Process s as follows:
 
@@ -361,13 +361,13 @@ Table of Contents
    y = u1 * den_y
    t = x * y
 
-   4.  If was_square is FALSE, or IS_NEGATIVE(t) returns TRUE, or y = 0,
-       decoding fails.  Otherwise, return the group element represented
-       by the internal representation (x, y, 1, t).
+   4.  If was_square is FALSE, or "IS_NEGATIVE(t)" returns TRUE, or y =
+       0, decoding fails.  Otherwise, return the group element
+       represented by the internal representation "(x, y, 1, t)".
 
 4.2.2.  Encode
 
-   A group element with internal representation (x0, y0, z0, t0) is
+   A group element with internal representation "(x0, y0, z0, t0)" is
    encoded as follows:
 
    1.  Process the internal representation into a field element s as
@@ -410,8 +410,8 @@ Table of Contents
    representations MUST NOT be compared in any other way than specified
    here.
 
-   For two internal representations (x1, y1, z1, t1) and (x2, y2, z2,
-   t2), if
+   For two internal representations "(x1, y1, z1, t1)" and "(x2, y2, z2,
+   t2)", if
 
    (x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
 
@@ -438,9 +438,9 @@ Table of Contents
 
    The one-way map on an input string b proceeds as follows:
 
-   1.  Compute P1 as MAP(b[ 0..32]).
+   1.  Compute P1 as "MAP(b[ 0..32])".
 
-   2.  Compute P2 as MAP(b[32..64]).
+   2.  Compute P2 as "MAP(b[32..64])".
 
    3.  Return P1 + P2.
 
@@ -472,18 +472,18 @@ Table of Contents
    w3 = 1 + s^2
 
    3.  Return the group element represented by the internal
-       representation (w0_w3, w2_w1, w1_w3, w0_w2).
+       representation "(w0*w3, w2*w1, w1*w3, w0*w2)".
 
 4.3.  Scalar field
 
    The scalars for the ristretto255 group are integers modulo the order
-   "l" of the ristretto255 group.
+   l of the ristretto255 group.
 
    Scalars are encoded as 32-byte strings in little-endian order.
-   Implementations SHOULD check that any scalar s falls in the range "0
-   <= s < l" when parsing them and reject non-canonical scalar
-   encodings.  Implementations SHOULD reduce scalars modulo l when
-   encoding them as byte strings.
+   Implementations SHOULD check that any scalar s falls in the range 0
+   <= s < l when parsing them and reject non-canonical scalar encodings.
+   Implementations SHOULD reduce scalars modulo l when encoding them as
+   byte strings.
 
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a scalar by interpreting the 64-byte string as a 512-bit
@@ -715,7 +715,7 @@ A.3.  Group elements from uniform bytestrings
 
 A.4.  Square root of a ratio of field elements
 
-   The following are inputs and outputs of SQRT_RATIO_M1(u, v).  The
+   The following are inputs and outputs of "SQRT_RATIO_M1(u, v)".  The
    values are little-endian encodings of field elements.
 
    u: 0000000000000000000000000000000000000000000000000000000000000000

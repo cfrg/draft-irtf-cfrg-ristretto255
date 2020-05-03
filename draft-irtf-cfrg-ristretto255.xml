@@ -92,11 +92,11 @@ specific Diffie-Hellman mechanism. This document uses the term
 &quot;Curve25519&quot; to refer to the abstract underlying curve, as recommended
 in <xref target="Naming"></xref>.</t>
 <t>Elliptic curve points in this document are represented in extended
-Edwards coordinates in the (x, y, z, t) format <xref target="Twisted"></xref>. Field
-elements are values modulo p, the Curve25519 prime <tt>2^255 - 19</tt>, as
+Edwards coordinates in the <tt>(x, y, z, t)</tt> format <xref target="Twisted"></xref>. Field
+elements are values modulo p, the Curve25519 prime 2^255 - 19, as
 specified in Section 4.1 of <xref target="RFC7748"></xref>. All formulas specify field
 operations unless otherwise noted.</t>
-<t>The | symbol represents a constant-time logical OR.</t>
+<t>The <tt>|</tt> symbol represents a constant-time logical OR.</t>
 </section>
 
 <section anchor="interface"><name>The group abstraction</name>
@@ -167,26 +167,26 @@ expose these to their API consumers.</t>
 <t>This document references the following constants:</t>
 
 <ul>
-<li><t>D = 37095705934669439343138083508754565189542113879843219016388785533085940283555</t>
+<li><t><tt>D</tt> = 37095705934669439343138083508754565189542113879843219016388785533085940283555</t>
 
 <ul>
 <li><t>This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <xref target="RFC7748"></xref>.</t>
 </li>
 </ul></li>
-<li><t>SQRT_M1 = 19681161376707505956807079304988542015446066515923890162744021073123829784752</t>
+<li><t><tt>SQRT_M1</tt> = 19681161376707505956807079304988542015446066515923890162744021073123829784752</t>
 </li>
-<li><t>SQRT_AD_MINUS_ONE = 25063068953384623474111414158702152701244531502492656460079210482610430750235</t>
+<li><t><tt>SQRT_AD_MINUS_ONE</tt> = 25063068953384623474111414158702152701244531502492656460079210482610430750235</t>
 </li>
-<li><t>INVSQRT_A_MINUS_D = 54469307008909316920995813868745141605393597292927456921205312896311721017578</t>
+<li><t><tt>INVSQRT_A_MINUS_D</tt> = 54469307008909316920995813868745141605393597292927456921205312896311721017578</t>
 </li>
-<li><t>ONE_MINUS_D_SQ = 1159843021668779879193775521855586647937357759715417654439879720876111806838</t>
+<li><t><tt>ONE_MINUS_D_SQ</tt> = 1159843021668779879193775521855586647937357759715417654439879720876111806838</t>
 </li>
-<li><t>D_MINUS_ONE_SQ = 40440834346308536858101042469323190826248399146238708352240133220865137265952</t>
+<li><t><tt>D_MINUS_ONE_SQ</tt> = 40440834346308536858101042469323190826248399146238708352240133220865137265952</t>
 </li>
 </ul>
 
 <section anchor="negative-field-elements"><name>Negative field elements</name>
-<t>As in <xref target="RFC8032"></xref>, given a field element e, define IS_NEGATIVE(e) as
+<t>As in <xref target="RFC8032"></xref>, given a field element e, define <tt>IS_NEGATIVE(e)</tt> as
 TRUE if the least non-negative integer representing e is odd, and
 FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.</t>
 </section>
@@ -196,40 +196,40 @@ FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.
 operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 
 <ul>
-<li><t>CT_EQ(u, v): Return TRUE if u = v, FALSE otherwise.</t>
+<li><t><tt>CT_EQ(u, v)</tt>: return TRUE if u = v, FALSE otherwise.</t>
 </li>
-<li><t>CT_SELECT(v IF cond ELSE u): Return v if cond is TRUE, else return u.</t>
+<li><t><tt>CT_SELECT(v IF cond ELSE u)</tt>: return v if cond is TRUE, else return u.</t>
 </li>
-<li><t>CT_ABS(u): Return -u if u is negative, else return u.</t>
+<li><t><tt>CT_ABS(u)</tt>: return -u if u is negative, else return u.</t>
 </li>
 </ul>
-<t>Note that CT_ABS <bcp14>MAY</bcp14> be implemented as</t>
+<t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
 
 <artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 </artwork>
 </section>
 
 <section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
-<t>On input field elements u and v, the function SQRT_RATIO_M1(u, v) returns:</t>
+<t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
 
 <ul>
-<li><t>(TRUE, +sqrt(u/v)) if u and v are non-zero, and u/v is square;</t>
+<li><t><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</t>
 </li>
-<li><t>(TRUE, zero) if u is zero;</t>
+<li><t><tt>(TRUE, zero)</tt> if u is zero;</t>
 </li>
-<li><t>(FALSE, zero) if v is zero and u is non-zero;</t>
+<li><t><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</t>
 </li>
-<li><t>(FALSE, +sqrt(SQRT_M1*(u/v))) if u and v are non-zero, and u/v is
-non-square (so SQRT_M1*(u/v) is square),</t>
+<li><t><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
+non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</t>
 </li>
 </ul>
-<t>where +sqrt(x) indicates the non-negative square root of x.</t>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
 <t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
 for efficient implementation of the one-way map functionality. The
 function can be refactored from an existing Ed25519 implementation.</t>
-<t>SQRT_RATIO_M1(u, v) is defined as follows:</t>
+<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
 <artwork>v3 = v^2  * v
 v7 = v3^2 * v
@@ -269,7 +269,7 @@ significant bit is not masked, and will necessarily be unset. The
 test vectors in <xref target="invalid"></xref> exercise these edge cases.</t>
 </li>
 </ul></li>
-<li><t>If IS_NEGATIVE(s) returns TRUE, decoding fails.</t>
+<li><t>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</t>
 </li>
 <li><t>Process s as follows:</t>
 </li>
@@ -293,15 +293,15 @@ t = x * y
 </artwork>
 
 <ol start="4">
-<li><t>If was_square is FALSE, or IS_NEGATIVE(t) returns TRUE, or y = 0,
-decoding fails. Otherwise, return the group element represented by
-the internal representation (x, y, 1, t).</t>
+<li><t>If was_square is FALSE, or <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
+0, decoding fails. Otherwise, return the group element represented
+by the internal representation <tt>(x, y, 1, t)</tt>.</t>
 </li>
 </ol>
 </section>
 
 <section anchor="encoding"><name>Encode</name>
-<t>A group element with internal representation (x0, y0, z0, t0) is
+<t>A group element with internal representation <tt>(x0, y0, z0, t0)</tt> is
 encoded as follows:</t>
 
 <ol>
@@ -347,7 +347,7 @@ yield an identical bytestring.</t>
 <t>The equality function returns TRUE when two internal representations
 correspond to the same group element. Note that internal representations
 <bcp14>MUST NOT</bcp14> be compared in any other way than specified here.</t>
-<t>For two internal representations (x1, y1, z1, t1) and (x2, y2, z2, t2),
+<t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
 <artwork>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
@@ -372,9 +372,9 @@ is out-of-scope for this document.</t>
 <t>The one-way map on an input string b proceeds as follows:</t>
 
 <ol>
-<li><t>Compute P1 as MAP(b[ 0..32]).</t>
+<li><t>Compute P1 as <tt>MAP(b[ 0..32])</tt>.</t>
 </li>
-<li><t>Compute P2 as MAP(b[32..64]).</t>
+<li><t>Compute P2 as <tt>MAP(b[32..64])</tt>.</t>
 </li>
 <li><t>Return P1 + P2.</t>
 </li>
@@ -414,18 +414,18 @@ w3 = 1 + s^2
 
 <ol start="3">
 <li><t>Return the group element represented by the internal representation
-(w0<em>w3, w2</em>w1, w1<em>w3, w0</em>w2).</t>
+<tt>(w0*w3, w2*w1, w1*w3, w0*w2)</tt>.</t>
 </li>
 </ol>
 </section>
 </section>
 
 <section anchor="scalar-field"><name>Scalar field</name>
-<t>The scalars for the ristretto255 group are integers modulo the order <tt>l</tt>
+<t>The scalars for the ristretto255 group are integers modulo the order l
 of the ristretto255 group.</t>
 <t>Scalars are encoded as 32-byte strings in little-endian order.
 Implementations <bcp14>SHOULD</bcp14> check that any scalar s falls in the range
-<tt>0 &lt;= s &lt; l</tt> when parsing them and reject non-canonical scalar
+0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
 encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo l when
 encoding them as byte strings.</t>
 <t>Given a uniformly distributed 64-byte string b, implementations can
@@ -660,7 +660,7 @@ O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
 </section>
 
 <section anchor="square-root-of-a-ratio-of-field-elements-1"><name>Square root of a ratio of field elements</name>
-<t>The following are inputs and outputs of SQRT_RATIO_M1(u, v). The
+<t>The following are inputs and outputs of <tt>SQRT_RATIO_M1(u, v)</tt>. The
 values are little-endian encodings of field elements.</t>
 
 <artwork>u: 0000000000000000000000000000000000000000000000000000000000000000
