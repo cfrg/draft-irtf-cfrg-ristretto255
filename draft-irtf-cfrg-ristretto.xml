@@ -482,7 +482,8 @@ checking is never necessary, and invalid states are unrepresentable.</t>
 
 <section anchor="acknowledgements"><name>Acknowledgements</name>
 <t>Ristretto was originally designed by Mike Hamburg as a variant of <xref target="Decaf"></xref>.</t>
-<t>The authors would like to thank Daira Hopwood for hir comments on the draft.</t>
+<t>The authors would like to thank Daira Hopwood, Riad S. Wahby, and
+Chris Wood for their comments on the draft.</t>
 </section>
 
 </middle>
@@ -493,6 +494,15 @@ checking is never necessary, and invalid states are unrepresentable.</t>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
+  </front>
+</reference>
 <reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
   <front>
     <title>[Cfrg] 25519 naming</title>
@@ -517,15 +527,6 @@ checking is never necessary, and invalid states are unrepresentable.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
-  </front>
-</reference>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
   </front>
 </reference>
 </references>

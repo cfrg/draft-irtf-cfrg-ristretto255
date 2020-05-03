@@ -534,7 +534,8 @@ checking is never necessary, and invalid states are unrepresentable.
 
 Ristretto was originally designed by Mike Hamburg as a variant of [@Decaf].
 
-The authors would like to thank Daira Hopwood for hir comments on the draft.
+The authors would like to thank Daira Hopwood, Riad S. Wahby, and
+Chris Wood for their comments on the draft.
 
 {backmatter}
 
