@@ -441,7 +441,7 @@ The MAP function is defined on a 32-bytes string as:
    integer r in little-endian representation. Reduce r modulo p to
    obtain a field element t.
    * Note: similarly to [@RFC7748] field element decoding, the most
-     significant bit of the representations of r0 and r1 is masked.
+     significant bit of the representation of r is masked.
 2. Process t as follows:
 
 ```
@@ -625,7 +625,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 
 ## Group elements from uniform bytestrings
 
-The following pairs are inputs to the one-way map
+The following pairs are inputs to the one-way map of
 (#from_uniform_bytes), and their encoded outputs.
 
 ```

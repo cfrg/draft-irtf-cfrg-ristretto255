@@ -388,7 +388,7 @@ obtain a field element t.</t>
 
 <ul>
 <li><t>Note: similarly to <xref target="RFC7748"></xref> field element decoding, the most
-significant bit of the representations of r0 and r1 is masked.</t>
+significant bit of the representation of r is masked.</t>
 </li>
 </ul></li>
 <li><t>Process t as follows:</t>
@@ -612,7 +612,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 </section>
 
 <section anchor="group-elements-from-uniform-bytestrings"><name>Group elements from uniform bytestrings</name>
-<t>The following pairs are inputs to the one-way map
+<t>The following pairs are inputs to the one-way map of
 <xref target="from_uniform_bytes"></xref>, and their encoded outputs.</t>
 
 <artwork>I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
