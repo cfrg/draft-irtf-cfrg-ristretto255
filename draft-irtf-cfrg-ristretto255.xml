@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto-00" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" consensus="true">
+<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-00" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" consensus="true">
 
 <front>
-<title abbrev="ristretto255">The ristretto255 Group</title><seriesInfo value="draft-irtf-cfrg-ristretto-00" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<title abbrev="ristretto255">The ristretto255 Group</title><seriesInfo value="draft-irtf-cfrg-ristretto255-00" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
 <author initials="H." surname="de Valence" fullname="Henry de Valence"><organization></organization><address><postal><street></street>
 </postal><email>ietf@hdevalence.ca</email>
 </address></author>
@@ -494,15 +494,6 @@ Chris Wood for their comments on the draft.</t>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
-  </front>
-</reference>
 <reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
   <front>
     <title>[Cfrg] 25519 naming</title>
@@ -527,6 +518,15 @@ Chris Wood for their comments on the draft.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
+  </front>
+</reference>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
   </front>
 </reference>
 </references>

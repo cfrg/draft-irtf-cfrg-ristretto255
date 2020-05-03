@@ -15,7 +15,7 @@ Expires: 3 November 2020
 
 
                          The ristretto255 Group
-                      draft-irtf-cfrg-ristretto-00
+                    draft-irtf-cfrg-ristretto255-00
 
 Abstract
 
@@ -561,6 +561,18 @@ Table of Contents
 
 10.  Informative References
 
+   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
+              <https://mailarchive.ietf.org/arch/msg/cfrg/-
+              9LEdnzVrE5RORux3Oo_oDDRksU/>.
+
+   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
+              "Twisted Edwards Curves Revisited", 2008,
+              <https://eprint.iacr.org/2008/522>.
+
+   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
+              compression", 2015,
+              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
+
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
               2016, <https://www.rfc-editor.org/info/rfc7748>.
@@ -574,18 +586,6 @@ Table of Contents
               Ring Signatures", 2017,
               <https://jonasnick.github.io/blog/2017/05/23/exploiting-
               low-order-generators-in-one-time-ring-signatures/>.
-
-   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
-              <https://mailarchive.ietf.org/arch/msg/cfrg/-
-              9LEdnzVrE5RORux3Oo_oDDRksU/>.
-
-   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
-              "Twisted Edwards Curves Revisited", 2008,
-              <https://eprint.iacr.org/2008/522>.
-
-   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
-              compression", 2015,
-              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
 
 Appendix A.  Test vectors
 
