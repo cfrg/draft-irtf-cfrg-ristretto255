@@ -189,7 +189,7 @@ Table of Contents
    and to select random elements.
 
    Addition is the group operation.  The group has an identity element
-   and prime order.  Adding an element to itself as many time as the
+   and prime order.  Adding an element to itself as many times as the
    order of the group returns the identity element.  Adding the identity
    element to any element returns that element unchanged.  Negation
    returns an element that added to the negation input returns the
