@@ -5,13 +5,13 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 4 November 2020                                                
+Expires: 5 November 2020                                                
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
                                                                         
                                                             I. Lovecruft
-                                                              3 May 2020
+                                                              4 May 2020
 
 
                          The ristretto255 Group
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 November 2020.
+   This Internet-Draft will expire on 5 November 2020.
 
 Copyright Notice
 
@@ -421,10 +421,6 @@ Table of Contents
    an internal representation and to the internal representation
    obtained by encoding and then re-decoding it.  However, the internal
    representations themselves might not be identical.
-
-   Unlike the equality check for an elliptic curve point in projective
-   coordinates, the equality check for a ristretto255 group element does
-   not require an inversion.
 
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.

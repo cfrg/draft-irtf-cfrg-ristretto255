@@ -415,10 +415,6 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Unlike the equality check for an elliptic curve point in projective
-coordinates, the equality check for a ristretto255 group element does
-not require an inversion.
-
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
