@@ -544,7 +544,7 @@ hex encoded, and whitespace is inserted for readability.
 
 The following are the encodings of the multiples 0 to 15 of the
 canonical generator. That is, the first line is the encoding of the
-identity point, and each successive line is obtained by adding the
+identity element, and each successive line is obtained by adding the
 generator to the previous line.
 
 ```
