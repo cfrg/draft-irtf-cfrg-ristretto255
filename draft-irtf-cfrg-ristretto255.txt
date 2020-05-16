@@ -5,17 +5,17 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 5 November 2020                                                
+Expires: 17 November 2020                                               
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
                                                                         
                                                             I. Lovecruft
-                                                              4 May 2020
+                                                             16 May 2020
 
 
                          The ristretto255 Group
-                    draft-irtf-cfrg-ristretto255-00
+                    draft-irtf-cfrg-ristretto255-01
 
 Abstract
 
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 November 2020.
+   This Internet-Draft will expire on 17 November 2020.
 
 Copyright Notice
 
