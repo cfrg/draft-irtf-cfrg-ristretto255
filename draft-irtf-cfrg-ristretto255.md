@@ -680,7 +680,7 @@ r = -t^2
 u0 = d * (r-1)
 u1 = (u0 + 1) * (u0 - r)
 
-(was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u2)
+(was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u1)
 v_prime = ct_select(v if was_square else t * v)
 sgn     = ct_select(1 if was_square else -1)
 s = v_prime * (r + 1)
