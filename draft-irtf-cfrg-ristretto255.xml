@@ -158,48 +158,6 @@ operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 <artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 </artwork>
 </section>
-
-<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
-
-<section anchor="todo-no-sqrt-m1-for-decaf"><name>TODO: no SQRT_M1 for decaf</name>
-<t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
-
-<ul>
-<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
-<li><tt>(TRUE, zero)</tt> if u is zero;</li>
-<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
-<li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
-non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
-</ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
-<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
-difference that if the input is non-square, the function returns a
-result with a defined relationship to the inputs. This result is used
-for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing Ed25519 implementation.</t>
-<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
-
-<artwork>v3 = v^2  * v
-v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
-check = v * r^2
-
-correct_sign_sqrt   = CT_EQ(check,          u)
-flipped_sign_sqrt   = CT_EQ(check,         -u)
-flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
-
-r_prime = SQRT_M1 * r
-r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
-
-// Choose the nonnegative square root.
-r = CT_ABS(r)
-
-was_square = correct_sign_sqrt | flipped_sign_sqrt
-
-return (was_square, r)
-</artwork>
-</section>
-</section>
 </section>
 
 <section anchor="ristretto255"><name>ristretto255</name>
@@ -251,6 +209,45 @@ expose these to their API consumers.</t>
 <li><tt>ONE_MINUS_D_SQ</tt> = 1159843021668779879193775521855586647937357759715417654439879720876111806838</li>
 <li><tt>D_MINUS_ONE_SQ</tt> = 40440834346308536858101042469323190826248399146238708352240133220865137265952</li>
 </ul>
+</section>
+
+<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
+<t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
+
+<ul>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
+<li><tt>(TRUE, zero)</tt> if u is zero;</li>
+<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
+<li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
+non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
+</ul>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
+<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
+difference that if the input is non-square, the function returns a
+result with a defined relationship to the inputs. This result is used
+for efficient implementation of the one-way map functionality. The
+function can be refactored from an existing Ed25519 implementation.</t>
+<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
+
+<artwork>v3 = v^2  * v
+v7 = v3^2 * v
+r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+check = v * r^2
+
+correct_sign_sqrt   = CT_EQ(check,          u)
+flipped_sign_sqrt   = CT_EQ(check,         -u)
+flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
+
+r_prime = SQRT_M1 * r
+r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
+
+// Choose the nonnegative square root.
+r = CT_ABS(r)
+
+was_square = correct_sign_sqrt | flipped_sign_sqrt
+
+return (was_square, r)
+</artwork>
 </section>
 
 <section anchor="functions"><name>External ristretto255 functions</name>
@@ -470,12 +467,43 @@ expose these to their API consumers.</t>
 <li>This is the Edwards d parameter for edwards448, as specified in Section 4.2 of <xref target="RFC7748"></xref>, and is equal to -39081 modulo p.</li>
 </ul></li>
 <li><tt>ONE_MINUS_D</tt> = 39082</li>
+<li><tt>ONE_MINUS_TWO_D</tt> = 78163</li>
 <li><tt>SQRT_MINUS_D</tt> = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214</li>
 <li><tt>INVSQRT_MINUS_D</tt> = 315019913931389607337177038330951043522456072897266928557328499619017160722351061360252776265186336876723201881398623946864393857820716</li>
 </ul>
 </section>
 
-<section anchor="functions-1"><name>External ristretto255 functions</name>
+<section anchor="square-root-of-a-ratio-of-field-elements-1"><name>Square root of a ratio of field elements</name>
+<t>On input field elements u and v, the function <tt>SQRT_RATIO(u, v)</tt> returns:</t>
+
+<ul>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
+<li><tt>(TRUE, zero)</tt> if u is zero;</li>
+<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
+<li><tt>(FALSE, +sqrt(-u/v))</tt> if u and v are non-zero, and u/v is
+non-square (so <tt>-(u/v)</tt> is square),</li>
+</ul>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
+<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
+difference that if the input is non-square, the function returns a
+result with a defined relationship to the inputs. This result is used
+for efficient implementation of the one-way map functionality. The
+function can be refactored from an existing edwards448 implementation.</t>
+<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
+
+<artwork>r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
+
+check = v * r^2
+was_square = CT_EQ(check, u)
+
+// Choose the nonnegative square root.
+r = CT_ABS(r)
+
+return (was_square, r)
+</artwork>
+</section>
+
+<section anchor="functions-1"><name>External decaf448 functions</name>
 
 <section anchor="decoding-1"><name>Decode</name>
 <t>All elements are encoded as a 56-byte string. Decoding proceeds as follows:</t>
@@ -554,7 +582,43 @@ an equivalent, although less efficient, result.</t>
 </section>
 
 <section anchor="from_uniform_bytes-1"><name>One-way map</name>
-<t>TODO</t>
+<t>The one-way map operates an uniformly distributed 112-byte strings. To
+obtain such an input from an arbitrary length bytestring, applications
+should use a domain-separated hash construction, the choice of which
+is out-of-scope for this document.</t>
+<t>The one-way map on an input string b proceeds as follows:</t>
+
+<ol>
+<li>Compute P1 as <tt>MAP(b[ 0..56])</tt>.</li>
+<li>Compute P2 as <tt>MAP(b[56..112])</tt>.</li>
+<li>Return P1 + P2.</li>
+</ol>
+<t>The MAP function is defined on a 56-bytes string as:</t>
+
+<ol>
+<li>Interpret the string as an integer r in little-endian representation. Reduce r modulo p to obtain a field element t.</li>
+<li>Process t as follows:</li>
+</ol>
+
+<artwork>r = -t^2
+u0 = d * (r-1)
+u1 = (u0 + 1) * (u0 - r)
+
+(was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u2)
+v_prime = ct_select(v if was_square else t * v)
+sgn     = ct_select(1 if was_square else -1)
+s = v_prime * (r + 1)
+
+w0 = 2 * CT_ABS_(s)
+w1 = s^2 + 1
+w2 = s^2 - 1
+w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
+</artwork>
+
+<ol start="3">
+<li>Return the group element represented by the internal representation
+<tt>(w0*w3, w2*w1, w1*w3, w0*w2)</tt>.</li>
+</ol>
 </section>
 </section>
 
@@ -566,15 +630,11 @@ Implementations <bcp14>SHOULD</bcp14> check that any scalar s falls in the range
 0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
 encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo l when
 encoding them as byte strings.</t>
-
-<section anchor="todo-really-912-bits"><name>TODO: really 912 bits?</name>
-<t>Given a uniformly distributed 114-byte string b, implementations can
-obtain a scalar by interpreting the 114-byte string as a 912-bit
-integer in little-endian order and reducing the integer modulo l, as
-in <xref target="RFC8032"></xref>.</t>
+<t>Given a uniformly distributed 64-byte string b, implementations can
+obtain a scalar by interpreting the 64-byte string as a 512-bit
+integer in little-endian order and reducing the integer modulo l.</t>
 <t>Note that this is the same scalar field as edwards448, allowing
 existing implementations to be reused.</t>
-</section>
 </section>
 </section>
 
@@ -800,7 +860,7 @@ O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
 </artwork>
 </section>
 
-<section anchor="square-root-of-a-ratio-of-field-elements-1"><name>Square root of a ratio of field elements</name>
+<section anchor="square-root-of-a-ratio-of-field-elements-2"><name>Square root of a ratio of field elements</name>
 <t>The following are inputs and outputs of <tt>SQRT_RATIO_M1(u, v)</tt>. The
 values are little-endian encodings of field elements.</t>
 

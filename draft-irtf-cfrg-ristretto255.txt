@@ -67,25 +67,24 @@ Table of Contents
    4.  Notation and utility functions
      4.1.  Negative field elements
      4.2.  Constant time operations
-     4.3.  Square root of a ratio of field elements
-       4.3.1.  TODO: no SQRT_M1 for decaf
    5.  ristretto255
      5.1.  Internal utility functions and constants
-     5.2.  External ristretto255 functions
-       5.2.1.  Decode
-       5.2.2.  Encode
-       5.2.3.  Equals
-       5.2.4.  One-way map
-     5.3.  Scalar field
+     5.2.  Square root of a ratio of field elements
+     5.3.  External ristretto255 functions
+       5.3.1.  Decode
+       5.3.2.  Encode
+       5.3.3.  Equals
+       5.3.4.  One-way map
+     5.4.  Scalar field
    6.  decaf448
      6.1.  Internal utility functions and constants
-     6.2.  External ristretto255 functions
-       6.2.1.  Decode
-       6.2.2.  Encode
-       6.2.3.  Equals
-       6.2.4.  One-way map
-     6.3.  Scalar field
-       6.3.1.  TODO: really 912 bits?
+     6.2.  Square root of a ratio of field elements
+     6.3.  External decaf448 functions
+       6.3.1.  Decode
+       6.3.2.  Encode
+       6.3.3.  Equals
+       6.3.4.  One-way map
+     6.4.  Scalar field
    7.  API Considerations
    8.  IANA Considerations
    9.  Security Considerations
@@ -239,52 +238,6 @@ Table of Contents
 
    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
-4.3.  Square root of a ratio of field elements
-
-4.3.1.  TODO: no SQRT_M1 for decaf
-
-   On input field elements u and v, the function "SQRT_RATIO_M1(u, v)"
-   returns:
-
-   *  "(TRUE, +sqrt(u/v))" if u and v are non-zero, and u/v is square;
-
-   *  "(TRUE, zero)" if u is zero;
-
-   *  "(FALSE, zero)" if v is zero and u is non-zero;
-
-   *  "(FALSE, +sqrt(SQRT_M1*(u/v)))" if u and v are non-zero, and u/v
-      is non-square (so "SQRT_M1*(u/v)" is square),
-
-   where "+sqrt(x)" indicates the non-negative square root of x.
-
-   The computation is similar to Section 5.1.3 of [RFC8032], with the
-   difference that if the input is non-square, the function returns a
-   result with a defined relationship to the inputs.  This result is
-   used for efficient implementation of the one-way map functionality.
-   The function can be refactored from an existing Ed25519
-   implementation.
-
-   "SQRT_RATIO_M1(u, v)" is defined as follows:
-
-   v3 = v^2  * v
-   v7 = v3^2 * v
-   r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
-   check = v * r^2
-
-   correct_sign_sqrt   = CT_EQ(check,          u)
-   flipped_sign_sqrt   = CT_EQ(check,         -u)
-   flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
-
-   r_prime = SQRT_M1 * r
-   r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
-
-   // Choose the nonnegative square root.
-   r = CT_ABS(r)
-
-   was_square = correct_sign_sqrt | flipped_sign_sqrt
-
-   return (was_square, r)
-
 5.  ristretto255
 
    ristretto255 is an instantiation of the abstract prime-order group
@@ -299,7 +252,7 @@ Table of Contents
    multiple equivalent internal representations.
 
    Encoding, decoding, equality, and one-way map are defined in
-   Section 5.2.  Element addition, subtraction, negation, and scalar
+   Section 5.3.  Element addition, subtraction, negation, and scalar
    multiplication are implemented by applying the corresponding
    operations directly to the internal representation.
 
@@ -349,9 +302,53 @@ Table of Contents
    *  "D_MINUS_ONE_SQ" = 40440834346308536858101042469323190826248399146
       238708352240133220865137265952
 
-5.2.  External ristretto255 functions
+5.2.  Square root of a ratio of field elements
 
-5.2.1.  Decode
+   On input field elements u and v, the function "SQRT_RATIO_M1(u, v)"
+   returns:
+
+   *  "(TRUE, +sqrt(u/v))" if u and v are non-zero, and u/v is square;
+
+   *  "(TRUE, zero)" if u is zero;
+
+   *  "(FALSE, zero)" if v is zero and u is non-zero;
+
+   *  "(FALSE, +sqrt(SQRT_M1*(u/v)))" if u and v are non-zero, and u/v
+      is non-square (so "SQRT_M1*(u/v)" is square),
+
+   where "+sqrt(x)" indicates the non-negative square root of x.
+
+   The computation is similar to Section 5.1.3 of [RFC8032], with the
+   difference that if the input is non-square, the function returns a
+   result with a defined relationship to the inputs.  This result is
+   used for efficient implementation of the one-way map functionality.
+   The function can be refactored from an existing Ed25519
+   implementation.
+
+   "SQRT_RATIO_M1(u, v)" is defined as follows:
+
+   v3 = v^2  * v
+   v7 = v3^2 * v
+   r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+   check = v * r^2
+
+   correct_sign_sqrt   = CT_EQ(check,          u)
+   flipped_sign_sqrt   = CT_EQ(check,         -u)
+   flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
+
+   r_prime = SQRT_M1 * r
+   r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
+
+   // Choose the nonnegative square root.
+   r = CT_ABS(r)
+
+   was_square = correct_sign_sqrt | flipped_sign_sqrt
+
+   return (was_square, r)
+
+5.3.  External ristretto255 functions
+
+5.3.1.  Decode
 
    All elements are encoded as a 32-byte string.  Decoding proceeds as
    follows:
@@ -388,7 +385,7 @@ Table of Contents
        0, decoding fails.  Otherwise, return the group element
        represented by the internal representation "(x, y, 1, t)".
 
-5.2.2.  Encode
+5.3.2.  Encode
 
    A group element with internal representation "(x0, y0, z0, t0)" is
    encoded as follows:
@@ -426,7 +423,7 @@ Table of Contents
    Note that decoding and then re-encoding a valid group element will
    yield an identical bytestring.
 
-5.2.3.  Equals
+5.3.3.  Equals
 
    The equality function returns TRUE when two internal representations
    correspond to the same group element.  Note that internal
@@ -448,7 +445,7 @@ Table of Contents
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-5.2.4.  One-way map
+5.3.4.  One-way map
 
    The one-way map operates an uniformly distributed 64-byte strings.
    To obtain such an input from an arbitrary length bytestring,
@@ -493,7 +490,7 @@ Table of Contents
    3.  Return the group element represented by the internal
        representation "(w0*w3, w2*w1, w1*w3, w0*w2)".
 
-5.3.  Scalar field
+5.4.  Scalar field
 
    The scalars for the ristretto255 group are integers modulo the order
    l of the ristretto255 group.
@@ -526,7 +523,7 @@ Table of Contents
    equivalent internal representations.
 
    Encoding, decoding, equality, and one-way map are defined in
-   Section 5.2.  Element addition, subtraction, negation, and scalar
+   Section 5.3.  Element addition, subtraction, negation, and scalar
    multiplication are implemented by applying the corresponding
    operations directly to the internal representation.
 
@@ -569,6 +566,8 @@ Table of Contents
 
    *  "ONE_MINUS_D" = 39082
 
+   *  "ONE_MINUS_TWO_D" = 78163
+
    *  "SQRT_MINUS_D" = 9894423364773221976917700487692901912841757629552
       990107409988959804370211600125785680213156389651537392771223209284
       5883226922417596214
@@ -577,9 +576,44 @@ Table of Contents
       972669285573284996190171607223510613602527762651863368767232018813
       98623946864393857820716
 
-6.2.  External ristretto255 functions
+6.2.  Square root of a ratio of field elements
 
-6.2.1.  Decode
+   On input field elements u and v, the function "SQRT_RATIO(u, v)"
+   returns:
+
+   *  "(TRUE, +sqrt(u/v))" if u and v are non-zero, and u/v is square;
+
+   *  "(TRUE, zero)" if u is zero;
+
+   *  "(FALSE, zero)" if v is zero and u is non-zero;
+
+   *  "(FALSE, +sqrt(-u/v))" if u and v are non-zero, and u/v is non-
+      square (so "-(u/v)" is square),
+
+   where "+sqrt(x)" indicates the non-negative square root of x.
+
+   The computation is similar to Section 5.1.3 of [RFC8032], with the
+   difference that if the input is non-square, the function returns a
+   result with a defined relationship to the inputs.  This result is
+   used for efficient implementation of the one-way map functionality.
+   The function can be refactored from an existing edwards448
+   implementation.
+
+   "SQRT_RATIO_M1(u, v)" is defined as follows:
+
+   r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
+
+   check = v * r^2
+   was_square = CT_EQ(check, u)
+
+   // Choose the nonnegative square root.
+   r = CT_ABS(r)
+
+   return (was_square, r)
+
+6.3.  External decaf448 functions
+
+6.3.1.  Decode
 
    All elements are encoded as a 56-byte string.  Decoding proceeds as
    follows:
@@ -608,7 +642,7 @@ Table of Contents
        Otherwise, return the group element represented by the internal
        representation"(x, y, 1, t)`.
 
-6.2.2.  Encode
+6.3.2.  Encode
 
    A group element with internal representation "(x0, y0, z0, t0)" is
    encoded as follows:
@@ -630,7 +664,7 @@ Table of Contents
    Note that decoding and then re-encoding a valid group element will
    yield an identical bytestring.
 
-6.2.3.  Equals
+6.3.3.  Equals
 
    The equality function returns TRUE when two internal representations
    correspond to the same group element.  Note that internal
@@ -652,11 +686,46 @@ Table of Contents
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-6.2.4.  One-way map
+6.3.4.  One-way map
 
-   TODO
+   The one-way map operates an uniformly distributed 112-byte strings.
+   To obtain such an input from an arbitrary length bytestring,
+   applications should use a domain-separated hash construction, the
+   choice of which is out-of-scope for this document.
 
-6.3.  Scalar field
+   The one-way map on an input string b proceeds as follows:
+
+   1.  Compute P1 as "MAP(b[ 0..56])".
+
+   2.  Compute P2 as "MAP(b[56..112])".
+
+   3.  Return P1 + P2.
+
+   The MAP function is defined on a 56-bytes string as:
+
+   1.  Interpret the string as an integer r in little-endian
+       representation.  Reduce r modulo p to obtain a field element t.
+
+   2.  Process t as follows:
+
+   r = -t^2
+   u0 = d * (r-1)
+   u1 = (u0 + 1) * (u0 - r)
+
+   (was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u2)
+   v_prime = ct_select(v if was_square else t * v)
+   sgn     = ct_select(1 if was_square else -1)
+   s = v_prime * (r + 1)
+
+   w0 = 2 * CT_ABS_(s)
+   w1 = s^2 + 1
+   w2 = s^2 - 1
+   w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
+
+   3.  Return the group element represented by the internal
+       representation "(w0*w3, w2*w1, w1*w3, w0*w2)".
+
+6.4.  Scalar field
 
    The scalars for the decaf448 group are integers modulo the order l of
    the decaf448 group.
@@ -667,12 +736,9 @@ Table of Contents
    Implementations SHOULD reduce scalars modulo l when encoding them as
    byte strings.
 
-6.3.1.  TODO: really 912 bits?
-
-   Given a uniformly distributed 114-byte string b, implementations can
-   obtain a scalar by interpreting the 114-byte string as a 912-bit
-   integer in little-endian order and reducing the integer modulo l, as
-   in [RFC8032].
+   Given a uniformly distributed 64-byte string b, implementations can
+   obtain a scalar by interpreting the 64-byte string as a 512-bit
+   integer in little-endian order and reducing the integer modulo l.
 
    Note that this is the same scalar field as edwards448, allowing
    existing implementations to be reused.
@@ -810,7 +876,7 @@ A.1.  Multiples of the generator
 A.2.  Invalid encodings
 
    These are examples of encodings that MUST be rejected according to
-   Section 5.2.1.
+   Section 5.3.1.
 
    # Non-canonical field encodings.
    00ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
@@ -853,7 +919,7 @@ A.2.  Invalid encodings
 
 A.3.  Group elements from uniform bytestrings
 
-   The following pairs are inputs to the one-way map of Section 5.2.4,
+   The following pairs are inputs to the one-way map of Section 5.3.4,
    and their encoded outputs.
 
    I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1

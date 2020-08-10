@@ -241,49 +241,6 @@ Note that `CT_ABS` **MAY** be implemented as:
 
     CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
-## Square root of a ratio of field elements
-
-### TODO: no SQRT_M1 for decaf
-
-On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
-
-* `(TRUE, +sqrt(u/v))` if u and v are non-zero, and u/v is square;
-* `(TRUE, zero)` if u is zero;
-* `(FALSE, zero)` if v is zero and u is non-zero;
-* `(FALSE, +sqrt(SQRT_M1*(u/v)))` if u and v are non-zero, and u/v is
-  non-square (so `SQRT_M1*(u/v)` is square),
-
-where `+sqrt(x)` indicates the non-negative square root of x.
-
-The computation is similar to Section 5.1.3 of [@RFC8032], with the
-difference that if the input is non-square, the function returns a
-result with a defined relationship to the inputs. This result is used
-for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing Ed25519 implementation.
-
-`SQRT_RATIO_M1(u, v)` is defined as follows:
-
-```
-v3 = v^2  * v
-v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
-check = v * r^2
-
-correct_sign_sqrt   = CT_EQ(check,          u)
-flipped_sign_sqrt   = CT_EQ(check,         -u)
-flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
-
-r_prime = SQRT_M1 * r
-r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
-
-// Choose the nonnegative square root.
-r = CT_ABS(r)
-
-was_square = correct_sign_sqrt | flipped_sign_sqrt
-
-return (was_square, r)
-```
-
 # ristretto255
 
 ristretto255 is an instantiation of the abstract prime-order group
@@ -336,6 +293,47 @@ This document references the following constants:
 * `INVSQRT_A_MINUS_D` = 54469307008909316920995813868745141605393597292927456921205312896311721017578
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
+
+## Square root of a ratio of field elements
+
+On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
+
+* `(TRUE, +sqrt(u/v))` if u and v are non-zero, and u/v is square;
+* `(TRUE, zero)` if u is zero;
+* `(FALSE, zero)` if v is zero and u is non-zero;
+* `(FALSE, +sqrt(SQRT_M1*(u/v)))` if u and v are non-zero, and u/v is
+  non-square (so `SQRT_M1*(u/v)` is square),
+
+where `+sqrt(x)` indicates the non-negative square root of x.
+
+The computation is similar to Section 5.1.3 of [@RFC8032], with the
+difference that if the input is non-square, the function returns a
+result with a defined relationship to the inputs. This result is used
+for efficient implementation of the one-way map functionality. The
+function can be refactored from an existing Ed25519 implementation.
+
+`SQRT_RATIO_M1(u, v)` is defined as follows:
+
+```
+v3 = v^2  * v
+v7 = v3^2 * v
+r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+check = v * r^2
+
+correct_sign_sqrt   = CT_EQ(check,          u)
+flipped_sign_sqrt   = CT_EQ(check,         -u)
+flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
+
+r_prime = SQRT_M1 * r
+r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
+
+// Choose the nonnegative square root.
+r = CT_ABS(r)
+
+was_square = correct_sign_sqrt | flipped_sign_sqrt
+
+return (was_square, r)
+```
 
 ## External ristretto255 functions {#functions}
 
@@ -550,10 +548,43 @@ This document references the following constants:
 * `D` = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358
   * This is the Edwards d parameter for edwards448, as specified in Section 4.2 of [@RFC7748], and is equal to -39081 modulo p.
 * `ONE_MINUS_D` = 39082
+* `ONE_MINUS_TWO_D` = 78163
 * `SQRT_MINUS_D` = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214
 * `INVSQRT_MINUS_D` = 315019913931389607337177038330951043522456072897266928557328499619017160722351061360252776265186336876723201881398623946864393857820716
 
-## External ristretto255 functions {#functions}
+## Square root of a ratio of field elements
+
+On input field elements u and v, the function `SQRT_RATIO(u, v)` returns:
+
+* `(TRUE, +sqrt(u/v))` if u and v are non-zero, and u/v is square;
+* `(TRUE, zero)` if u is zero;
+* `(FALSE, zero)` if v is zero and u is non-zero;
+* `(FALSE, +sqrt(-u/v))` if u and v are non-zero, and u/v is
+  non-square (so `-(u/v)` is square),
+
+where `+sqrt(x)` indicates the non-negative square root of x.
+
+The computation is similar to Section 5.1.3 of [@RFC8032], with the
+difference that if the input is non-square, the function returns a
+result with a defined relationship to the inputs. This result is used
+for efficient implementation of the one-way map functionality. The
+function can be refactored from an existing edwards448 implementation.
+
+`SQRT_RATIO_M1(u, v)` is defined as follows:
+
+```
+r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
+
+check = v * r^2
+was_square = CT_EQ(check, u)
+
+// Choose the nonnegative square root.
+r = CT_ABS(r)
+
+return (was_square, r)
+```
+
+## External decaf448 functions {#functions}
 
 ### Decode {#decoding}
 
@@ -628,8 +659,40 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes}
 
-TODO
+The one-way map operates an uniformly distributed 112-byte strings. To
+obtain such an input from an arbitrary length bytestring, applications
+should use a domain-separated hash construction, the choice of which
+is out-of-scope for this document.
 
+The one-way map on an input string b proceeds as follows:
+
+1. Compute P1 as `MAP(b[ 0..56])`.
+2. Compute P2 as `MAP(b[56..112])`.
+3. Return P1 + P2.
+
+The MAP function is defined on a 56-bytes string as:
+
+1. Interpret the string as an integer r in little-endian representation. Reduce r modulo p to obtain a field element t.
+2. Process t as follows:
+
+```
+r = -t^2
+u0 = d * (r-1)
+u1 = (u0 + 1) * (u0 - r)
+
+(was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u2)
+v_prime = ct_select(v if was_square else t * v)
+sgn     = ct_select(1 if was_square else -1)
+s = v_prime * (r + 1)
+
+w0 = 2 * CT_ABS_(s)
+w1 = s^2 + 1
+w2 = s^2 - 1
+w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
+```
+
+3. Return the group element represented by the internal representation
+   `(w0*w3, w2*w1, w1*w3, w0*w2)`.
 
 ## Scalar field
 
@@ -642,12 +705,9 @@ Implementations **SHOULD** check that any scalar s falls in the range
 encodings. Implementations **SHOULD** reduce scalars modulo l when
 encoding them as byte strings.
 
-### TODO: really 912 bits?
-
-Given a uniformly distributed 114-byte string b, implementations can
-obtain a scalar by interpreting the 114-byte string as a 912-bit
-integer in little-endian order and reducing the integer modulo l, as
-in [@RFC8032].
+Given a uniformly distributed 64-byte string b, implementations can
+obtain a scalar by interpreting the 64-byte string as a 512-bit
+integer in little-endian order and reducing the integer modulo l.
 
 Note that this is the same scalar field as edwards448, allowing
 existing implementations to be reused.
@@ -880,3 +940,5 @@ r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
 ```
 
 # Test vectors for decaf448
+
+TODO
