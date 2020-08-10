@@ -10,12 +10,14 @@
 <meta content="George Tankersley" name="author">
 <meta content="Filippo Valsorda" name="author">
 <meta content="Isis Lovecruft" name="author">
+<meta content="Mike Hamburg" name="author">
 <meta content="
-       This memo specifies a prime-order group, ristretto255, suitable for
-safely implementing higher-level and complex cryptographic protocols.
-The ristretto255 group can be implemented using Curve25519, allowing
-existing Curve25519 implementations to be reused and extended to provide
-a prime-order group. 
+       This memo specifies two prime-order groups, ristretto255 and decaf448,
+suitable for safely implementing higher-level and complex
+cryptographic protocols. The ristretto255 group can be implemented
+using Curve25519, allowing existing Curve25519 implementations to be
+reused and extended to provide a prime-order group. Likewise, the
+decaf448 group can be implemented using edwards448. 
     " name="description">
 <meta content="xml2rfc 2.41.0" name="generator">
 <meta content="draft-irtf-cfrg-ristretto255-01" name="ietf.draft">
@@ -1069,11 +1071,11 @@ tr:nth-child(2n+1) > td {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ristretto255</td>
-<td class="right">May 2020</td>
+<td class="right">August 2020</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">de Valence, et al.</td>
-<td class="center">Expires 17 November 2020</td>
+<td class="center">Expires 11 February 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1086,12 +1088,12 @@ tr:nth-child(2n+1) > td {
 <dd class="internet-draft">draft-irtf-cfrg-ristretto255-01</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-05-16" class="published">16 May 2020</time>
+<time datetime="2020-08-10" class="published">10 August 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2020-11-17">17 November 2020</time></dd>
+<dd class="expires"><time datetime="2021-02-11">11 February 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1109,17 +1111,21 @@ tr:nth-child(2n+1) > td {
 <div class="author">
       <div class="author-name">I. Lovecruft</div>
 </div>
+<div class="author">
+      <div class="author-name">M. Hamburg</div>
+</div>
 </dd>
 </dl>
 </div>
 <h1 id="title">The ristretto255 Group</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This memo specifies a prime-order group, ristretto255, suitable for
-safely implementing higher-level and complex cryptographic protocols.
-The ristretto255 group can be implemented using Curve25519, allowing
-existing Curve25519 implementations to be reused and extended to provide
-a prime-order group.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This memo specifies two prime-order groups, ristretto255 and decaf448,
+suitable for safely implementing higher-level and complex
+cryptographic protocols. The ristretto255 group can be implemented
+using Curve25519, allowing existing Curve25519 implementations to be
+reused and extended to provide a prime-order group. Likewise, the
+decaf448 group can be implemented using edwards448.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1140,7 +1146,7 @@ a prime-order group.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 November 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 February 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1179,81 +1185,125 @@ a prime-order group.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-the-group-abstraction" class="xref">The group abstraction</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-ristretto255" class="xref">ristretto255</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-notation-and-utility-functi" class="xref">Notation and utility functions</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-internal-utility-functions-" class="xref">Internal utility functions and constants</a><a href="#section-toc.1-1.4.2.1.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty">
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.1.2.1">
-                    <p id="section-toc.1-1.4.2.1.2.1.1"><a href="#section-4.1.1" class="xref">4.1.1</a>.  <a href="#name-negative-field-elements" class="xref">Negative field elements</a><a href="#section-toc.1-1.4.2.1.2.1.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.1.2.2">
-                    <p id="section-toc.1-1.4.2.1.2.2.1"><a href="#section-4.1.2" class="xref">4.1.2</a>.  <a href="#name-constant-time-operations" class="xref">Constant time operations</a><a href="#section-toc.1-1.4.2.1.2.2.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.1.2.3">
-                    <p id="section-toc.1-1.4.2.1.2.3.1"><a href="#section-4.1.3" class="xref">4.1.3</a>.  <a href="#name-square-root-of-a-ratio-of-f" class="xref">Square root of a ratio of field elements</a><a href="#section-toc.1-1.4.2.1.2.3.1" class="pilcrow">¶</a></p>
-</li>
-</ul>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-negative-field-elements" class="xref">Negative field elements</a><a href="#section-toc.1-1.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-external-ristretto255-funct" class="xref">External ristretto255 functions</a><a href="#section-toc.1-1.4.2.2.1" class="pilcrow">¶</a></p>
-<ul class="toc ulEmpty">
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.2.2.1">
-                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="xref">4.2.1</a>.  <a href="#name-decode" class="xref">Decode</a><a href="#section-toc.1-1.4.2.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.2.2.2">
-                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="xref">4.2.2</a>.  <a href="#name-encode" class="xref">Encode</a><a href="#section-toc.1-1.4.2.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.2.2.3">
-                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="xref">4.2.3</a>.  <a href="#name-equals" class="xref">Equals</a><a href="#section-toc.1-1.4.2.2.2.3.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.4.2.2.2.4">
-                    <p id="section-toc.1-1.4.2.2.2.4.1"><a href="#section-4.2.4" class="xref">4.2.4</a>.  <a href="#name-one-way-map" class="xref">One-way map</a><a href="#section-toc.1-1.4.2.2.2.4.1" class="pilcrow">¶</a></p>
-</li>
-</ul>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-constant-time-operations" class="xref">Constant time operations</a><a href="#section-toc.1-1.4.2.2.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-scalar-field" class="xref">Scalar field</a><a href="#section-toc.1-1.4.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-square-root-of-a-ratio-of-f" class="xref">Square root of a ratio of field elements</a><a href="#section-toc.1-1.4.2.3.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.3.2.1">
+                    <p id="section-toc.1-1.4.2.3.2.1.1"><a href="#section-4.3.1" class="xref">4.3.1</a>.  <a href="#name-todo-no-sqrt_m1-for-decaf" class="xref">TODO: no SQRT_M1 for decaf</a><a href="#section-toc.1-1.4.2.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
 </li>
 </ul>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-api-considerations" class="xref">API Considerations</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-acknowledgements" class="xref">Acknowledgements</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-appendix.a" class="xref">Appendix A</a>.  <a href="#name-test-vectors" class="xref">Test vectors</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-ristretto255" class="xref">ristretto255</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
-<li class="toc ulEmpty" id="section-toc.1-1.11.2.1">
-                <p id="section-toc.1-1.11.2.1.1"><a href="#section-a.1" class="xref">A.1</a>.  <a href="#name-multiples-of-the-generator" class="xref">Multiples of the generator</a><a href="#section-toc.1-1.11.2.1.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-internal-utility-functions-" class="xref">Internal utility functions and constants</a><a href="#section-toc.1-1.5.2.1.1" class="pilcrow">¶</a></p>
 </li>
-<li class="toc ulEmpty" id="section-toc.1-1.11.2.2">
-                <p id="section-toc.1-1.11.2.2.1"><a href="#section-a.2" class="xref">A.2</a>.  <a href="#name-invalid-encodings" class="xref">Invalid encodings</a><a href="#section-toc.1-1.11.2.2.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-external-ristretto255-funct" class="xref">External ristretto255 functions</a><a href="#section-toc.1-1.5.2.2.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2.2.1">
+                    <p id="section-toc.1-1.5.2.2.2.1.1"><a href="#section-5.2.1" class="xref">5.2.1</a>.  <a href="#name-decode" class="xref">Decode</a><a href="#section-toc.1-1.5.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-<li class="toc ulEmpty" id="section-toc.1-1.11.2.3">
-                <p id="section-toc.1-1.11.2.3.1"><a href="#section-a.3" class="xref">A.3</a>.  <a href="#name-group-elements-from-uniform" class="xref">Group elements from uniform bytestrings</a><a href="#section-toc.1-1.11.2.3.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2.2.2">
+                    <p id="section-toc.1-1.5.2.2.2.2.1"><a href="#section-5.2.2" class="xref">5.2.2</a>.  <a href="#name-encode" class="xref">Encode</a><a href="#section-toc.1-1.5.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-<li class="toc ulEmpty" id="section-toc.1-1.11.2.4">
-                <p id="section-toc.1-1.11.2.4.1"><a href="#section-a.4" class="xref">A.4</a>.  <a href="#name-square-root-of-a-ratio-of-fi" class="xref">Square root of a ratio of field elements</a><a href="#section-toc.1-1.11.2.4.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2.2.3">
+                    <p id="section-toc.1-1.5.2.2.2.3.1"><a href="#section-5.2.3" class="xref">5.2.3</a>.  <a href="#name-equals" class="xref">Equals</a><a href="#section-toc.1-1.5.2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2.2.4">
+                    <p id="section-toc.1-1.5.2.2.2.4.1"><a href="#section-5.2.4" class="xref">5.2.4</a>.  <a href="#name-one-way-map" class="xref">One-way map</a><a href="#section-toc.1-1.5.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </li>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="xref">5.3</a>.  <a href="#name-scalar-field" class="xref">Scalar field</a><a href="#section-toc.1-1.5.2.3.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-decaf448" class="xref">decaf448</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-internal-utility-functions-a" class="xref">Internal utility functions and constants</a><a href="#section-toc.1-1.6.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-external-ristretto255-functi" class="xref">External ristretto255 functions</a><a href="#section-toc.1-1.6.2.2.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.2.2.1">
+                    <p id="section-toc.1-1.6.2.2.2.1.1"><a href="#section-6.2.1" class="xref">6.2.1</a>.  <a href="#name-decode-2" class="xref">Decode</a><a href="#section-toc.1-1.6.2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.2.2.2">
+                    <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="xref">6.2.2</a>.  <a href="#name-encode-2" class="xref">Encode</a><a href="#section-toc.1-1.6.2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.2.2.3">
+                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="xref">6.2.3</a>.  <a href="#name-equals-2" class="xref">Equals</a><a href="#section-toc.1-1.6.2.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.2.2.4">
+                    <p id="section-toc.1-1.6.2.2.2.4.1"><a href="#section-6.2.4" class="xref">6.2.4</a>.  <a href="#name-one-way-map-2" class="xref">One-way map</a><a href="#section-toc.1-1.6.2.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="xref">6.3</a>.  <a href="#name-scalar-field-2" class="xref">Scalar field</a><a href="#section-toc.1-1.6.2.3.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.6.2.3.2.1">
+                    <p id="section-toc.1-1.6.2.3.2.1.1"><a href="#section-6.3.1" class="xref">6.3.1</a>.  <a href="#name-todo-really-912-bits" class="xref">TODO: really 912 bits?</a><a href="#section-toc.1-1.6.2.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-api-considerations" class="xref">API Considerations</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-acknowledgements" class="xref">Acknowledgements</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
+</li>
 <li class="toc ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-appendix.b" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-appendix.a" class="xref">Appendix A</a>.  <a href="#name-test-vectors-for-ristretto2" class="xref">Test vectors for ristretto255</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#section-a.1" class="xref">A.1</a>.  <a href="#name-multiples-of-the-generator" class="xref">Multiples of the generator</a><a href="#section-toc.1-1.13.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#section-a.2" class="xref">A.2</a>.  <a href="#name-invalid-encodings" class="xref">Invalid encodings</a><a href="#section-toc.1-1.13.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13.2.3">
+                <p id="section-toc.1-1.13.2.3.1"><a href="#section-a.3" class="xref">A.3</a>.  <a href="#name-group-elements-from-uniform" class="xref">Group elements from uniform bytestrings</a><a href="#section-toc.1-1.13.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13.2.4">
+                <p id="section-toc.1-1.13.2.4.1"><a href="#section-a.4" class="xref">A.4</a>.  <a href="#name-square-root-of-a-ratio-of-fi" class="xref">Square root of a ratio of field elements</a><a href="#section-toc.1-1.13.2.4.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#section-appendix.b" class="xref">Appendix B</a>.  <a href="#name-test-vectors-for-decaf448" class="xref">Test vectors for decaf448</a><a href="#section-toc.1-1.14.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#section-appendix.c" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.15.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </nav>
@@ -1264,12 +1314,12 @@ a prime-order group.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Ristretto is a technique for constructing prime-order groups with
-non-malleable encodings from non-prime-order elliptic curves.  It
-extends the <span>[<a href="#Decaf" class="xref">Decaf</a>]</span> approach to cofactor elimination to support
-cofactor-8 curves such as Curve25519 <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>. In particular, this
-allows an existing Curve25519 library to provide a prime-order group
-with only a thin abstraction layer.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Decaf <span>[<a href="#Decaf" class="xref">Decaf</a>]</span> is a technique for constructing prime-order groups
+with non-malleable encodings from non-prime-order elliptic curves.
+Ristretto extends this technique to support cofactor-8 curves such as
+Curve25519 <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>. In particular, this allows an existing
+Curve25519 library to provide a prime-order group with only a thin
+abstraction layer.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
@@ -1297,9 +1347,9 @@ overhead, and only in the encoding and decoding phases.<a href="#section-1-5" cl
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which MAY be implemented using Curve25519.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">There are other elliptic curves that can be used internally to
-implement ristretto255, and those implementations would be
-interoperable with a Curve25519-based one, but those constructions are
-out-of-scope for this document.<a href="#section-1-7" class="pilcrow">¶</a></p>
+implement ristretto255 or decaf448, and those implementations would be
+interoperable with a Curve25519- or edwards448-based one, but those
+constructions are out-of-scope for this document.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <p id="section-1-8">The Ristretto construction is described and justified in detail at
 <a href="https://ristretto.group">https://ristretto.group</a>.<a href="#section-1-8" class="pilcrow">¶</a></p>
 </section>
@@ -1325,9 +1375,10 @@ specific Diffie-Hellman mechanism. This document uses the term
 in <span>[<a href="#Naming" class="xref">Naming</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">Elliptic curve points in this document are represented in extended
 Edwards coordinates in the <code>(x, y, z, t)</code> format <span>[<a href="#Twisted" class="xref">Twisted</a>]</span>. Field
-elements are values modulo p, the Curve25519 prime 2^255 - 19, as
-specified in Section 4.1 of <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>. All formulas specify field
-operations unless otherwise noted.<a href="#section-2-3" class="pilcrow">¶</a></p>
+elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
+edwards448 prime, as specified in Sections 4.1 and 4.2 of <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>,
+respectively. All formulas specify field operations unless otherwise
+noted.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">The <code>|</code> symbol represents a constant-time logical OR.<a href="#section-2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1336,10 +1387,10 @@ operations unless otherwise noted.<a href="#section-2-3" class="pilcrow">¶</a><
       <h2 id="name-the-group-abstraction">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-the-group-abstraction" class="section-name selfRef">The group abstraction</a>
       </h2>
-<p id="section-3-1">Ristretto implements an abstract prime-order group interface
+<p id="section-3-1">Ristretto and Decaf implement an abstract prime-order group interface
 that exposes only the behavior that is useful to higher-level protocols,
 without leaking curve-related details and pitfalls.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">The only operations exposed by the abstract group are decoding,
+<p id="section-3-2">The only operations exposed by each abstract group are decoding,
 encoding, equality, a one-way map, addition, negation, and the
 derived subtraction and (multi-)scalar multiplication.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">Decoding is a function from bytestrings to abstract elements with
@@ -1365,140 +1416,82 @@ Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.<a href="#section-3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="ristretto255">
+<div id="notation-and-utility-functions">
 <section id="section-4">
-      <h2 id="name-ristretto255">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-ristretto255" class="section-name selfRef">ristretto255</a>
+      <h2 id="name-notation-and-utility-functi">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-notation-and-utility-functi" class="section-name selfRef">Notation and utility functions</a>
       </h2>
-<p id="section-4-1">ristretto255 is an instantiation of the abstract prime-order group
-interface defined in <a href="#interface" class="xref">Section 3</a>. This documents describes how to
-implement the ristretto255 prime-order group using Curve25519 points as
-internal representations.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">A "ristretto255 group element" is the abstract element of the prime
-order group. An "element encoding" is the unique reversible encoding
-of a group element. An "internal representation" is a point on the
-curve used to implement ristretto255. Each group element can have
-multiple equivalent internal representations.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">Encoding, decoding, equality, and one-way map are defined in
-<a href="#functions" class="xref">Section 4.2</a>. Element addition, subtraction, negation, and scalar
-multiplication are implemented by applying the corresponding operations
-directly to the internal representation.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">The group order is the same as the order of the Curve25519 prime-order subgroup:<a href="#section-4-4" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-4-5">
-<pre>l = 2^252 + 27742317777372353535851937790883648493
-</pre><a href="#section-4-5" class="pilcrow">¶</a>
-</div>
-<p id="section-4-6">Since ristretto255 is a prime-order group, every element except the
-identity is a generator, but for interoperability a canonical generator
-is selected, which can be internally represented by the Curve25519
-basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:<a href="#section-4-6" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-4-7">
-<pre>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
-</pre><a href="#section-4-7" class="pilcrow">¶</a>
-</div>
-<p id="section-4-8">Implementations <span class="bcp14">MUST NOT</span> expose either the internal representation
-or its field implementation and <span class="bcp14">MUST NOT</span> expose any operations
-defined on the internal representations unless specified in this
-document.<a href="#section-4-8" class="pilcrow">¶</a></p>
-<div id="internal-utility-functions-and-constants">
-<section id="section-4.1">
-        <h3 id="name-internal-utility-functions-">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-internal-utility-functions-" class="section-name selfRef">Internal utility functions and constants</a>
-        </h3>
-<p id="section-4.1-1">The following functions are defined on field elements, and are used to
-implement the other ristretto255 functions. Implementations <span class="bcp14">MUST NOT</span>
-expose these to their API consumers.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">This document references the following constants:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<ul>
-<li id="section-4.1-3.1">
-            <p id="section-4.1-3.1.1"><code>D</code> = 37095705934669439343138083508754565189542113879843219016388785533085940283555<a href="#section-4.1-3.1.1" class="pilcrow">¶</a></p>
-<ul>
-<li id="section-4.1-3.1.2.1">
-                <p id="section-4.1-3.1.2.1.1">This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>.<a href="#section-4.1-3.1.2.1.1" class="pilcrow">¶</a></p>
-</li>
-</ul>
-</li>
-<li id="section-4.1-3.2">
-            <p id="section-4.1-3.2.1"><code>SQRT_M1</code> = 19681161376707505956807079304988542015446066515923890162744021073123829784752<a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
-</li>
-<li id="section-4.1-3.3">
-            <p id="section-4.1-3.3.1"><code>SQRT_AD_MINUS_ONE</code> = 25063068953384623474111414158702152701244531502492656460079210482610430750235<a href="#section-4.1-3.3.1" class="pilcrow">¶</a></p>
-</li>
-<li id="section-4.1-3.4">
-            <p id="section-4.1-3.4.1"><code>INVSQRT_A_MINUS_D</code> = 54469307008909316920995813868745141605393597292927456921205312896311721017578<a href="#section-4.1-3.4.1" class="pilcrow">¶</a></p>
-</li>
-<li id="section-4.1-3.5">
-            <p id="section-4.1-3.5.1"><code>ONE_MINUS_D_SQ</code> = 1159843021668779879193775521855586647937357759715417654439879720876111806838<a href="#section-4.1-3.5.1" class="pilcrow">¶</a></p>
-</li>
-<li id="section-4.1-3.6">
-            <p id="section-4.1-3.6.1"><code>D_MINUS_ONE_SQ</code> = 40440834346308536858101042469323190826248399146238708352240133220865137265952<a href="#section-4.1-3.6.1" class="pilcrow">¶</a></p>
-</li>
-</ul>
+<p id="section-4-1">The notations and utility functions defined in this section are common
+between ristretto255 and decaf448.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div id="negative-field-elements">
-<section id="section-4.1.1">
-          <h4 id="name-negative-field-elements">
-<a href="#section-4.1.1" class="section-number selfRef">4.1.1. </a><a href="#name-negative-field-elements" class="section-name selfRef">Negative field elements</a>
-          </h4>
-<p id="section-4.1.1-1">As in <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>, given a field element e, define <code>IS_NEGATIVE(e)</code> as
+<section id="section-4.1">
+        <h3 id="name-negative-field-elements">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-negative-field-elements" class="section-name selfRef">Negative field elements</a>
+        </h3>
+<p id="section-4.1-1">As in <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>, given a field element e, define <code>IS_NEGATIVE(e)</code> as
 TRUE if the least non-negative integer representing e is odd, and
-FALSE if it is even. This <span class="bcp14">SHOULD</span> be implemented in constant time.<a href="#section-4.1.1-1" class="pilcrow">¶</a></p>
+FALSE if it is even. This <span class="bcp14">SHOULD</span> be implemented in constant time.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="constant-time-operations">
-<section id="section-4.1.2">
-          <h4 id="name-constant-time-operations">
-<a href="#section-4.1.2" class="section-number selfRef">4.1.2. </a><a href="#name-constant-time-operations" class="section-name selfRef">Constant time operations</a>
-          </h4>
-<p id="section-4.1.2-1">We assume that the field element implementation supports the following
-operations, which <span class="bcp14">SHOULD</span> be implemented in constant time:<a href="#section-4.1.2-1" class="pilcrow">¶</a></p>
+<section id="section-4.2">
+        <h3 id="name-constant-time-operations">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-constant-time-operations" class="section-name selfRef">Constant time operations</a>
+        </h3>
+<p id="section-4.2-1">We assume that the field element implementation supports the following
+operations, which <span class="bcp14">SHOULD</span> be implemented in constant time:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-4.1.2-2.1">
-              <p id="section-4.1.2-2.1.1"><code>CT_EQ(u, v)</code>: return TRUE if u = v, FALSE otherwise.<a href="#section-4.1.2-2.1.1" class="pilcrow">¶</a></p>
+<li id="section-4.2-2.1">
+            <code>CT_EQ(u, v)</code>: return TRUE if u = v, FALSE otherwise.<a href="#section-4.2-2.1" class="pilcrow">¶</a>
 </li>
-<li id="section-4.1.2-2.2">
-              <p id="section-4.1.2-2.2.1"><code>CT_SELECT(v IF cond ELSE u)</code>: return v if cond is TRUE, else return u.<a href="#section-4.1.2-2.2.1" class="pilcrow">¶</a></p>
+<li id="section-4.2-2.2">
+            <code>CT_SELECT(v IF cond ELSE u)</code>: return v if cond is TRUE, else return u.<a href="#section-4.2-2.2" class="pilcrow">¶</a>
 </li>
-<li id="section-4.1.2-2.3">
-              <p id="section-4.1.2-2.3.1"><code>CT_ABS(u)</code>: return -u if u is negative, else return u.<a href="#section-4.1.2-2.3.1" class="pilcrow">¶</a></p>
+<li id="section-4.2-2.3">
+            <code>CT_ABS(u)</code>: return -u if u is negative, else return u.<a href="#section-4.2-2.3" class="pilcrow">¶</a>
 </li>
 </ul>
-<p id="section-4.1.2-3">Note that <code>CT_ABS</code> <span class="bcp14">MAY</span> be implemented as:<a href="#section-4.1.2-3" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-4.1.2-4">
+<p id="section-4.2-3">Note that <code>CT_ABS</code> <span class="bcp14">MAY</span> be implemented as:<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-4.2-4">
 <pre>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-</pre><a href="#section-4.1.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-4.2-4" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="square-root-of-a-ratio-of-field-elements">
-<section id="section-4.1.3">
-          <h4 id="name-square-root-of-a-ratio-of-f">
-<a href="#section-4.1.3" class="section-number selfRef">4.1.3. </a><a href="#name-square-root-of-a-ratio-of-f" class="section-name selfRef">Square root of a ratio of field elements</a>
+<section id="section-4.3">
+        <h3 id="name-square-root-of-a-ratio-of-f">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-square-root-of-a-ratio-of-f" class="section-name selfRef">Square root of a ratio of field elements</a>
+        </h3>
+<div id="todo-no-sqrt-m1-for-decaf">
+<section id="section-4.3.1">
+          <h4 id="name-todo-no-sqrt_m1-for-decaf">
+<a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-todo-no-sqrt_m1-for-decaf" class="section-name selfRef">TODO: no SQRT_M1 for decaf</a>
           </h4>
-<p id="section-4.1.3-1">On input field elements u and v, the function <code>SQRT_RATIO_M1(u, v)</code> returns:<a href="#section-4.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-1">On input field elements u and v, the function <code>SQRT_RATIO_M1(u, v)</code> returns:<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-4.1.3-2.1">
-              <p id="section-4.1.3-2.1.1"><code>(TRUE, +sqrt(u/v))</code> if u and v are non-zero, and u/v is square;<a href="#section-4.1.3-2.1.1" class="pilcrow">¶</a></p>
+<li id="section-4.3.1-2.1">
+              <code>(TRUE, +sqrt(u/v))</code> if u and v are non-zero, and u/v is square;<a href="#section-4.3.1-2.1" class="pilcrow">¶</a>
 </li>
-<li id="section-4.1.3-2.2">
-              <p id="section-4.1.3-2.2.1"><code>(TRUE, zero)</code> if u is zero;<a href="#section-4.1.3-2.2.1" class="pilcrow">¶</a></p>
+<li id="section-4.3.1-2.2">
+              <code>(TRUE, zero)</code> if u is zero;<a href="#section-4.3.1-2.2" class="pilcrow">¶</a>
 </li>
-<li id="section-4.1.3-2.3">
-              <p id="section-4.1.3-2.3.1"><code>(FALSE, zero)</code> if v is zero and u is non-zero;<a href="#section-4.1.3-2.3.1" class="pilcrow">¶</a></p>
+<li id="section-4.3.1-2.3">
+              <code>(FALSE, zero)</code> if v is zero and u is non-zero;<a href="#section-4.3.1-2.3" class="pilcrow">¶</a>
 </li>
-<li id="section-4.1.3-2.4">
-              <p id="section-4.1.3-2.4.1"><code>(FALSE, +sqrt(SQRT_M1*(u/v)))</code> if u and v are non-zero, and u/v is
-non-square (so <code>SQRT_M1*(u/v)</code> is square),<a href="#section-4.1.3-2.4.1" class="pilcrow">¶</a></p>
+<li id="section-4.3.1-2.4">
+              <code>(FALSE, +sqrt(SQRT_M1*(u/v)))</code> if u and v are non-zero, and u/v is
+non-square (so <code>SQRT_M1*(u/v)</code> is square),<a href="#section-4.3.1-2.4" class="pilcrow">¶</a>
 </li>
 </ul>
-<p id="section-4.1.3-3">where <code>+sqrt(x)</code> indicates the non-negative square root of x.<a href="#section-4.1.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.1.3-4">The computation is similar to Section 5.1.3 of <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>, with the
+<p id="section-4.3.1-3">where <code>+sqrt(x)</code> indicates the non-negative square root of x.<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-4">The computation is similar to Section 5.1.3 of <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>, with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
 for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing Ed25519 implementation.<a href="#section-4.1.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.1.3-5"><code>SQRT_RATIO_M1(u, v)</code> is defined as follows:<a href="#section-4.1.3-5" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-4.1.3-6">
+function can be refactored from an existing Ed25519 implementation.<a href="#section-4.3.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-5"><code>SQRT_RATIO_M1(u, v)</code> is defined as follows:<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-4.3.1-6">
 <pre>v3 = v^2  * v
 v7 = v3^2 * v
 r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
@@ -1517,44 +1510,114 @@ r = CT_ABS(r)
 was_square = correct_sign_sqrt | flipped_sign_sqrt
 
 return (was_square, r)
-</pre><a href="#section-4.1.3-6" class="pilcrow">¶</a>
+</pre><a href="#section-4.3.1-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 </section>
 </div>
-<div id="functions">
-<section id="section-4.2">
-        <h3 id="name-external-ristretto255-funct">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-external-ristretto255-funct" class="section-name selfRef">External ristretto255 functions</a>
+</section>
+</div>
+<div id="ristretto255">
+<section id="section-5">
+      <h2 id="name-ristretto255">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-ristretto255" class="section-name selfRef">ristretto255</a>
+      </h2>
+<p id="section-5-1">ristretto255 is an instantiation of the abstract prime-order group
+interface defined in <a href="#interface" class="xref">Section 3</a>. This documents describes how to
+implement the ristretto255 prime-order group using Curve25519 points as
+internal representations.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">A "ristretto255 group element" is the abstract element of the prime
+order group. An "element encoding" is the unique reversible encoding
+of a group element. An "internal representation" is a point on the
+curve used to implement ristretto255. Each group element can have
+multiple equivalent internal representations.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">Encoding, decoding, equality, and one-way map are defined in
+<a href="#functions" class="xref">Section 5.2</a>. Element addition, subtraction, negation, and scalar
+multiplication are implemented by applying the corresponding operations
+directly to the internal representation.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">The group order is the same as the order of the Curve25519 prime-order subgroup:<a href="#section-5-4" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-5-5">
+<pre>l = 2^252 + 27742317777372353535851937790883648493
+</pre><a href="#section-5-5" class="pilcrow">¶</a>
+</div>
+<p id="section-5-6">Since ristretto255 is a prime-order group, every element except the
+identity is a generator, but for interoperability a canonical generator
+is selected, which can be internally represented by the Curve25519
+basepoint, enabling reuse of existing precomputation for scalar
+multiplication. This is its encoding:<a href="#section-5-6" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-5-7">
+<pre>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
+</pre><a href="#section-5-7" class="pilcrow">¶</a>
+</div>
+<p id="section-5-8">Implementations <span class="bcp14">MUST NOT</span> expose either the internal representation
+or its field implementation and <span class="bcp14">MUST NOT</span> expose any operations
+defined on the internal representations unless specified in this
+document.<a href="#section-5-8" class="pilcrow">¶</a></p>
+<div id="internal-utility-functions-and-constants">
+<section id="section-5.1">
+        <h3 id="name-internal-utility-functions-">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-internal-utility-functions-" class="section-name selfRef">Internal utility functions and constants</a>
         </h3>
-<div id="decoding">
-<section id="section-4.2.1">
-          <h4 id="name-decode">
-<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-decode" class="section-name selfRef">Decode</a>
-          </h4>
-<p id="section-4.2.1-1">All elements are encoded as a 32-byte string. Decoding proceeds as follows:<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.2.1-2">
-            <li id="section-4.2.1-2.1">
-              <p id="section-4.2.1-2.1.1">First, interpret the string as an integer s in little-endian
-representation. If the length of the string is not 32 bytes, or if
-the resulting value is &gt;= p, decoding fails.<a href="#section-4.2.1-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-5.1-1">The following functions are defined on field elements, and are used to
+implement the other ristretto255 functions. Implementations <span class="bcp14">MUST NOT</span>
+expose these to their API consumers.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">This document references the following constants:<a href="#section-5.1-2" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-4.2.1-2.1.2.1">
-                  <p id="section-4.2.1-2.1.2.1.1">Note: unlike <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> field element decoding, the most
-significant bit is not masked, and will necessarily be unset. The
-test vectors in <a href="#invalid" class="xref">Appendix A.2</a> exercise these edge cases.<a href="#section-4.2.1-2.1.2.1.1" class="pilcrow">¶</a></p>
+<li id="section-5.1-3.1">
+            <p id="section-5.1-3.1.1"><code>D</code> = 37095705934669439343138083508754565189542113879843219016388785533085940283555<a href="#section-5.1-3.1.1" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-5.1-3.1.2.1">This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>.<a href="#section-5.1-3.1.2.1" class="pilcrow">¶</a>
 </li>
 </ul>
 </li>
-<li id="section-4.2.1-2.2">
-              <p id="section-4.2.1-2.2.1">If <code>IS_NEGATIVE(s)</code> returns TRUE, decoding fails.<a href="#section-4.2.1-2.2.1" class="pilcrow">¶</a></p>
+<li id="section-5.1-3.2">
+            <code>SQRT_M1</code> = 19681161376707505956807079304988542015446066515923890162744021073123829784752<a href="#section-5.1-3.2" class="pilcrow">¶</a>
 </li>
-<li id="section-4.2.1-2.3">
-              <p id="section-4.2.1-2.3.1">Process s as follows:<a href="#section-4.2.1-2.3.1" class="pilcrow">¶</a></p>
+<li id="section-5.1-3.3">
+            <code>SQRT_AD_MINUS_ONE</code> = 25063068953384623474111414158702152701244531502492656460079210482610430750235<a href="#section-5.1-3.3" class="pilcrow">¶</a>
+</li>
+<li id="section-5.1-3.4">
+            <code>INVSQRT_A_MINUS_D</code> = 54469307008909316920995813868745141605393597292927456921205312896311721017578<a href="#section-5.1-3.4" class="pilcrow">¶</a>
+</li>
+<li id="section-5.1-3.5">
+            <code>ONE_MINUS_D_SQ</code> = 1159843021668779879193775521855586647937357759715417654439879720876111806838<a href="#section-5.1-3.5" class="pilcrow">¶</a>
+</li>
+<li id="section-5.1-3.6">
+            <code>D_MINUS_ONE_SQ</code> = 40440834346308536858101042469323190826248399146238708352240133220865137265952<a href="#section-5.1-3.6" class="pilcrow">¶</a>
+</li>
+</ul>
+</section>
+</div>
+<div id="functions">
+<section id="section-5.2">
+        <h3 id="name-external-ristretto255-funct">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-external-ristretto255-funct" class="section-name selfRef">External ristretto255 functions</a>
+        </h3>
+<div id="decoding">
+<section id="section-5.2.1">
+          <h4 id="name-decode">
+<a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-decode" class="section-name selfRef">Decode</a>
+          </h4>
+<p id="section-5.2.1-1">All elements are encoded as a 32-byte string. Decoding proceeds as follows:<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2.1-2">
+            <li id="section-5.2.1-2.1">
+              <p id="section-5.2.1-2.1.1">First, interpret the string as an integer s in little-endian
+representation. If the length of the string is not 32 bytes, or if
+the resulting value is &gt;= p, decoding fails.<a href="#section-5.2.1-2.1.1" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-5.2.1-2.1.2.1">Note: unlike <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> field element decoding, the most
+significant bit is not masked, and will necessarily be unset. The
+test vectors in <a href="#invalid" class="xref">Appendix A.2</a> exercise these edge cases.<a href="#section-5.2.1-2.1.2.1" class="pilcrow">¶</a>
+</li>
+</ul>
+</li>
+<li id="section-5.2.1-2.2">If <code>IS_NEGATIVE(s)</code> returns TRUE, decoding fails.<a href="#section-5.2.1-2.2" class="pilcrow">¶</a>
+</li>
+<li id="section-5.2.1-2.3">Process s as follows:<a href="#section-5.2.1-2.3" class="pilcrow">¶</a>
 </li>
 </ol>
-<div class="artwork art-text alignLeft" id="section-4.2.1-3">
+<div class="artwork art-text alignLeft" id="section-5.2.1-3">
 <pre>ss = s^2
 u1 = 1 - ss
 u2 = 1 + ss
@@ -1570,30 +1633,28 @@ den_y = invsqrt * den_x * v
 x = CT_ABS(2 * s * den_x)
 y = u1 * den_y
 t = x * y
-</pre><a href="#section-4.2.1-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.1-3" class="pilcrow">¶</a>
 </div>
-<ol start="4" type="1" class="normal type-1" id="section-4.2.1-4">
-            <li id="section-4.2.1-4.1">
-              <p id="section-4.2.1-4.1.1">If was_square is FALSE, or <code>IS_NEGATIVE(t)</code> returns TRUE, or y =
+<ol start="4" type="1" class="normal type-1" id="section-5.2.1-4">
+            <li id="section-5.2.1-4.1">If was_square is FALSE, or <code>IS_NEGATIVE(t)</code> returns TRUE, or y =
 0, decoding fails. Otherwise, return the group element represented
-by the internal representation <code>(x, y, 1, t)</code>.<a href="#section-4.2.1-4.1.1" class="pilcrow">¶</a></p>
+by the internal representation <code>(x, y, 1, t)</code>.<a href="#section-5.2.1-4.1" class="pilcrow">¶</a>
 </li>
 </ol>
 </section>
 </div>
 <div id="encoding">
-<section id="section-4.2.2">
+<section id="section-5.2.2">
           <h4 id="name-encode">
-<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-encode" class="section-name selfRef">Encode</a>
+<a href="#section-5.2.2" class="section-number selfRef">5.2.2. </a><a href="#name-encode" class="section-name selfRef">Encode</a>
           </h4>
-<p id="section-4.2.2-1">A group element with internal representation <code>(x0, y0, z0, t0)</code> is
-encoded as follows:<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.2.2-2">
-            <li id="section-4.2.2-2.1">
-              <p id="section-4.2.2-2.1.1">Process the internal representation into a field element s as follows:<a href="#section-4.2.2-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-5.2.2-1">A group element with internal representation <code>(x0, y0, z0, t0)</code> is
+encoded as follows:<a href="#section-5.2.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2.2-2">
+            <li id="section-5.2.2-2.1">Process the internal representation into a field element s as follows:<a href="#section-5.2.2-2.1" class="pilcrow">¶</a>
 </li>
 </ol>
-<div class="artwork art-text alignLeft" id="section-4.2.2-3">
+<div class="artwork art-text alignLeft" id="section-5.2.2-3">
 <pre>u1 = (z0 + y0) * (z0 - y0)
 u2 = x0 * y0
 
@@ -1618,79 +1679,73 @@ den_inv = CT_SELECT(enchanted_denominator IF rotate ELSE den2)
 y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 
 s = CT_ABS(den_inv * (z - y))
-</pre><a href="#section-4.2.2-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.2-3" class="pilcrow">¶</a>
 </div>
-<ol start="2" type="1" class="normal type-1" id="section-4.2.2-4">
-            <li id="section-4.2.2-4.1">
-              <p id="section-4.2.2-4.1.1">Return the 32-byte little-endian encoding of s, reduced modulo p.<a href="#section-4.2.2-4.1.1" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-5.2.2-4">
+            <li id="section-5.2.2-4.1">Return the 32-byte little-endian encoding of s, reduced modulo p.<a href="#section-5.2.2-4.1" class="pilcrow">¶</a>
 </li>
 </ol>
-<p id="section-4.2.2-5">Note that decoding and then re-encoding a valid group element will
-yield an identical bytestring.<a href="#section-4.2.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.2.2-5">Note that decoding and then re-encoding a valid group element will
+yield an identical bytestring.<a href="#section-5.2.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="equals">
-<section id="section-4.2.3">
+<section id="section-5.2.3">
           <h4 id="name-equals">
-<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-equals" class="section-name selfRef">Equals</a>
+<a href="#section-5.2.3" class="section-number selfRef">5.2.3. </a><a href="#name-equals" class="section-name selfRef">Equals</a>
           </h4>
-<p id="section-4.2.3-1">The equality function returns TRUE when two internal representations
+<p id="section-5.2.3-1">The equality function returns TRUE when two internal representations
 correspond to the same group element. Note that internal representations
-<span class="bcp14">MUST NOT</span> be compared in any other way than specified here.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-2">For two internal representations <code>(x1, y1, z1, t1)</code> and <code>(x2, y2, z2, t2)</code>,
-if<a href="#section-4.2.3-2" class="pilcrow">¶</a></p>
-<div class="artwork art-text alignLeft" id="section-4.2.3-3">
+<span class="bcp14">MUST NOT</span> be compared in any other way than specified here.<a href="#section-5.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.2.3-2">For two internal representations <code>(x1, y1, z1, t1)</code> and <code>(x2, y2, z2, t2)</code>,
+if<a href="#section-5.2.3-2" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-5.2.3-3">
 <pre>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
-</pre><a href="#section-4.2.3-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.3-3" class="pilcrow">¶</a>
 </div>
-<p id="section-4.2.3-4">evaluates to TRUE, then return TRUE. Otherwise, return FALSE.<a href="#section-4.2.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-5">Note that the equality function always returns TRUE when applied to an
+<p id="section-5.2.3-4">evaluates to TRUE, then return TRUE. Otherwise, return FALSE.<a href="#section-5.2.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.2.3-5">Note that the equality function always returns TRUE when applied to an
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
-representations themselves might not be identical.<a href="#section-4.2.3-5" class="pilcrow">¶</a></p>
-<p id="section-4.2.3-6">Implementations <span class="bcp14">MAY</span> also perform byte comparisons on encodings for
-an equivalent, although less efficient, result.<a href="#section-4.2.3-6" class="pilcrow">¶</a></p>
+representations themselves might not be identical.<a href="#section-5.2.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.2.3-6">Implementations <span class="bcp14">MAY</span> also perform byte comparisons on encodings for
+an equivalent, although less efficient, result.<a href="#section-5.2.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="from_uniform_bytes">
-<section id="section-4.2.4">
+<section id="section-5.2.4">
           <h4 id="name-one-way-map">
-<a href="#section-4.2.4" class="section-number selfRef">4.2.4. </a><a href="#name-one-way-map" class="section-name selfRef">One-way map</a>
+<a href="#section-5.2.4" class="section-number selfRef">5.2.4. </a><a href="#name-one-way-map" class="section-name selfRef">One-way map</a>
           </h4>
-<p id="section-4.2.4-1">The one-way map operates an uniformly distributed 64-byte strings. To
+<p id="section-5.2.4-1">The one-way map operates an uniformly distributed 64-byte strings. To
 obtain such an input from an arbitrary length bytestring, applications
 should use a domain-separated hash construction, the choice of which
-is out-of-scope for this document.<a href="#section-4.2.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.4-2">The one-way map on an input string b proceeds as follows:<a href="#section-4.2.4-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.2.4-3">
-            <li id="section-4.2.4-3.1">
-              <p id="section-4.2.4-3.1.1">Compute P1 as <code>MAP(b[ 0..32])</code>.<a href="#section-4.2.4-3.1.1" class="pilcrow">¶</a></p>
+is out-of-scope for this document.<a href="#section-5.2.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.2.4-2">The one-way map on an input string b proceeds as follows:<a href="#section-5.2.4-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2.4-3">
+            <li id="section-5.2.4-3.1">Compute P1 as <code>MAP(b[ 0..32])</code>.<a href="#section-5.2.4-3.1" class="pilcrow">¶</a>
 </li>
-<li id="section-4.2.4-3.2">
-              <p id="section-4.2.4-3.2.1">Compute P2 as <code>MAP(b[32..64])</code>.<a href="#section-4.2.4-3.2.1" class="pilcrow">¶</a></p>
+<li id="section-5.2.4-3.2">Compute P2 as <code>MAP(b[32..64])</code>.<a href="#section-5.2.4-3.2" class="pilcrow">¶</a>
 </li>
-<li id="section-4.2.4-3.3">
-              <p id="section-4.2.4-3.3.1">Return P1 + P2.<a href="#section-4.2.4-3.3.1" class="pilcrow">¶</a></p>
+<li id="section-5.2.4-3.3">Return P1 + P2.<a href="#section-5.2.4-3.3" class="pilcrow">¶</a>
 </li>
 </ol>
-<p id="section-4.2.4-4">The MAP function is defined on a 32-bytes string as:<a href="#section-4.2.4-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.2.4-5">
-            <li id="section-4.2.4-5.1">
-              <p id="section-4.2.4-5.1.1">Interpret the least significant 255 bits of the string as an
+<p id="section-5.2.4-4">The MAP function is defined on a 32-bytes string as:<a href="#section-5.2.4-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2.4-5">
+            <li id="section-5.2.4-5.1">
+              <p id="section-5.2.4-5.1.1">Interpret the least significant 255 bits of the string as an
 integer r in little-endian representation. Reduce r modulo p to
-obtain a field element t.<a href="#section-4.2.4-5.1.1" class="pilcrow">¶</a></p>
+obtain a field element t.<a href="#section-5.2.4-5.1.1" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-4.2.4-5.1.2.1">
-                  <p id="section-4.2.4-5.1.2.1.1">Note: similarly to <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> field element decoding, the most
-significant bit of the representation of r is masked.<a href="#section-4.2.4-5.1.2.1.1" class="pilcrow">¶</a></p>
+<li id="section-5.2.4-5.1.2.1">Note: similarly to <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> field element decoding, the most
+significant bit of the representation of r is masked.<a href="#section-5.2.4-5.1.2.1" class="pilcrow">¶</a>
 </li>
 </ul>
 </li>
-<li id="section-4.2.4-5.2">
-              <p id="section-4.2.4-5.2.1">Process t as follows:<a href="#section-4.2.4-5.2.1" class="pilcrow">¶</a></p>
+<li id="section-5.2.4-5.2">Process t as follows:<a href="#section-5.2.4-5.2" class="pilcrow">¶</a>
 </li>
 </ol>
-<div class="artwork art-text alignLeft" id="section-4.2.4-6">
+<div class="artwork art-text alignLeft" id="section-5.2.4-6">
 <pre>r = SQRT_M1 * t^2
 u = (r + 1) * ONE_MINUS_D_SQ
 v = (-1 - r*D) * (r + D)
@@ -1706,12 +1761,11 @@ w0 = 2 * s * v
 w1 = N * SQRT_AD_MINUS_ONE
 w2 = 1 - s^2
 w3 = 1 + s^2
-</pre><a href="#section-4.2.4-6" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.4-6" class="pilcrow">¶</a>
 </div>
-<ol start="3" type="1" class="normal type-1" id="section-4.2.4-7">
-            <li id="section-4.2.4-7.1">
-              <p id="section-4.2.4-7.1.1">Return the group element represented by the internal representation
-<code>(w0*w3, w2*w1, w1*w3, w0*w2)</code>.<a href="#section-4.2.4-7.1.1" class="pilcrow">¶</a></p>
+<ol start="3" type="1" class="normal type-1" id="section-5.2.4-7">
+            <li id="section-5.2.4-7.1">Return the group element represented by the internal representation
+<code>(w0*w3, w2*w1, w1*w3, w0*w2)</code>.<a href="#section-5.2.4-7.1" class="pilcrow">¶</a>
 </li>
 </ol>
 </section>
@@ -1719,95 +1773,302 @@ w3 = 1 + s^2
 </section>
 </div>
 <div id="scalar-field">
-<section id="section-4.3">
+<section id="section-5.3">
         <h3 id="name-scalar-field">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-scalar-field" class="section-name selfRef">Scalar field</a>
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-scalar-field" class="section-name selfRef">Scalar field</a>
         </h3>
-<p id="section-4.3-1">The scalars for the ristretto255 group are integers modulo the order l
-of the ristretto255 group.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">Scalars are encoded as 32-byte strings in little-endian order.
+<p id="section-5.3-1">The scalars for the ristretto255 group are integers modulo the order l
+of the ristretto255 group.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">Scalars are encoded as 32-byte strings in little-endian order.
 Implementations <span class="bcp14">SHOULD</span> check that any scalar s falls in the range
 0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
 encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo l when
-encoding them as byte strings.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">Given a uniformly distributed 64-byte string b, implementations can
+encoding them as byte strings.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a scalar by interpreting the 64-byte string as a 512-bit
 integer in little-endian order and reducing the integer modulo l, as
-in <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.3-4">Note that this is the same scalar field as Curve25519, allowing
-existing implementations to be reused.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+in <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">Note that this is the same scalar field as Curve25519, allowing
+existing implementations to be reused.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="decaf448">
+<section id="section-6">
+      <h2 id="name-decaf448">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-decaf448" class="section-name selfRef">decaf448</a>
+      </h2>
+<p id="section-6-1">decaf448 is an instantiation of the abstract prime-order group
+interface defined in <a href="#interface" class="xref">Section 3</a>. This documents describes how to
+implement the decaf448 prime-order group using edwards448 points as
+internal representations.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">A "decaf448 group element" is the abstract element of the prime order
+group. An "element encoding" is the unique reversible encoding of a
+group element. An "internal representation" is a point on the curve
+used to implement decaf448. ch group element can have multiple
+equivalent internal representations.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">Encoding, decoding, equality, and one-way map are defined in
+<a href="#functions" class="xref">Section 5.2</a>. Element addition, subtraction, negation, and scalar
+multiplication are implemented by applying the corresponding operations
+directly to the internal representation.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">The group order is the same as the order of the edwards448 prime-order subgroup:<a href="#section-6-4" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-6-5">
+<pre>l = 2^446 -
+  0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d
+</pre><a href="#section-6-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6-6">Since decaf448 is a prime-order group, every element except the
+identity is a generator, but for interoperability a canonical generator
+is selected, which can be internally represented by the edwards448
+basepoint, enabling reuse of existing precomputation for scalar
+multiplication. This is its encoding:<a href="#section-6-6" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-6-7">
+<pre>66666666 66666666 66666666 66666666 66666666 66666666 66666666
+33333333 33333333 33333333 33333333 33333333 33333333 33333333
+</pre><a href="#section-6-7" class="pilcrow">¶</a>
+</div>
+<p id="section-6-8">This repetitive constant is equal to 1/sqrt(5) in decaf448's field,
+corresponding to the curve448 base point with x=5.<a href="#section-6-8" class="pilcrow">¶</a></p>
+<p id="section-6-9">Implementations <span class="bcp14">MUST NOT</span> expose either the internal representation
+or its field implementation and <span class="bcp14">MUST NOT</span> expose any operations
+defined on the internal representations unless specified in this
+document.<a href="#section-6-9" class="pilcrow">¶</a></p>
+<div id="internal-utility-functions-and-constants-1">
+<section id="section-6.1">
+        <h3 id="name-internal-utility-functions-a">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-internal-utility-functions-a" class="section-name selfRef">Internal utility functions and constants</a>
+        </h3>
+<p id="section-6.1-1">The following functions are defined on field elements, and are used to
+implement the other decaf448 functions. Implementations <span class="bcp14">MUST NOT</span>
+expose these to their API consumers.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">This document references the following constants:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-6.1-3.1">
+            <p id="section-6.1-3.1.1"><code>D</code> = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358<a href="#section-6.1-3.1.1" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-6.1-3.1.2.1">This is the Edwards d parameter for edwards448, as specified in Section 4.2 of <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span>, and is equal to -39081 modulo p.<a href="#section-6.1-3.1.2.1" class="pilcrow">¶</a>
+</li>
+</ul>
+</li>
+<li id="section-6.1-3.2">
+            <code>ONE_MINUS_D</code> = 39082<a href="#section-6.1-3.2" class="pilcrow">¶</a>
+</li>
+<li id="section-6.1-3.3">
+            <code>SQRT_MINUS_D</code> = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214<a href="#section-6.1-3.3" class="pilcrow">¶</a>
+</li>
+<li id="section-6.1-3.4">
+            <code>INVSQRT_MINUS_D</code> = 315019913931389607337177038330951043522456072897266928557328499619017160722351061360252776265186336876723201881398623946864393857820716<a href="#section-6.1-3.4" class="pilcrow">¶</a>
+</li>
+</ul>
+</section>
+</div>
+<div id="functions-1">
+<section id="section-6.2">
+        <h3 id="name-external-ristretto255-functi">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-external-ristretto255-functi" class="section-name selfRef">External ristretto255 functions</a>
+        </h3>
+<div id="decoding-1">
+<section id="section-6.2.1">
+          <h4 id="name-decode-2">
+<a href="#section-6.2.1" class="section-number selfRef">6.2.1. </a><a href="#name-decode-2" class="section-name selfRef">Decode</a>
+          </h4>
+<p id="section-6.2.1-1">All elements are encoded as a 56-byte string. Decoding proceeds as follows:<a href="#section-6.2.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.2.1-2">
+            <li id="section-6.2.1-2.1">
+              <p id="section-6.2.1-2.1.1">First, interpret the string as an integer s in little-endian
+representation. If the length of the string is not 56 bytes, or if
+the resulting value is &gt;= p, decoding fails.<a href="#section-6.2.1-2.1.1" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-6.2.1-2.1.2.1">Note: unlike <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> field element decoding, the most
+significant bit is not masked, and will necessarily be unset. The
+test vectors in <a href="#invalid" class="xref">Appendix A.2</a> exercise these edge cases.<a href="#section-6.2.1-2.1.2.1" class="pilcrow">¶</a>
+</li>
+</ul>
+</li>
+<li id="section-6.2.1-2.2">If <code>IS_NEGATIVE(s)</code> returns TRUE, decoding fails.<a href="#section-6.2.1-2.2" class="pilcrow">¶</a>
+</li>
+<li id="section-6.2.1-2.3">Process s as follows:<a href="#section-6.2.1-2.3" class="pilcrow">¶</a>
+</li>
+</ol>
+<div class="artwork art-text alignLeft" id="section-6.2.1-3">
+<pre>ss = s^2
+u1 = 1 + ss
+u2 = u1^2 - 4 * D * ss
+(was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
+u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
+x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
+y = (1 - ss) * invsqrt * u1
+</pre><a href="#section-6.2.1-3" class="pilcrow">¶</a>
+</div>
+<ol start="4" type="1" class="normal type-1" id="section-6.2.1-4">
+            <li id="section-6.2.1-4.1">If was_square is FALSE<code>returns TRUE then decoding fails. Otherwise,
+return the group element represented by the internal representation
+</code>(x, y, 1, t)`.<a href="#section-6.2.1-4.1" class="pilcrow">¶</a>
+</li>
+</ol>
+</section>
+</div>
+<div id="encoding-1">
+<section id="section-6.2.2">
+          <h4 id="name-encode-2">
+<a href="#section-6.2.2" class="section-number selfRef">6.2.2. </a><a href="#name-encode-2" class="section-name selfRef">Encode</a>
+          </h4>
+<p id="section-6.2.2-1">A group element with internal representation <code>(x0, y0, z0, t0)</code> is
+encoded as follows:<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.2.2-2">
+            <li id="section-6.2.2-2.1">Process the internal representation into a field element s as follows:<a href="#section-6.2.2-2.1" class="pilcrow">¶</a>
+</li>
+</ol>
+<div class="artwork art-text alignLeft" id="section-6.2.2-3">
+<pre>u1 = (x0 + t0) * (x0 - t0)
+
+// Ignore was_square since this is always square
+(_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
+
+ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
+u2 = INVSQRT_MINUS_D * ratio * z0 - t0
+s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
+</pre><a href="#section-6.2.2-3" class="pilcrow">¶</a>
+</div>
+<ol start="2" type="1" class="normal type-1" id="section-6.2.2-4">
+            <li id="section-6.2.2-4.1">Return the 56-byte little-endian encoding of s, reduced modulo p.<a href="#section-6.2.2-4.1" class="pilcrow">¶</a>
+</li>
+</ol>
+<p id="section-6.2.2-5">Note that decoding and then re-encoding a valid group element will
+yield an identical bytestring.<a href="#section-6.2.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="equals-1">
+<section id="section-6.2.3">
+          <h4 id="name-equals-2">
+<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-equals-2" class="section-name selfRef">Equals</a>
+          </h4>
+<p id="section-6.2.3-1">The equality function returns TRUE when two internal representations
+correspond to the same group element. Note that internal representations
+<span class="bcp14">MUST NOT</span> be compared in any other way than specified here.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-2">For two internal representations <code>(x1, y1, z1, t1)</code> and <code>(x2, y2, z2, t2)</code>,
+if<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-6.2.3-3">
+<pre>x1 * y2 == y1 * x2
+</pre><a href="#section-6.2.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-6.2.3-4">evaluates to TRUE, then return TRUE. Otherwise, return FALSE.<a href="#section-6.2.3-4" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-5">Note that the equality function always returns TRUE when applied to an
+internal representation and to the internal representation obtained by
+encoding and then re-decoding it. However, the internal
+representations themselves might not be identical.<a href="#section-6.2.3-5" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-6">Implementations <span class="bcp14">MAY</span> also perform byte comparisons on encodings for
+an equivalent, although less efficient, result.<a href="#section-6.2.3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="from_uniform_bytes-1">
+<section id="section-6.2.4">
+          <h4 id="name-one-way-map-2">
+<a href="#section-6.2.4" class="section-number selfRef">6.2.4. </a><a href="#name-one-way-map-2" class="section-name selfRef">One-way map</a>
+          </h4>
+<p id="section-6.2.4-1">TODO<a href="#section-6.2.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="scalar-field-1">
+<section id="section-6.3">
+        <h3 id="name-scalar-field-2">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-scalar-field-2" class="section-name selfRef">Scalar field</a>
+        </h3>
+<p id="section-6.3-1">The scalars for the decaf448 group are integers modulo the order l
+of the decaf448 group.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">Scalars are encoded as 56-byte strings in little-endian order.
+Implementations <span class="bcp14">SHOULD</span> check that any scalar s falls in the range
+0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
+encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo l when
+encoding them as byte strings.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<div id="todo-really-912-bits">
+<section id="section-6.3.1">
+          <h4 id="name-todo-really-912-bits">
+<a href="#section-6.3.1" class="section-number selfRef">6.3.1. </a><a href="#name-todo-really-912-bits" class="section-name selfRef">TODO: really 912 bits?</a>
+          </h4>
+<p id="section-6.3.1-1">Given a uniformly distributed 114-byte string b, implementations can
+obtain a scalar by interpreting the 114-byte string as a 912-bit
+integer in little-endian order and reducing the integer modulo l, as
+in <span>[<a href="#RFC8032" class="xref">RFC8032</a>]</span>.<a href="#section-6.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.3.1-2">Note that this is the same scalar field as edwards448, allowing
+existing implementations to be reused.<a href="#section-6.3.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
 </div>
 <div id="api">
-<section id="section-5">
+<section id="section-7">
       <h2 id="name-api-considerations">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-api-considerations" class="section-name selfRef">API Considerations</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-api-considerations" class="section-name selfRef">API Considerations</a>
       </h2>
-<p id="section-5-1">ristretto255 is an abstraction which implements a prime-order group, and
-ristretto255 elements are represented by curve points, but they are not
-curve points. The API needs to reflect that: the type representing an
+<p id="section-7-1">ristretto255 and decaf448 are abstractions which implement two prime-order
+groups, and their elements are represented by curve points, but they are
+not curve points. The API needs to reflect that: the type representing an
 element of the group <span class="bcp14">SHOULD</span> be opaque and <span class="bcp14">MUST NOT</span> expose the
-underlying curve point or field elements.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">It is expected that a ristretto255 implementation can change its
-underlying curve without causing any breaking change. The ristretto255
-construction is carefully designed so that this will be the case, as
-long as implementations do not expose internal representations or
+underlying curve point or field elements.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">It is expected that a ristretto255 or decaf448 implementation can change
+its underlying curve without causing any breaking change. The ristretto255
+and decaf448 constructions are carefully designed so that this will be the
+case, as long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
-implementations <span class="bcp14">MUST NOT</span> define any external ristretto255 interface as
-operating on arbitrary curve points, and they <span class="bcp14">MUST NOT</span> construct
-group elements except via decoding and the one-way map. They are however
-allowed to apply any optimization strategy to the internal
+implementations <span class="bcp14">MUST NOT</span> define any external ristretto255 or decaf448
+interface as operating on arbitrary curve points, and they <span class="bcp14">MUST NOT</span>
+construct group elements except via decoding and the one-way map. They are
+however allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
-API.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">It is <span class="bcp14">RECOMMENDED</span> that implementations do not perform a decoding and
+API.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">It is <span class="bcp14">RECOMMENDED</span> that implementations do not perform a decoding and
 encoding operation for each group operation, as it is inefficient and
 unnecessary. Implementations <span class="bcp14">SHOULD</span> instead provide an opaque type
-to hold the internal representation through multiple operations.<a href="#section-5-3" class="pilcrow">¶</a></p>
+to hold the internal representation through multiple operations.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-6">
+<section id="section-8">
       <h2 id="name-iana-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-6-1">This document has no IANA actions.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">This document has no IANA actions.<a href="#section-8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
-<section id="section-7">
+<section id="section-9">
       <h2 id="name-security-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">The ristretto255 group provides higher-level protocols with the
-abstraction they expect: a prime-order group. Therefore, it's expected
-to be safer for use in any situation where Curve25519 is used to
-implement a protocol requiring a prime-order group. Note that the
-safety of the abstraction can be defeated by
-implementations that do not follow the guidance in <a href="#api" class="xref">Section 5</a>.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">There is no function to test whether an elliptic curve point is a
+<p id="section-9-1">The ristretto255 and decaf448 groups provide higher-level protocols with
+the abstraction they expect: a prime-order group. Therefore, it's expected
+to be safer for use in any situation where Curve25519 or edwards448 is used
+to implement a protocol requiring a prime-order group. Note that the safety
+of the abstraction can be defeated by implementations that do not follow
+the guidance in <a href="#api" class="xref">Section 7</a>.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element.  The decoding
 function always returns a valid internal representation, or an error, and
 allowed operations on valid internal representations return valid
 internal representations.  In this way, an implementation can maintain
 the invariant that an internal representation is always valid, so that
-checking is never necessary, and invalid states are unrepresentable.<a href="#section-7-2" class="pilcrow">¶</a></p>
+checking is never necessary, and invalid states are unrepresentable.<a href="#section-9-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="acknowledgements">
-<section id="section-8">
+<section id="section-10">
       <h2 id="name-acknowledgements">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
       </h2>
-<p id="section-8-1">Ristretto was originally designed by Mike Hamburg as a variant of <span>[<a href="#Decaf" class="xref">Decaf</a>]</span>.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">The authors would like to thank Daira Hopwood, Riad S. Wahby, and
-Chris Wood for their comments on the draft.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-10-1">Ristretto was originally designed by Mike Hamburg as a variant of <span>[<a href="#Decaf" class="xref">Decaf</a>]</span>.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-2">The authors would like to thank Daira Hopwood, Riad S. Wahby, and
+Chris Wood for their comments on the draft.<a href="#section-10-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<section id="section-9">
+<section id="section-11">
       <h2 id="name-normative-references">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -1818,35 +2079,35 @@ Chris Wood for their comments on the draft.<a href="#section-8-2" class="pilcrow
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
 </dl>
 </section>
-<section id="section-10">
+<section id="section-12">
       <h2 id="name-informative-references">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
       </h2>
 <dl class="references">
-<dt id="Naming">[Naming]</dt>
-<dd>
-<span class="refAuthor">Bernstein, D. J.</span>, <span class="refTitle">"[Cfrg] 25519 naming"</span>, <time datetime="2014">2014</time>, <span>&lt;<a href="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/</a>&gt;</span>. </dd>
-<dt id="Twisted">[Twisted]</dt>
-<dd>
-<span class="refAuthor">Hisil, H.</span><span class="refAuthor">, Wong, K. K.</span><span class="refAuthor">, Carter, G.</span><span class="refAuthor">, and E. Dawson</span>, <span class="refTitle">"Twisted Edwards Curves Revisited"</span>, <time datetime="2008">2008</time>, <span>&lt;<a href="https://eprint.iacr.org/2008/522">https://eprint.iacr.org/2008/522</a>&gt;</span>. </dd>
 <dt id="Decaf">[Decaf]</dt>
 <dd>
 <span class="refAuthor">Hamburg, M.</span>, <span class="refTitle">"Decaf: Eliminating cofactors through point compression"</span>, <time datetime="2015">2015</time>, <span>&lt;<a href="https://www.shiftleft.org/papers/decaf/decaf.pdf">https://www.shiftleft.org/papers/decaf/decaf.pdf</a>&gt;</span>. </dd>
+<dt id="Monero">[Monero]</dt>
+<dd>
+<span class="refAuthor">Nick, J.</span>, <span class="refTitle">"Exploiting Low Order Generators in One-Time Ring Signatures"</span>, <time datetime="2017">2017</time>, <span>&lt;<a href="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/</a>&gt;</span>. </dd>
+<dt id="Naming">[Naming]</dt>
+<dd>
+<span class="refAuthor">Bernstein, D. J.</span>, <span class="refTitle">"[Cfrg] 25519 naming"</span>, <time datetime="2014">2014</time>, <span>&lt;<a href="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/</a>&gt;</span>. </dd>
 <dt id="RFC7748">[RFC7748]</dt>
 <dd>
 <span class="refAuthor">Langley, A.</span><span class="refAuthor">, Hamburg, M.</span><span class="refAuthor">, and S. Turner</span>, <span class="refTitle">"Elliptic Curves for Security"</span>, <span class="seriesInfo">RFC 7748</span>, <span class="seriesInfo">DOI 10.17487/RFC7748</span>, <time datetime="2016-01">January 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7748">https://www.rfc-editor.org/info/rfc7748</a>&gt;</span>. </dd>
 <dt id="RFC8032">[RFC8032]</dt>
 <dd>
 <span class="refAuthor">Josefsson, S.</span><span class="refAuthor"> and I. Liusvaara</span>, <span class="refTitle">"Edwards-Curve Digital Signature Algorithm (EdDSA)"</span>, <span class="seriesInfo">RFC 8032</span>, <span class="seriesInfo">DOI 10.17487/RFC8032</span>, <time datetime="2017-01">January 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8032">https://www.rfc-editor.org/info/rfc8032</a>&gt;</span>. </dd>
-<dt id="Monero">[Monero]</dt>
+<dt id="Twisted">[Twisted]</dt>
 <dd>
-<span class="refAuthor">Nick, J.</span>, <span class="refTitle">"Exploiting Low Order Generators in One-Time Ring Signatures"</span>, <time datetime="2017">2017</time>, <span>&lt;<a href="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/</a>&gt;</span>. </dd>
+<span class="refAuthor">Hisil, H.</span><span class="refAuthor">, Wong, K. K.</span><span class="refAuthor">, Carter, G.</span><span class="refAuthor">, and E. Dawson</span>, <span class="refTitle">"Twisted Edwards Curves Revisited"</span>, <time datetime="2008">2008</time>, <span>&lt;<a href="https://eprint.iacr.org/2008/522">https://eprint.iacr.org/2008/522</a>&gt;</span>. </dd>
 </dl>
 </section>
-<div id="test-vectors">
+<div id="test-vectors-for-ristretto255">
 <section id="section-appendix.a">
-      <h2 id="name-test-vectors">
-<a href="#section-appendix.a" class="section-number selfRef">Appendix A. </a><a href="#name-test-vectors" class="section-name selfRef">Test vectors</a>
+      <h2 id="name-test-vectors-for-ristretto2">
+<a href="#section-appendix.a" class="section-number selfRef">Appendix A. </a><a href="#name-test-vectors-for-ristretto2" class="section-name selfRef">Test vectors for ristretto255</a>
       </h2>
 <p id="section-appendix.a-1">This section contains test vectors for ristretto255. The octets are
 hex encoded, and whitespace is inserted for readability.<a href="#section-appendix.a-1" class="pilcrow">¶</a></p>
@@ -1893,7 +2154,7 @@ the implementation of addition simultaneously.<a href="#section-a.1-5" class="pi
 <a href="#section-a.2" class="section-number selfRef">A.2. </a><a href="#name-invalid-encodings" class="section-name selfRef">Invalid encodings</a>
         </h2>
 <p id="section-a.2-1">These are examples of encodings that <span class="bcp14">MUST</span> be rejected according to
-<a href="#decoding" class="xref">Section 4.2.1</a>.<a href="#section-a.2-1" class="pilcrow">¶</a></p>
+<a href="#decoding" class="xref">Section 5.2.1</a>.<a href="#section-a.2-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-a.2-2">
 <pre># Non-canonical field encodings.
 00ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
@@ -1943,7 +2204,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 <a href="#section-a.3" class="section-number selfRef">A.3. </a><a href="#name-group-elements-from-uniform" class="section-name selfRef">Group elements from uniform bytestrings</a>
         </h2>
 <p id="section-a.3-1">The following pairs are inputs to the one-way map of
-<a href="#from_uniform_bytes" class="xref">Section 4.2.4</a>, and their encoded outputs.<a href="#section-a.3-1" class="pilcrow">¶</a></p>
+<a href="#from_uniform_bytes" class="xref">Section 5.2.4</a>, and their encoded outputs.<a href="#section-a.3-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-a.3-2">
 <pre>I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
    4d98b696a1bbfb5ca32c436cc61c16563790306c79eaca7705668b47dffe5bb6
@@ -2034,8 +2295,15 @@ r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
 </div>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="test-vectors-for-decaf448">
 <section id="section-appendix.b">
+      <h2 id="name-test-vectors-for-decaf448">
+<a href="#section-appendix.b" class="section-number selfRef">Appendix B. </a><a href="#name-test-vectors-for-decaf448" class="section-name selfRef">Test vectors for decaf448</a>
+    </h2>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="section-appendix.c">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
@@ -2072,6 +2340,13 @@ r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
 <div class="email">
 <span>Email:</span>
 <a href="mailto:ietf@en.ciph.re" class="email">ietf@en.ciph.re</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Mike Hamburg</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ietf@shiftleft.org" class="email">ietf@shiftleft.org</a>
 </div>
 </address>
 </section>

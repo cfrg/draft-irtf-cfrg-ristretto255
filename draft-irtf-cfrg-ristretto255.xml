@@ -19,16 +19,20 @@
 <author initials="I." surname="Lovecruft" fullname="Isis Lovecruft"><organization></organization><address><postal><street></street>
 </postal><email>ietf@en.ciph.re</email>
 </address></author>
+<author initials="M." surname="Hamburg" fullname="Mike Hamburg"><organization></organization><address><postal><street></street>
+</postal><email>ietf@shiftleft.org</email>
+</address></author>
 <date/>
 <area>Internet</area>
 <workgroup>Crypto Forum Research Group</workgroup>
 
 <abstract>
-<t>This memo specifies a prime-order group, ristretto255, suitable for
-safely implementing higher-level and complex cryptographic protocols.
-The ristretto255 group can be implemented using Curve25519, allowing
-existing Curve25519 implementations to be reused and extended to provide
-a prime-order group.</t>
+<t>This memo specifies two prime-order groups, ristretto255 and decaf448,
+suitable for safely implementing higher-level and complex
+cryptographic protocols. The ristretto255 group can be implemented
+using Curve25519, allowing existing Curve25519 implementations to be
+reused and extended to provide a prime-order group. Likewise, the
+decaf448 group can be implemented using edwards448.</t>
 </abstract>
 
 </front>
@@ -36,12 +40,12 @@ a prime-order group.</t>
 <middle>
 
 <section anchor="introduction"><name>Introduction</name>
-<t>Ristretto is a technique for constructing prime-order groups with
-non-malleable encodings from non-prime-order elliptic curves.  It
-extends the <xref target="Decaf"></xref> approach to cofactor elimination to support
-cofactor-8 curves such as Curve25519 <xref target="RFC7748"></xref>. In particular, this
-allows an existing Curve25519 library to provide a prime-order group
-with only a thin abstraction layer.</t>
+<t>Decaf <xref target="Decaf"></xref> is a technique for constructing prime-order groups
+with non-malleable encodings from non-prime-order elliptic curves.
+Ristretto extends this technique to support cofactor-8 curves such as
+Curve25519 <xref target="RFC7748"></xref>. In particular, this allows an existing
+Curve25519 library to provide a prime-order group with only a thin
+abstraction layer.</t>
 <t>Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and the fastest known formulas for curve operations.  However,
@@ -69,9 +73,9 @@ overhead, and only in the encoding and decoding phases.</t>
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which MAY be implemented using Curve25519.</t>
 <t>There are other elliptic curves that can be used internally to
-implement ristretto255, and those implementations would be
-interoperable with a Curve25519-based one, but those constructions are
-out-of-scope for this document.</t>
+implement ristretto255 or decaf448, and those implementations would be
+interoperable with a Curve25519- or edwards448-based one, but those
+constructions are out-of-scope for this document.</t>
 <t>The Ristretto construction is described and justified in detail at
 <eref target="https://ristretto.group">https://ristretto.group</eref>.</t>
 </section>
@@ -93,17 +97,18 @@ specific Diffie-Hellman mechanism. This document uses the term
 in <xref target="Naming"></xref>.</t>
 <t>Elliptic curve points in this document are represented in extended
 Edwards coordinates in the <tt>(x, y, z, t)</tt> format <xref target="Twisted"></xref>. Field
-elements are values modulo p, the Curve25519 prime 2^255 - 19, as
-specified in Section 4.1 of <xref target="RFC7748"></xref>. All formulas specify field
-operations unless otherwise noted.</t>
+elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
+edwards448 prime, as specified in Sections 4.1 and 4.2 of <xref target="RFC7748"></xref>,
+respectively. All formulas specify field operations unless otherwise
+noted.</t>
 <t>The <tt>|</tt> symbol represents a constant-time logical OR.</t>
 </section>
 
 <section anchor="interface"><name>The group abstraction</name>
-<t>Ristretto implements an abstract prime-order group interface
+<t>Ristretto and Decaf implement an abstract prime-order group interface
 that exposes only the behavior that is useful to higher-level protocols,
 without leaking curve-related details and pitfalls.</t>
-<t>The only operations exposed by the abstract group are decoding,
+<t>The only operations exposed by each abstract group are decoding,
 encoding, equality, a one-way map, addition, negation, and the
 derived subtraction and (multi-)scalar multiplication.</t>
 <t>Decoding is a function from bytestrings to abstract elements with
@@ -127,6 +132,74 @@ any element returns that element unchanged. Negation returns an element
 that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.</t>
+</section>
+
+<section anchor="notation-and-utility-functions"><name>Notation and utility functions</name>
+<t>The notations and utility functions defined in this section are common
+between ristretto255 and decaf448.</t>
+
+<section anchor="negative-field-elements"><name>Negative field elements</name>
+<t>As in <xref target="RFC8032"></xref>, given a field element e, define <tt>IS_NEGATIVE(e)</tt> as
+TRUE if the least non-negative integer representing e is odd, and
+FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.</t>
+</section>
+
+<section anchor="constant-time-operations"><name>Constant time operations</name>
+<t>We assume that the field element implementation supports the following
+operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
+
+<ul>
+<li><tt>CT_EQ(u, v)</tt>: return TRUE if u = v, FALSE otherwise.</li>
+<li><tt>CT_SELECT(v IF cond ELSE u)</tt>: return v if cond is TRUE, else return u.</li>
+<li><tt>CT_ABS(u)</tt>: return -u if u is negative, else return u.</li>
+</ul>
+<t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
+
+<artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
+</artwork>
+</section>
+
+<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
+
+<section anchor="todo-no-sqrt-m1-for-decaf"><name>TODO: no SQRT_M1 for decaf</name>
+<t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
+
+<ul>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
+<li><tt>(TRUE, zero)</tt> if u is zero;</li>
+<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
+<li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
+non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
+</ul>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
+<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
+difference that if the input is non-square, the function returns a
+result with a defined relationship to the inputs. This result is used
+for efficient implementation of the one-way map functionality. The
+function can be refactored from an existing Ed25519 implementation.</t>
+<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
+
+<artwork>v3 = v^2  * v
+v7 = v3^2 * v
+r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+check = v * r^2
+
+correct_sign_sqrt   = CT_EQ(check,          u)
+flipped_sign_sqrt   = CT_EQ(check,         -u)
+flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
+
+r_prime = SQRT_M1 * r
+r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
+
+// Choose the nonnegative square root.
+r = CT_ABS(r)
+
+was_square = correct_sign_sqrt | flipped_sign_sqrt
+
+return (was_square, r)
+</artwork>
+</section>
+</section>
 </section>
 
 <section anchor="ristretto255"><name>ristretto255</name>
@@ -170,87 +243,14 @@ expose these to their API consumers.</t>
 <li><t><tt>D</tt> = 37095705934669439343138083508754565189542113879843219016388785533085940283555</t>
 
 <ul>
-<li><t>This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <xref target="RFC7748"></xref>.</t>
-</li>
+<li>This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <xref target="RFC7748"></xref>.</li>
 </ul></li>
-<li><t><tt>SQRT_M1</tt> = 19681161376707505956807079304988542015446066515923890162744021073123829784752</t>
-</li>
-<li><t><tt>SQRT_AD_MINUS_ONE</tt> = 25063068953384623474111414158702152701244531502492656460079210482610430750235</t>
-</li>
-<li><t><tt>INVSQRT_A_MINUS_D</tt> = 54469307008909316920995813868745141605393597292927456921205312896311721017578</t>
-</li>
-<li><t><tt>ONE_MINUS_D_SQ</tt> = 1159843021668779879193775521855586647937357759715417654439879720876111806838</t>
-</li>
-<li><t><tt>D_MINUS_ONE_SQ</tt> = 40440834346308536858101042469323190826248399146238708352240133220865137265952</t>
-</li>
+<li><tt>SQRT_M1</tt> = 19681161376707505956807079304988542015446066515923890162744021073123829784752</li>
+<li><tt>SQRT_AD_MINUS_ONE</tt> = 25063068953384623474111414158702152701244531502492656460079210482610430750235</li>
+<li><tt>INVSQRT_A_MINUS_D</tt> = 54469307008909316920995813868745141605393597292927456921205312896311721017578</li>
+<li><tt>ONE_MINUS_D_SQ</tt> = 1159843021668779879193775521855586647937357759715417654439879720876111806838</li>
+<li><tt>D_MINUS_ONE_SQ</tt> = 40440834346308536858101042469323190826248399146238708352240133220865137265952</li>
 </ul>
-
-<section anchor="negative-field-elements"><name>Negative field elements</name>
-<t>As in <xref target="RFC8032"></xref>, given a field element e, define <tt>IS_NEGATIVE(e)</tt> as
-TRUE if the least non-negative integer representing e is odd, and
-FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.</t>
-</section>
-
-<section anchor="constant-time-operations"><name>Constant time operations</name>
-<t>We assume that the field element implementation supports the following
-operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
-
-<ul>
-<li><t><tt>CT_EQ(u, v)</tt>: return TRUE if u = v, FALSE otherwise.</t>
-</li>
-<li><t><tt>CT_SELECT(v IF cond ELSE u)</tt>: return v if cond is TRUE, else return u.</t>
-</li>
-<li><t><tt>CT_ABS(u)</tt>: return -u if u is negative, else return u.</t>
-</li>
-</ul>
-<t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
-
-<artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-</artwork>
-</section>
-
-<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
-<t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
-
-<ul>
-<li><t><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</t>
-</li>
-<li><t><tt>(TRUE, zero)</tt> if u is zero;</t>
-</li>
-<li><t><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</t>
-</li>
-<li><t><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
-non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</t>
-</li>
-</ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
-<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
-difference that if the input is non-square, the function returns a
-result with a defined relationship to the inputs. This result is used
-for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing Ed25519 implementation.</t>
-<t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
-
-<artwork>v3 = v^2  * v
-v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
-check = v * r^2
-
-correct_sign_sqrt   = CT_EQ(check,          u)
-flipped_sign_sqrt   = CT_EQ(check,         -u)
-flipped_sign_sqrt_i = CT_EQ(check, -u*SQRT_M1)
-
-r_prime = SQRT_M1 * r
-r = CT_SELECT(r_prime IF flipped_sign_sqrt | flipped_sign_sqrt_i ELSE r)
-
-// Choose the nonnegative square root.
-r = CT_ABS(r)
-
-was_square = correct_sign_sqrt | flipped_sign_sqrt
-
-return (was_square, r)
-</artwork>
-</section>
 </section>
 
 <section anchor="functions"><name>External ristretto255 functions</name>
@@ -264,15 +264,12 @@ representation. If the length of the string is not 32 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul>
-<li><t>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most
+<li>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most
 significant bit is not masked, and will necessarily be unset. The
-test vectors in <xref target="invalid"></xref> exercise these edge cases.</t>
-</li>
+test vectors in <xref target="invalid"></xref> exercise these edge cases.</li>
 </ul></li>
-<li><t>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</t>
-</li>
-<li><t>Process s as follows:</t>
-</li>
+<li>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</li>
+<li>Process s as follows:</li>
 </ol>
 
 <artwork>ss = s^2
@@ -293,10 +290,9 @@ t = x * y
 </artwork>
 
 <ol start="4">
-<li><t>If was_square is FALSE, or <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
+<li>If was_square is FALSE, or <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
 0, decoding fails. Otherwise, return the group element represented
-by the internal representation <tt>(x, y, 1, t)</tt>.</t>
-</li>
+by the internal representation <tt>(x, y, 1, t)</tt>.</li>
 </ol>
 </section>
 
@@ -305,8 +301,7 @@ by the internal representation <tt>(x, y, 1, t)</tt>.</t>
 encoded as follows:</t>
 
 <ol>
-<li><t>Process the internal representation into a field element s as follows:</t>
-</li>
+<li>Process the internal representation into a field element s as follows:</li>
 </ol>
 
 <artwork>u1 = (z0 + y0) * (z0 - y0)
@@ -336,8 +331,7 @@ s = CT_ABS(den_inv * (z - y))
 </artwork>
 
 <ol start="2">
-<li><t>Return the 32-byte little-endian encoding of s, reduced modulo p.</t>
-</li>
+<li>Return the 32-byte little-endian encoding of s, reduced modulo p.</li>
 </ol>
 <t>Note that decoding and then re-encoding a valid group element will
 yield an identical bytestring.</t>
@@ -369,12 +363,9 @@ is out-of-scope for this document.</t>
 <t>The one-way map on an input string b proceeds as follows:</t>
 
 <ol>
-<li><t>Compute P1 as <tt>MAP(b[ 0..32])</tt>.</t>
-</li>
-<li><t>Compute P2 as <tt>MAP(b[32..64])</tt>.</t>
-</li>
-<li><t>Return P1 + P2.</t>
-</li>
+<li>Compute P1 as <tt>MAP(b[ 0..32])</tt>.</li>
+<li>Compute P2 as <tt>MAP(b[32..64])</tt>.</li>
+<li>Return P1 + P2.</li>
 </ol>
 <t>The MAP function is defined on a 32-bytes string as:</t>
 
@@ -384,12 +375,10 @@ integer r in little-endian representation. Reduce r modulo p to
 obtain a field element t.</t>
 
 <ul>
-<li><t>Note: similarly to <xref target="RFC7748"></xref> field element decoding, the most
-significant bit of the representation of r is masked.</t>
-</li>
+<li>Note: similarly to <xref target="RFC7748"></xref> field element decoding, the most
+significant bit of the representation of r is masked.</li>
 </ul></li>
-<li><t>Process t as follows:</t>
-</li>
+<li>Process t as follows:</li>
 </ol>
 
 <artwork>r = SQRT_M1 * t^2
@@ -410,9 +399,8 @@ w3 = 1 + s^2
 </artwork>
 
 <ol start="3">
-<li><t>Return the group element represented by the internal representation
-<tt>(w0*w3, w2*w1, w1*w3, w0*w2)</tt>.</t>
-</li>
+<li>Return the group element represented by the internal representation
+<tt>(w0*w3, w2*w1, w1*w3, w0*w2)</tt>.</li>
 </ol>
 </section>
 </section>
@@ -434,21 +422,177 @@ existing implementations to be reused.</t>
 </section>
 </section>
 
+<section anchor="decaf448"><name>decaf448</name>
+<t>decaf448 is an instantiation of the abstract prime-order group
+interface defined in <xref target="interface"></xref>. This documents describes how to
+implement the decaf448 prime-order group using edwards448 points as
+internal representations.</t>
+<t>A &quot;decaf448 group element&quot; is the abstract element of the prime order
+group. An &quot;element encoding&quot; is the unique reversible encoding of a
+group element. An &quot;internal representation&quot; is a point on the curve
+used to implement decaf448. ch group element can have multiple
+equivalent internal representations.</t>
+<t>Encoding, decoding, equality, and one-way map are defined in
+<xref target="functions"></xref>. Element addition, subtraction, negation, and scalar
+multiplication are implemented by applying the corresponding operations
+directly to the internal representation.</t>
+<t>The group order is the same as the order of the edwards448 prime-order subgroup:</t>
+
+<artwork>l = 2^446 -
+  0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d
+</artwork>
+<t>Since decaf448 is a prime-order group, every element except the
+identity is a generator, but for interoperability a canonical generator
+is selected, which can be internally represented by the edwards448
+basepoint, enabling reuse of existing precomputation for scalar
+multiplication. This is its encoding:</t>
+
+<artwork>66666666 66666666 66666666 66666666 66666666 66666666 66666666
+33333333 33333333 33333333 33333333 33333333 33333333 33333333
+</artwork>
+<t>This repetitive constant is equal to 1/sqrt(5) in decaf448's field,
+corresponding to the curve448 base point with x=5.</t>
+<t>Implementations <bcp14>MUST NOT</bcp14> expose either the internal representation
+or its field implementation and <bcp14>MUST NOT</bcp14> expose any operations
+defined on the internal representations unless specified in this
+document.</t>
+
+<section anchor="internal-utility-functions-and-constants-1"><name>Internal utility functions and constants</name>
+<t>The following functions are defined on field elements, and are used to
+implement the other decaf448 functions. Implementations <bcp14>MUST NOT</bcp14>
+expose these to their API consumers.</t>
+<t>This document references the following constants:</t>
+
+<ul>
+<li><t><tt>D</tt> = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358</t>
+
+<ul>
+<li>This is the Edwards d parameter for edwards448, as specified in Section 4.2 of <xref target="RFC7748"></xref>, and is equal to -39081 modulo p.</li>
+</ul></li>
+<li><tt>ONE_MINUS_D</tt> = 39082</li>
+<li><tt>SQRT_MINUS_D</tt> = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214</li>
+<li><tt>INVSQRT_MINUS_D</tt> = 315019913931389607337177038330951043522456072897266928557328499619017160722351061360252776265186336876723201881398623946864393857820716</li>
+</ul>
+</section>
+
+<section anchor="functions-1"><name>External ristretto255 functions</name>
+
+<section anchor="decoding-1"><name>Decode</name>
+<t>All elements are encoded as a 56-byte string. Decoding proceeds as follows:</t>
+
+<ol>
+<li><t>First, interpret the string as an integer s in little-endian
+representation. If the length of the string is not 56 bytes, or if
+the resulting value is &gt;= p, decoding fails.</t>
+
+<ul>
+<li>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most
+significant bit is not masked, and will necessarily be unset. The
+test vectors in <xref target="invalid"></xref> exercise these edge cases.</li>
+</ul></li>
+<li>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</li>
+<li>Process s as follows:</li>
+</ol>
+
+<artwork>ss = s^2
+u1 = 1 + ss
+u2 = u1^2 - 4 * D * ss
+(was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
+u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
+x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
+y = (1 - ss) * invsqrt * u1
+</artwork>
+
+<ol start="4">
+<li>If was_square is FALSE<tt>returns TRUE then decoding fails. Otherwise,
+return the group element represented by the internal representation
+</tt>(x, y, 1, t)`.</li>
+</ol>
+</section>
+
+<section anchor="encoding-1"><name>Encode</name>
+<t>A group element with internal representation <tt>(x0, y0, z0, t0)</tt> is
+encoded as follows:</t>
+
+<ol>
+<li>Process the internal representation into a field element s as follows:</li>
+</ol>
+
+<artwork>u1 = (x0 + t0) * (x0 - t0)
+
+// Ignore was_square since this is always square
+(_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
+
+ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
+u2 = INVSQRT_MINUS_D * ratio * z0 - t0
+s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
+</artwork>
+
+<ol start="2">
+<li>Return the 56-byte little-endian encoding of s, reduced modulo p.</li>
+</ol>
+<t>Note that decoding and then re-encoding a valid group element will
+yield an identical bytestring.</t>
+</section>
+
+<section anchor="equals-1"><name>Equals</name>
+<t>The equality function returns TRUE when two internal representations
+correspond to the same group element. Note that internal representations
+<bcp14>MUST NOT</bcp14> be compared in any other way than specified here.</t>
+<t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
+if</t>
+
+<artwork>x1 * y2 == y1 * x2
+</artwork>
+<t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
+<t>Note that the equality function always returns TRUE when applied to an
+internal representation and to the internal representation obtained by
+encoding and then re-decoding it. However, the internal
+representations themselves might not be identical.</t>
+<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on encodings for
+an equivalent, although less efficient, result.</t>
+</section>
+
+<section anchor="from_uniform_bytes-1"><name>One-way map</name>
+<t>TODO</t>
+</section>
+</section>
+
+<section anchor="scalar-field-1"><name>Scalar field</name>
+<t>The scalars for the decaf448 group are integers modulo the order l
+of the decaf448 group.</t>
+<t>Scalars are encoded as 56-byte strings in little-endian order.
+Implementations <bcp14>SHOULD</bcp14> check that any scalar s falls in the range
+0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
+encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo l when
+encoding them as byte strings.</t>
+
+<section anchor="todo-really-912-bits"><name>TODO: really 912 bits?</name>
+<t>Given a uniformly distributed 114-byte string b, implementations can
+obtain a scalar by interpreting the 114-byte string as a 912-bit
+integer in little-endian order and reducing the integer modulo l, as
+in <xref target="RFC8032"></xref>.</t>
+<t>Note that this is the same scalar field as edwards448, allowing
+existing implementations to be reused.</t>
+</section>
+</section>
+</section>
+
 <section anchor="api"><name>API Considerations</name>
-<t>ristretto255 is an abstraction which implements a prime-order group, and
-ristretto255 elements are represented by curve points, but they are not
-curve points. The API needs to reflect that: the type representing an
+<t>ristretto255 and decaf448 are abstractions which implement two prime-order
+groups, and their elements are represented by curve points, but they are
+not curve points. The API needs to reflect that: the type representing an
 element of the group <bcp14>SHOULD</bcp14> be opaque and <bcp14>MUST NOT</bcp14> expose the
 underlying curve point or field elements.</t>
-<t>It is expected that a ristretto255 implementation can change its
-underlying curve without causing any breaking change. The ristretto255
-construction is carefully designed so that this will be the case, as
-long as implementations do not expose internal representations or
+<t>It is expected that a ristretto255 or decaf448 implementation can change
+its underlying curve without causing any breaking change. The ristretto255
+and decaf448 constructions are carefully designed so that this will be the
+case, as long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
-implementations <bcp14>MUST NOT</bcp14> define any external ristretto255 interface as
-operating on arbitrary curve points, and they <bcp14>MUST NOT</bcp14> construct
-group elements except via decoding and the one-way map. They are however
-allowed to apply any optimization strategy to the internal
+implementations <bcp14>MUST NOT</bcp14> define any external ristretto255 or decaf448
+interface as operating on arbitrary curve points, and they <bcp14>MUST NOT</bcp14>
+construct group elements except via decoding and the one-way map. They are
+however allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.</t>
 <t>It is <bcp14>RECOMMENDED</bcp14> that implementations do not perform a decoding and
@@ -462,12 +606,12 @@ to hold the internal representation through multiple operations.</t>
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
-<t>The ristretto255 group provides higher-level protocols with the
-abstraction they expect: a prime-order group. Therefore, it's expected
-to be safer for use in any situation where Curve25519 is used to
-implement a protocol requiring a prime-order group. Note that the
-safety of the abstraction can be defeated by
-implementations that do not follow the guidance in <xref target="api"></xref>.</t>
+<t>The ristretto255 and decaf448 groups provide higher-level protocols with
+the abstraction they expect: a prime-order group. Therefore, it's expected
+to be safer for use in any situation where Curve25519 or edwards448 is used
+to implement a protocol requiring a prime-order group. Note that the safety
+of the abstraction can be defeated by implementations that do not follow
+the guidance in <xref target="api"></xref>.</t>
 <t>There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element.  The decoding
 function always returns a valid internal representation, or an error, and
@@ -491,6 +635,22 @@ Chris Wood for their comments on the draft.</t>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
+<reference anchor="Decaf" target="https://www.shiftleft.org/papers/decaf/decaf.pdf">
+  <front>
+    <title>Decaf: Eliminating cofactors through point&#xA;compression</title>
+    <author fullname="Mike Hamburg" initials="M." surname="Hamburg">
+      <organization>Rambus Cryptography Research</organization>
+    </author>
+    <date year="2015"></date>
+  </front>
+</reference>
+<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
+  </front>
+</reference>
 <reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
   <front>
     <title>[Cfrg] 25519 naming</title>
@@ -498,6 +658,8 @@ Chris Wood for their comments on the draft.</t>
     <date year="2014"></date>
   </front>
 </reference>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
 <reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
   <front>
     <title>Twisted Edwards Curves Revisited</title>
@@ -508,27 +670,9 @@ Chris Wood for their comments on the draft.</t>
     <date year="2008"></date>
   </front>
 </reference>
-<reference anchor="Decaf" target="https://www.shiftleft.org/papers/decaf/decaf.pdf">
-  <front>
-    <title>Decaf: Eliminating cofactors through point&#xA;compression</title>
-    <author fullname="Mike Hamburg" initials="M." surname="Hamburg">
-      <organization>Rambus Cryptography Research</organization>
-    </author>
-    <date year="2015"></date>
-  </front>
-</reference>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="Monero" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
-  </front>
-</reference>
 </references>
 
-<section anchor="test-vectors"><name>Test vectors</name>
+<section anchor="test-vectors-for-ristretto255"><name>Test vectors for ristretto255</name>
 <t>This section contains test vectors for ristretto255. The octets are
 hex encoded, and whitespace is inserted for readability.</t>
 
@@ -691,6 +835,9 @@ was_square: TRUE
 r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
 </artwork>
 </section>
+</section>
+
+<section anchor="test-vectors-for-decaf448"><name>Test vectors for decaf448</name>
 </section>
 
 </back>
