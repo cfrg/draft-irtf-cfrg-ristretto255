@@ -162,6 +162,9 @@ noted.
 
 The `|` symbol represents a constant-time logical OR.
 
+The notation `array[A:B]` means the elements of `array` from `A`
+to `B-1`.  That is, it is exclusive of `B`.
+
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
         <title>Twisted Edwards Curves Revisited</title>
@@ -180,6 +183,25 @@ The `|` symbol represents a constant-time logical OR.
         <date year='2014'/>
     </front>
 </reference>
+
+## Negative field elements
+
+As in [@RFC8032], given a field element e, define `IS_NEGATIVE(e)` as
+TRUE if the least non-negative integer representing e is odd, and
+FALSE if it is even. This **SHOULD** be implemented in constant time.
+
+## Constant time operations
+
+We assume that the field element implementation supports the following
+operations, which **SHOULD** be implemented in constant time:
+
+* `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
+* `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
+* `CT_ABS(u)`: return -u if u is negative, else return u.
+
+Note that `CT_ABS` **MAY** be implemented as:
+
+    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
 # The group abstraction {#interface}
 
@@ -216,35 +238,6 @@ any element returns that element unchanged. Negation returns an element
 that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.
-
-# Notation and utility functions
-
-The notations and utility functions defined in this section are common
-between ristretto255 and decaf448.
-
-## Negative field elements
-
-As in [@RFC8032], given a field element e, define `IS_NEGATIVE(e)` as
-TRUE if the least non-negative integer representing e is odd, and
-FALSE if it is even. This **SHOULD** be implemented in constant time.
-
-## Constant time operations
-
-We assume that the field element implementation supports the following
-operations, which **SHOULD** be implemented in constant time:
-
-* `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
-* `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
-* `CT_ABS(u)`: return -u if u is negative, else return u.
-
-Note that `CT_ABS` **MAY** be implemented as:
-
-    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-    
-## Sequences
-
-The notation `array[A:B]` means the elements of `array` from `A`
-to `B-1`.  That is, it is exclusive of `B`.
 
 # ristretto255
 
