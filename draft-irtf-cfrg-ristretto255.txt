@@ -16,8 +16,8 @@ Expires: 7 April 2021
                                                           4 October 2020
 
 
-                         The ristretto255 Group
-                    draft-irtf-cfrg-ristretto255-01
+                  The ristretto255 and decaf448 Groups
+                draft-irtf-cfrg-ristretto255-decaf448-02
 
 Abstract
 
@@ -63,35 +63,33 @@ Table of Contents
 
    1.  Introduction
    2.  Notation and Conventions Used In This Document
+     2.1.  Negative field elements
+     2.2.  Constant time operations
    3.  The group abstraction
-   4.  Notation and utility functions
-     4.1.  Negative field elements
-     4.2.  Constant time operations
-     4.3.  Sequences
-   5.  ristretto255
-     5.1.  Internal utility functions and constants
+   4.  ristretto255
+     4.1.  Internal constants
+     4.2.  Square root of a ratio of field elements
+     4.3.  External ristretto255 functions
+       4.3.1.  Decode
+       4.3.2.  Encode
+       4.3.3.  Equals
+       4.3.4.  One-way map
+     4.4.  Scalar field
+   5.  decaf448
+     5.1.  Internal constants
      5.2.  Square root of a ratio of field elements
-     5.3.  External ristretto255 functions
+     5.3.  External decaf448 functions
        5.3.1.  Decode
        5.3.2.  Encode
        5.3.3.  Equals
        5.3.4.  One-way map
      5.4.  Scalar field
-   6.  decaf448
-     6.1.  Internal utility functions and constants
-     6.2.  Square root of a ratio of field elements
-     6.3.  External decaf448 functions
-       6.3.1.  Decode
-       6.3.2.  Encode
-       6.3.3.  Equals
-       6.3.4.  One-way map
-     6.4.  Scalar field
-   7.  API Considerations
-   8.  IANA Considerations
-   9.  Security Considerations
-   10. Acknowledgements
-   11. Normative References
-   12. Informative References
+   6.  API Considerations
+   7.  IANA Considerations
+   8.  Security Considerations
+   9.  Acknowledgements
+   10. Normative References
+   11. Informative References
    Appendix A.  Test vectors for ristretto255
      A.1.  Multiples of the generator
      A.2.  Invalid encodings
@@ -178,6 +176,31 @@ Table of Contents
 
    The "|" symbol represents a constant-time logical OR.
 
+   The notation "array[A:B]" means the elements of "array" from "A" to
+   "B-1".  That is, it is exclusive of "B".
+
+2.1.  Negative field elements
+
+   As in [RFC8032], given a field element e, define "IS_NEGATIVE(e)" as
+   TRUE if the least non-negative integer representing e is odd, and
+   FALSE if it is even.  This SHOULD be implemented in constant time.
+
+2.2.  Constant time operations
+
+   We assume that the field element implementation supports the
+   following operations, which SHOULD be implemented in constant time:
+
+   *  "CT_EQ(u, v)": return TRUE if u = v, FALSE otherwise.
+
+   *  "CT_SELECT(v IF cond ELSE u)": return v if cond is TRUE, else
+      return u.
+
+   *  "CT_ABS(u)": return -u if u is negative, else return u.
+
+   Note that "CT_ABS" MAY be implemented as:
+
+   CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
+
 3.  The group abstraction
 
    Ristretto and Decaf implement an abstract prime-order group interface
@@ -215,39 +238,7 @@ Table of Contents
    identity element.  Subtraction is the addition of a negated element,
    and scalar multiplication is the repeated addition of an element.
 
-4.  Notation and utility functions
-
-   The notations and utility functions defined in this section are
-   common between ristretto255 and decaf448.
-
-4.1.  Negative field elements
-
-   As in [RFC8032], given a field element e, define "IS_NEGATIVE(e)" as
-   TRUE if the least non-negative integer representing e is odd, and
-   FALSE if it is even.  This SHOULD be implemented in constant time.
-
-4.2.  Constant time operations
-
-   We assume that the field element implementation supports the
-   following operations, which SHOULD be implemented in constant time:
-
-   *  "CT_EQ(u, v)": return TRUE if u = v, FALSE otherwise.
-
-   *  "CT_SELECT(v IF cond ELSE u)": return v if cond is TRUE, else
-      return u.
-
-   *  "CT_ABS(u)": return -u if u is negative, else return u.
-
-   Note that "CT_ABS" MAY be implemented as:
-
-   CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-
-4.3.  Sequences
-
-   The notation "array[A:B]" means the elements of "array" from "A" to
-   "B-1".  That is, it is exclusive of "B".
-
-5.  ristretto255
+4.  ristretto255
 
    ristretto255 is an instantiation of the abstract prime-order group
    interface defined in Section 3.  This documents describes how to
@@ -261,7 +252,7 @@ Table of Contents
    multiple equivalent internal representations.
 
    Encoding, decoding, equality, and one-way map are defined in
-   Section 5.3.  Element addition, subtraction, negation, and scalar
+   Section 4.3.  Element addition, subtraction, negation, and scalar
    multiplication are implemented by applying the corresponding
    operations directly to the internal representation.
 
@@ -282,13 +273,10 @@ Table of Contents
    its field implementation and MUST NOT expose any operations defined
    on the internal representations unless specified in this document.
 
-5.1.  Internal utility functions and constants
+4.1.  Internal constants
 
-   The following functions are defined on field elements, and are used
-   to implement the other ristretto255 functions.  Implementations MUST
-   NOT expose these to their API consumers.
-
-   This document references the following constants:
+   This document references the following constant field element values.
+   Implementations MUST NOT expose them to their API consumers.
 
    *  "D" = 370957059346694393431380835087545651895421138798432190163887
       85533085940283555
@@ -311,7 +299,11 @@ Table of Contents
    *  "D_MINUS_ONE_SQ" = 40440834346308536858101042469323190826248399146
       238708352240133220865137265952
 
-5.2.  Square root of a ratio of field elements
+4.2.  Square root of a ratio of field elements
+
+   The following function is defined on field elements, and is used to
+   implement other ristretto255 functions.  Implementations MUST NOT
+   expose it to their API consumers.
 
    On input field elements u and v, the function "SQRT_RATIO_M1(u, v)"
    returns:
@@ -355,9 +347,9 @@ Table of Contents
 
    return (was_square, r)
 
-5.3.  External ristretto255 functions
+4.3.  External ristretto255 functions
 
-5.3.1.  Decode
+4.3.1.  Decode
 
    All elements are encoded as a 32-byte string.  Decoding proceeds as
    follows:
@@ -394,7 +386,7 @@ Table of Contents
        0, decoding fails.  Otherwise, return the group element
        represented by the internal representation "(x, y, 1, t)".
 
-5.3.2.  Encode
+4.3.2.  Encode
 
    A group element with internal representation "(x0, y0, z0, t0)" is
    encoded as follows:
@@ -432,7 +424,7 @@ Table of Contents
    Note that decoding and then re-encoding a valid group element will
    yield an identical bytestring.
 
-5.3.3.  Equals
+4.3.3.  Equals
 
    The equality function returns TRUE when two internal representations
    correspond to the same group element.  Note that internal
@@ -454,7 +446,7 @@ Table of Contents
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-5.3.4.  One-way map
+4.3.4.  One-way map
 
    The one-way map operates an uniformly distributed 64-byte strings.
    To obtain such an input from an arbitrary length bytestring,
@@ -463,7 +455,7 @@ Table of Contents
 
    The one-way map on an input string b proceeds as follows:
 
-   1.  Compute P1 as "MAP(b[ 0:32])".
+   1.  Compute P1 as "MAP(b[0:32])".
 
    2.  Compute P2 as "MAP(b[32:64])".
 
@@ -499,7 +491,7 @@ Table of Contents
    3.  Return the group element represented by the internal
        representation "(w0*w3, w2*w1, w1*w3, w0*w2)".
 
-5.4.  Scalar field
+4.4.  Scalar field
 
    The scalars for the ristretto255 group are integers modulo the order
    l of the ristretto255 group.
@@ -518,7 +510,7 @@ Table of Contents
    Note that this is the same scalar field as Curve25519, allowing
    existing implementations to be reused.
 
-6.  decaf448
+5.  decaf448
 
    decaf448 is an instantiation of the abstract prime-order group
    interface defined in Section 3.  This documents describes how to
@@ -528,11 +520,11 @@ Table of Contents
    A "decaf448 group element" is the abstract element of the prime order
    group.  An "element encoding" is the unique reversible encoding of a
    group element.  An "internal representation" is a point on the curve
-   used to implement decaf448. ch group element can have multiple
+   used to implement decaf448.  Each group element can have multiple
    equivalent internal representations.
 
    Encoding, decoding, equality, and one-way map are defined in
-   Section 6.3.  Element addition, subtraction, negation, and scalar
+   Section 5.3.  Element addition, subtraction, negation, and scalar
    multiplication are implemented by applying the corresponding
    operations directly to the internal representation.
 
@@ -540,7 +532,7 @@ Table of Contents
    order subgroup:
 
    l = 2^446 -
-     0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d
+     13818066809895115352007386748515426880336692474882178609894547503885
 
    Since decaf448 is a prime-order group, every element except the
    identity is a generator, but for interoperability a canonical
@@ -551,27 +543,24 @@ Table of Contents
    66666666 66666666 66666666 66666666 66666666 66666666 66666666
    33333333 33333333 33333333 33333333 33333333 33333333 33333333
 
-   This repetitive constant is equal to 1/sqrt(5) in decaf448's field,
-   corresponding to the curve448 base point with x=5.
+   This repetitive constant is equal to "1/sqrt(5)" in decaf448's field,
+   corresponding to the curve448 base point with x = 5.
 
    Implementations MUST NOT expose either the internal representation or
    its field implementation and MUST NOT expose any operations defined
    on the internal representations unless specified in this document.
 
-6.1.  Internal utility functions and constants
+5.1.  Internal constants
 
-   The following functions are defined on field elements, and are used
-   to implement the other decaf448 functions.  Implementations MUST NOT
-   expose these to their API consumers.
-
-   This document references the following constants:
+   This document references the following constant field element values.
+   Implementations MUST NOT expose them to their API consumers.
 
    *  "D" = 726838724295606890549323807888004534353641360687318060281490
       199180612328166730772686396383698676545930088884461843637361053498
       018326358
 
       -  This is the Edwards d parameter for edwards448, as specified in
-         Section 4.2 of [RFC7748], and is equal to -39081 modulo p.
+         Section 4.2 of [RFC7748], and is equal to -39081 in the field.
 
    *  "ONE_MINUS_D" = 39082
 
@@ -585,9 +574,13 @@ Table of Contents
       972669285573284996190171607223510613602527762651863368767232018813
       98623946864393857820716
 
-6.2.  Square root of a ratio of field elements
+5.2.  Square root of a ratio of field elements
 
-   On input field elements u and v, the function "SQRT_RATIO(u, v)"
+   The following function is defined on field elements, and is used to
+   implement other decaf448 functions.  Implementations MUST NOT expose
+   it to their API consumers.
+
+   On input field elements u and v, the function "SQRT_RATIO_M1(u, v)"
    returns:
 
    *  "(TRUE, +sqrt(u/v))" if u and v are non-zero, and u/v is square;
@@ -620,9 +613,9 @@ Table of Contents
 
    return (was_square, r)
 
-6.3.  External decaf448 functions
+5.3.  External decaf448 functions
 
-6.3.1.  Decode
+5.3.1.  Decode
 
    All elements are encoded as a 56-byte string.  Decoding proceeds as
    follows:
@@ -646,12 +639,13 @@ Table of Contents
    u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
    x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
    y = (1 - ss) * invsqrt * u1
+   t = x * y
 
-   4.  If was_square is FALSE"returns TRUE then decoding fails.
-       Otherwise, return the group element represented by the internal
-       representation"(x, y, 1, t)`.
+   4.  If was_square is FALSE then decoding fails.  Otherwise, return
+       the group element represented by the internal representation "(x,
+       y, 1, t)".
 
-6.3.2.  Encode
+5.3.2.  Encode
 
    A group element with internal representation "(x0, y0, z0, t0)" is
    encoded as follows:
@@ -673,7 +667,7 @@ Table of Contents
    Note that decoding and then re-encoding a valid group element will
    yield an identical bytestring.
 
-6.3.3.  Equals
+5.3.3.  Equals
 
    The equality function returns TRUE when two internal representations
    correspond to the same group element.  Note that internal
@@ -695,7 +689,7 @@ Table of Contents
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-6.3.4.  One-way map
+5.3.4.  One-way map
 
    The one-way map operates an uniformly distributed 112-byte strings.
    To obtain such an input from an arbitrary length bytestring,
@@ -704,7 +698,7 @@ Table of Contents
 
    The one-way map on an input string b proceeds as follows:
 
-   1.  Compute P1 as "MAP(b[ 0:56])".
+   1.  Compute P1 as "MAP(b[0:56])".
 
    2.  Compute P2 as "MAP(b[56:112])".
 
@@ -721,12 +715,12 @@ Table of Contents
    u0 = d * (r-1)
    u1 = (u0 + 1) * (u0 - r)
 
-   (was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u1)
-   v_prime = ct_select(v if was_square else t * v)
-   sgn     = ct_select(1 if was_square else -1)
+   (was_square, v) = SQRT_RATIO_M1(ONE_MINUS_TWO_D, (r + 1) * u1)
+   v_prime = CT_SELECT(v IF was_square ELSE t * v)
+   sgn     = CT_SELECT(1 IF was_square ELSE -1)
    s = v_prime * (r + 1)
 
-   w0 = 2 * CT_ABS_(s)
+   w0 = 2 * CT_ABS(s)
    w1 = s^2 + 1
    w2 = s^2 - 1
    w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
@@ -734,7 +728,7 @@ Table of Contents
    3.  Return the group element represented by the internal
        representation "(w0*w3, w2*w1, w1*w3, w0*w2)".
 
-6.4.  Scalar field
+5.4.  Scalar field
 
    The scalars for the decaf448 group are integers modulo the order l of
    the decaf448 group.
@@ -752,7 +746,7 @@ Table of Contents
    Note that this is the same scalar field as edwards448, allowing
    existing implementations to be reused.
 
-7.  API Considerations
+6.  API Considerations
 
    ristretto255 and decaf448 are abstractions which implement two prime-
    order groups, and their elements are represented by curve points, but
@@ -777,18 +771,18 @@ Table of Contents
    unnecessary.  Implementations SHOULD instead provide an opaque type
    to hold the internal representation through multiple operations.
 
-8.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  Security Considerations
+8.  Security Considerations
 
    The ristretto255 and decaf448 groups provide higher-level protocols
    with the abstraction they expect: a prime-order group.  Therefore,
    it's expected to be safer for use in any situation where Curve25519
    or edwards448 is used to implement a protocol requiring a prime-order
    group.  Note that the safety of the abstraction can be defeated by
-   implementations that do not follow the guidance in Section 7.
+   implementations that do not follow the guidance in Section 6.
 
    There is no function to test whether an elliptic curve point is a
    valid internal representation of a group element.  The decoding
@@ -799,15 +793,12 @@ Table of Contents
    valid, so that checking is never necessary, and invalid states are
    unrepresentable.
 
-10.  Acknowledgements
-
-   Ristretto was originally designed by Mike Hamburg as a variant of
-   [Decaf].
+9.  Acknowledgements
 
    The authors would like to thank Daira Hopwood, Riad S.  Wahby, and
    Chris Wood for their comments on the draft.
 
-11.  Normative References
+10.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -818,11 +809,20 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-12.  Informative References
+11.  Informative References
 
    [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
               compression", 2015,
               <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
+
+   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
+              for Security", RFC 7748, DOI 10.17487/RFC7748, January
+              2016, <https://www.rfc-editor.org/info/rfc7748>.
+
+   [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
+              Signature Algorithm (EdDSA)", RFC 8032,
+              DOI 10.17487/RFC8032, January 2017,
+              <https://www.rfc-editor.org/info/rfc8032>.
 
    [MoneroVuln]
               Nick, J., "Exploiting Low Order Generators in One-Time
@@ -833,15 +833,6 @@ Table of Contents
    [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
               <https://mailarchive.ietf.org/arch/msg/cfrg/-
               9LEdnzVrE5RORux3Oo_oDDRksU/>.
-
-   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
-              for Security", RFC 7748, DOI 10.17487/RFC7748, January
-              2016, <https://www.rfc-editor.org/info/rfc7748>.
-
-   [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
-              Signature Algorithm (EdDSA)", RFC 8032,
-              DOI 10.17487/RFC8032, January 2017,
-              <https://www.rfc-editor.org/info/rfc8032>.
 
    [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
               "Twisted Edwards Curves Revisited", 2008,
@@ -886,7 +877,7 @@ A.1.  Multiples of the generator
 A.2.  Invalid encodings
 
    These are examples of encodings that MUST be rejected according to
-   Section 5.3.1.
+   Section 4.3.1.
 
    # Non-canonical field encodings.
    00ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
@@ -929,7 +920,7 @@ A.2.  Invalid encodings
 
 A.3.  Group elements from uniform bytestrings
 
-   The following pairs are inputs to the one-way map of Section 5.3.4,
+   The following pairs are inputs to the one-way map of Section 4.3.4,
    and their encoded outputs.
 
    I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
@@ -975,8 +966,9 @@ A.3.  Group elements from uniform bytestrings
 
 A.4.  Square root of a ratio of field elements
 
-   The following are inputs and outputs of "SQRT_RATIO_M1(u, v)".  The
-   values are little-endian encodings of field elements.
+   The following are inputs and outputs of "SQRT_RATIO_M1(u, v)" defined
+   in Section 4.2.  The values are little-endian encodings of field
+   elements.
 
    u: 0000000000000000000000000000000000000000000000000000000000000000
    v: 0000000000000000000000000000000000000000000000000000000000000000
@@ -1056,7 +1048,7 @@ B.1.  Multiples of the generator
 B.2.  Invalid encodings
 
    These are examples of encodings that MUST be rejected according to
-   Section 6.3.1.
+   Section 5.3.1.
 
    # Non-canonical field encodings.
    8e24f838 059ee9fe f1e20912 6defe53d cd74ef9b 6304601c 6966099e
@@ -1102,7 +1094,6 @@ B.2.  Invalid encodings
    697c1aed 3cd88585 15d4be8a c158b229 fe184d79 cb2b06e4 9210a6f3
    a7cd537b cd9bd390 d96c4ab6 a4406da5 d9364072 6285370c fa95df80
 
-
    # Non-square x^2.
    58ad4871 5c9a1025 69b68b88 362a4b06 45781f5a 19eb7e59 c6a4686f
    d0f0750f f42e3d7a f1ab38c2 9d69b670 f3125891 9c9fdbf6 093d06c0
@@ -1127,7 +1118,7 @@ B.2.  Invalid encodings
 
 B.3.  Group elements from uniform bytestrings
 
-   The following pairs are inputs to the one-way map of Section 6.3.4,
+   The following pairs are inputs to the one-way map of Section 5.3.4,
    and their encoded outputs.
 
    I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165

@@ -1,7 +1,7 @@
-# The ristretto255 Group
+# The ristretto255 and decaf448 Groups
 
 This is the working area for the CFRG Internet-Draft,
-"The ristretto255 Group".
+"The ristretto255 and decaf448 Groups".
 
 ## Building the Draft
 
