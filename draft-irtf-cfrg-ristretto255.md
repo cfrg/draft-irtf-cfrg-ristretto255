@@ -1,7 +1,7 @@
 %%%
 
-    Title = "The ristretto255 Group"
-    abbrev = "ristretto255"
+    Title = "The ristretto255 and decaf448 Groups"
+    abbrev = "ristretto255-decaf448"
     ipr = "trust200902"
     category = "info"
     area = "Internet"
@@ -10,7 +10,7 @@
     [seriesInfo]
     status = "informational"
     name = "Internet-Draft"
-    value = "draft-irtf-cfrg-ristretto255-01"
+    value = "draft-irtf-cfrg-ristretto255-decaf448-02"
     stream = "IETF"
 
     [[author]]
@@ -162,6 +162,9 @@ noted.
 
 The `|` symbol represents a constant-time logical OR.
 
+The notation `array[A:B]` means the elements of `array` from `A`
+to `B-1`.  That is, it is exclusive of `B`.
+
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
         <title>Twisted Edwards Curves Revisited</title>
@@ -180,6 +183,25 @@ The `|` symbol represents a constant-time logical OR.
         <date year='2014'/>
     </front>
 </reference>
+
+## Negative field elements
+
+As in [@RFC8032], given a field element e, define `IS_NEGATIVE(e)` as
+TRUE if the least non-negative integer representing e is odd, and
+FALSE if it is even. This **SHOULD** be implemented in constant time.
+
+## Constant time operations
+
+We assume that the field element implementation supports the following
+operations, which **SHOULD** be implemented in constant time:
+
+* `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
+* `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
+* `CT_ABS(u)`: return -u if u is negative, else return u.
+
+Note that `CT_ABS` **MAY** be implemented as:
+
+    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 
 # The group abstraction {#interface}
 
@@ -216,35 +238,6 @@ any element returns that element unchanged. Negation returns an element
 that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.
-
-# Notation and utility functions
-
-The notations and utility functions defined in this section are common
-between ristretto255 and decaf448.
-
-## Negative field elements
-
-As in [@RFC8032], given a field element e, define `IS_NEGATIVE(e)` as
-TRUE if the least non-negative integer representing e is odd, and
-FALSE if it is even. This **SHOULD** be implemented in constant time.
-
-## Constant time operations
-
-We assume that the field element implementation supports the following
-operations, which **SHOULD** be implemented in constant time:
-
-* `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
-* `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
-* `CT_ABS(u)`: return -u if u is negative, else return u.
-
-Note that `CT_ABS` **MAY** be implemented as:
-
-    CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-    
-## Sequences
-
-The notation `array[A:B]` means the elements of `array` from `A`
-to `B-1`.  That is, it is exclusive of `B`.
 
 # ristretto255
 
@@ -283,13 +276,10 @@ or its field implementation and **MUST NOT** expose any operations
 defined on the internal representations unless specified in this
 document.
 
-## Internal utility functions and constants
+## Internal constants
 
-The following functions are defined on field elements, and are used to
-implement the other ristretto255 functions. Implementations **MUST NOT**
-expose these to their API consumers.
-
-This document references the following constants:
+This document references the following constant field element values.
+Implementations **MUST NOT** expose them to their API consumers.
 
 * `D` = 37095705934669439343138083508754565189542113879843219016388785533085940283555
   * This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of [@RFC7748].
@@ -299,7 +289,11 @@ This document references the following constants:
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
 
-## Square root of a ratio of field elements
+## Square root of a ratio of field elements {#sqrtratio255}
+
+The following function is defined on field elements, and is used to
+implement other ristretto255 functions. Implementations **MUST NOT**
+expose it to their API consumers.
 
 On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 
@@ -446,7 +440,7 @@ is out-of-scope for this document.
 
 The one-way map on an input string b proceeds as follows:
 
-1. Compute P1 as `MAP(b[ 0:32])`.
+1. Compute P1 as `MAP(b[0:32])`.
 2. Compute P2 as `MAP(b[32:64])`.
 3. Return P1 + P2.
 
@@ -509,7 +503,7 @@ internal representations.
 A "decaf448 group element" is the abstract element of the prime order
 group. An "element encoding" is the unique reversible encoding of a
 group element. An "internal representation" is a point on the curve
-used to implement decaf448. ch group element can have multiple
+used to implement decaf448. Each group element can have multiple
 equivalent internal representations.
 
 Encoding, decoding, equality, and one-way map are defined in
@@ -520,7 +514,7 @@ directly to the internal representation.
 The group order is the same as the order of the edwards448 prime-order subgroup: 
 
     l = 2^446 -
-      0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d
+      13818066809895115352007386748515426880336692474882178609894547503885
 
 Since decaf448 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
@@ -533,33 +527,33 @@ multiplication. This is its encoding:
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
 ```
 
-This repetitive constant is equal to 1/sqrt(5) in decaf448's field,
-corresponding to the curve448 base point with x=5.
+This repetitive constant is equal to `1/sqrt(5)` in decaf448's field,
+corresponding to the curve448 base point with x = 5.
 
 Implementations **MUST NOT** expose either the internal representation
 or its field implementation and **MUST NOT** expose any operations
 defined on the internal representations unless specified in this
 document.
 
+## Internal constants
 
-## Internal utility functions and constants
-
-The following functions are defined on field elements, and are used to
-implement the other decaf448 functions. Implementations **MUST NOT**
-expose these to their API consumers.
-
-This document references the following constants:
+This document references the following constant field element values.
+Implementations **MUST NOT** expose them to their API consumers.
 
 * `D` = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358
-  * This is the Edwards d parameter for edwards448, as specified in Section 4.2 of [@RFC7748], and is equal to -39081 modulo p.
+  * This is the Edwards d parameter for edwards448, as specified in Section 4.2 of [@RFC7748], and is equal to -39081 in the field.
 * `ONE_MINUS_D` = 39082
 * `ONE_MINUS_TWO_D` = 78163
 * `SQRT_MINUS_D` = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214
 * `INVSQRT_MINUS_D` = 315019913931389607337177038330951043522456072897266928557328499619017160722351061360252776265186336876723201881398623946864393857820716
 
-## Square root of a ratio of field elements
+## Square root of a ratio of field elements {#sqrtratio448}
 
-On input field elements u and v, the function `SQRT_RATIO(u, v)` returns:
+The following function is defined on field elements, and is used to
+implement other decaf448 functions. Implementations **MUST NOT**
+expose it to their API consumers.
+
+On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 
 * `(TRUE, +sqrt(u/v))` if u and v are non-zero, and u/v is square;
 * `(TRUE, zero)` if u is zero;
@@ -612,9 +606,10 @@ u2 = u1^2 - 4 * D * ss
 u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
 x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
 y = (1 - ss) * invsqrt * u1
+t = x * y
 ```
 
-4. If was\_square is FALSE` returns TRUE then decoding fails. Otherwise,
+4. If was\_square is FALSE then decoding fails. Otherwise,
    return the group element represented by the internal representation
    `(x, y, 1, t)`.
 
@@ -671,7 +666,7 @@ is out-of-scope for this document.
 
 The one-way map on an input string b proceeds as follows:
 
-1. Compute P1 as `MAP(b[ 0:56])`.
+1. Compute P1 as `MAP(b[0:56])`.
 2. Compute P2 as `MAP(b[56:112])`.
 3. Return P1 + P2.
 
@@ -685,12 +680,12 @@ r = -t^2
 u0 = d * (r-1)
 u1 = (u0 + 1) * (u0 - r)
 
-(was_square, v) = sqrt_ratio(ONE_MINUS_TWO_D, (r + 1) * u1)
-v_prime = ct_select(v if was_square else t * v)
-sgn     = ct_select(1 if was_square else -1)
+(was_square, v) = SQRT_RATIO_M1(ONE_MINUS_TWO_D, (r + 1) * u1)
+v_prime = CT_SELECT(v IF was_square ELSE t * v)
+sgn     = CT_SELECT(1 IF was_square ELSE -1)
 s = v_prime * (r + 1)
 
-w0 = 2 * CT_ABS_(s)
+w0 = 2 * CT_ABS(s)
 w1 = s^2 + 1
 w2 = s^2 - 1
 w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
@@ -764,8 +759,6 @@ the invariant that an internal representation is always valid, so that
 checking is never necessary, and invalid states are unrepresentable.
 
 # Acknowledgements
-
-Ristretto was originally designed by Mike Hamburg as a variant of [@Decaf].
 
 The authors would like to thank Daira Hopwood, Riad S. Wahby, and
 Chris Wood for their comments on the draft.
@@ -909,8 +902,9 @@ O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
 
 ## Square root of a ratio of field elements
 
-The following are inputs and outputs of `SQRT_RATIO_M1(u, v)`. The
-values are little-endian encodings of field elements.
+The following are inputs and outputs of `SQRT_RATIO_M1(u, v)` defined
+in (#sqrtratio255). The values are little-endian encodings of field
+elements.
 
 ```
 u: 0000000000000000000000000000000000000000000000000000000000000000
@@ -992,6 +986,7 @@ B[15]: 841981c3 bfeec3f6 0cfeca75 d9d8dc17 f46cf010 6f2422b5 9aec580a
 ```
 
 ## Invalid encodings {#invalid448}
+
 These are examples of encodings that **MUST** be rejected according to
 (#decoding448).
 
@@ -1040,7 +1035,6 @@ fd2cdefd e1bf0892 b4b5ed97 80b91ed1 398fb4a7 344c605a a5efda74
 697c1aed 3cd88585 15d4be8a c158b229 fe184d79 cb2b06e4 9210a6f3
 a7cd537b cd9bd390 d96c4ab6 a4406da5 d9364072 6285370c fa95df80
 
-
 # Non-square x^2.
 58ad4871 5c9a1025 69b68b88 362a4b06 45781f5a 19eb7e59 c6a4686f
 d0f0750f f42e3d7a f1ab38c2 9d69b670 f3125891 9c9fdbf6 093d06c0
@@ -1076,42 +1070,42 @@ I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
    6bc62ca40ed51f8057a635a02c2b8c83f48fa6a2d70f58a1185902c0
 O: 0c709c96 07dbb01c 94513358 745b7c23 953d03b3 3e39c723 4e268d1d
    6e24f340 14ccbc22 16b965dd 231d5327 e591dc3c 0e8844cc fd568848
-   
+
 I: b6d8da654b13c3101d6634a231569e6b85961c3f4b460a08ac4a5857
    069576b64428676584baa45b97701be6d0b0ba18ac28d443403b4569
    9ea0fbd1164f5893d39ad8f29e48e399aec5902508ea95e33bc1e9e4
    620489d684eb5c26bc1ad1e09aba61fabc2cdfee0b6b6862ffc8e55a
 O: 76ab794e 28ff1224 c727fa10 16bf7f1d 329260b7 218a39ae a2fdb17d
    8bd91190 17b093d6 41cedf74 328c3271 84dc6f2a 64bd90ed dccfcdab
-   
+
 I: 36a69976c3e5d74e4904776993cbac27d10f25f5626dd45c51d15dcf
    7b3e6a5446a6649ec912a56895d6baa9dc395ce9e34b868d9fb2c1fc
    72eb6495702ea4f446c9b7a188a4e0826b1506b0747a6709f37988ff
    1aeb5e3788d5076ccbb01a4bc6623c92ff147a1e21b29cc3fdd0e0f4
 O: c8d7ac38 4143500e 50890a1c 25d64334 3accce58 4caf2544 f9249b2b
    f4a69210 82be0e7f 3669bb5e c24535e6 c45621e1 f6dec676 edd8b664
-   
+
 I: d5938acbba432ecd5617c555a6a777734494f176259bff9dab844c81
    aadcf8f7abd1a9001d89c7008c1957272c1786a4293bb0ee7cb37cf3
    988e2513b14e1b75249a5343643d3c5e5545a0c1a2a4d3c685927c38
    bc5e5879d68745464e2589e000b31301f1dfb7471a4f1300d6fd0f99
 O: 62beffc6 b8ee11cc d79dbaac 8f0252c7 50eb052b 192f41ee ecb12f29
    79713b56 3caf7d22 588eca5e 80995241 ef963e7a d7cb7962 f343a973
-   
+
 I: 4dec58199a35f531a5f0a9f71a53376d7b4bdd6bbd2904234a8ea65b
    bacbce2a542291378157a8f4be7b6a092672a34d85e473b26ccfbd4c
    dc6739783dc3f4f6ee3537b7aed81df898c7ea0ae89a15b5559596c2
    a5eeacf8b2b362f3db2940e3798b63203cae77c4683ebaed71533e51
 O: f4ccb31d 263731ab 88bed634 304956d2 603174c6 6da38742 053fa37d
    d902346c 3862155d 68db63be 87439e3d 68758ad7 268e239d 39c4fd3b
-   
+
 I: df2aa1536abb4acab26efa538ce07fd7bca921b13e17bc5ebcba7d1b
    6b733deda1d04c220f6b5ab35c61b6bcb15808251cab909a01465b8a
    e3fc770850c66246d5a9eae9e2877e0826e2b8dc1bc08009590bc677
    8a84e919fbd28e02a0f9c49b48dc689eb5d5d922dc01469968ee81b5
 O: 7e79b00e 8e0a76a6 7c0040f6 2713b8b8 c6d6f05e 9c6d0259 2e8a22ea
    896f5dea cc7c7df5 ed42beae 6fedb900 0285b482 aa504e27 9fd49c32
-   
+
 I: e9fb440282e07145f1f7f5ecf3c273212cd3d26b836b41b02f108431
    488e5e84bd15f2418b3d92a3380dd66a374645c2a995976a015632d3
    6a6c2189f202fc766e1c82f50ad9189be190a1f0e8f9b9e69c9c18cc
