@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-decaf448-02" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" consensus="true">
+<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-decaf448-00" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" consensus="true">
 
 <front>
-<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="draft-irtf-cfrg-ristretto255-decaf448-02" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="draft-irtf-cfrg-ristretto255-decaf448-00" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
 <author initials="H." surname="de Valence" fullname="Henry de Valence"><organization></organization><address><postal><street></street>
 </postal><email>ietf@hdevalence.ca</email>
 </address></author>
@@ -690,10 +690,27 @@ Chris Wood for their comments on the draft.</t>
 
 <back>
 <references><name>Normative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 </references>
 <references><name>Informative References</name>
+<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
+  <front>
+    <title>[Cfrg] 25519 naming</title>
+    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
+    <date year="2014"></date>
+  </front>
+</reference>
+<reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
+  <front>
+    <title>Twisted Edwards Curves Revisited</title>
+    <author fullname="Huseyin Hisil" initials="H." surname="Hisil"></author>
+    <author fullname="Kenneth Koon-Ho Wong" initials="K. K." surname="Wong"></author>
+    <author fullname="Gary Carter" initials="G." surname="Carter"></author>
+    <author fullname="Ed Dawson" initials="E." surname="Dawson"></author>
+    <date year="2008"></date>
+  </front>
+</reference>
 <reference anchor="Decaf" target="https://www.shiftleft.org/papers/decaf/decaf.pdf">
   <front>
     <title>Decaf: Eliminating cofactors through point&#xA;compression</title>
@@ -710,23 +727,6 @@ Chris Wood for their comments on the draft.</t>
     <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
     <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
     <date year="2017"></date>
-  </front>
-</reference>
-<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
-  <front>
-    <title>[Cfrg] 25519 naming</title>
-    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
-    <date year="2014"></date>
-  </front>
-</reference>
-<reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
-  <front>
-    <title>Twisted Edwards Curves Revisited</title>
-    <author fullname="Huseyin Hisil" initials="H." surname="Hisil"></author>
-    <author fullname="Kenneth Koon-Ho Wong" initials="K. K." surname="Wong"></author>
-    <author fullname="Gary Carter" initials="G." surname="Carter"></author>
-    <author fullname="Ed Dawson" initials="E." surname="Dawson"></author>
-    <date year="2008"></date>
   </front>
 </reference>
 </references>

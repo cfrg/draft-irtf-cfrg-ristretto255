@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 7 April 2021                                                   
+Expires: 8 April 2021                                                   
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
@@ -13,11 +13,11 @@ Expires: 7 April 2021
                                                             I. Lovecruft
                                                                         
                                                               M. Hamburg
-                                                          4 October 2020
+                                                          5 October 2020
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-02
+                draft-irtf-cfrg-ristretto255-decaf448-00
 
 Abstract
 
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 April 2021.
+   This Internet-Draft will expire on 8 April 2021.
 
 Copyright Notice
 
@@ -800,16 +800,24 @@ Table of Contents
 
 10.  Normative References
 
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
 11.  Informative References
+
+   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
+              <https://mailarchive.ietf.org/arch/msg/cfrg/-
+              9LEdnzVrE5RORux3Oo_oDDRksU/>.
+
+   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
+              "Twisted Edwards Curves Revisited", 2008,
+              <https://eprint.iacr.org/2008/522>.
 
    [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
               compression", 2015,
@@ -829,14 +837,6 @@ Table of Contents
               Ring Signatures", 2017,
               <https://jonasnick.github.io/blog/2017/05/23/exploiting-
               low-order-generators-in-one-time-ring-signatures/>.
-
-   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
-              <https://mailarchive.ietf.org/arch/msg/cfrg/-
-              9LEdnzVrE5RORux3Oo_oDDRksU/>.
-
-   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
-              "Twisted Edwards Curves Revisited", 2008,
-              <https://eprint.iacr.org/2008/522>.
 
 Appendix A.  Test vectors for ristretto255
 
