@@ -118,6 +118,9 @@ overhead, and only in the encoding and decoding phases.
 While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which MAY be implemented using Curve25519.
+(The curve we refer to here as "Curve25519", in [@?RFC7748] follows
+the curve designer's retroactive renaming to "edwards25519" and its
+isogenous Montgomery form is therein referred to as "curve25519".)
 
 There are other elliptic curves that can be used internally to
 implement ristretto255 or decaf448, and those implementations would be
