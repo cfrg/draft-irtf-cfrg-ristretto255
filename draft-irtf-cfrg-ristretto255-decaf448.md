@@ -125,7 +125,18 @@ interoperable with a Curve25519- or edwards448-based one, but those
 constructions are out-of-scope for this document.
 
 The Ristretto construction is described and justified in detail at
-https://ristretto.group.
+[@RistrettoGroup].
+
+<reference anchor='RistrettoGroup' target='https://ristretto.group'>
+    <front>
+        <title>The Ristretto Group</title>
+        <author initials='H' surname='de Valence' fullname='Henry de Valence'/>
+        <author initials='I' surname='Lovecruft' fullname='isis lovecruft'/>
+        <author initials='T' surname='Arcieri' fullname='Tony Arcieri'/>
+        <author initials='M' surname='Hamburg' fullname='Mike Hamburg'/>
+        <date year='2018'/>
+    </front>
+</reference>
 
 <reference anchor='MoneroVuln' target='https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/'>
     <front>
