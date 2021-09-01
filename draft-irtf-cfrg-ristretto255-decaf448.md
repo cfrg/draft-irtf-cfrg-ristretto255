@@ -481,7 +481,7 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[32:64])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a 32-bytes string as:
+The MAP function is defined on a bytestring of 32 bytes in length as:
 
 1. Interpret the least significant 255 bits of the string as an
    integer r in little-endian representation. Reduce r modulo p to
