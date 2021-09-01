@@ -28,6 +28,20 @@
         email = "ietf@jackgrigg.com"
 
     [[author]]
+    initials = "M."
+    surname = "Hamburg"
+    fullname = "Mike Hamburg"
+    [author.address]
+        email = "ietf@shiftleft.org"
+
+    [[author]]
+    initials = "I."
+    surname = "Lovecruft"
+    fullname = "Isis Lovecruft"
+    [author.address]
+        email = "ietf@en.ciph.re"
+
+    [[author]]
     initials = "G."
     surname = "Tankersley"
     fullname = "George Tankersley"
@@ -40,20 +54,6 @@
     fullname = "Filippo Valsorda"
     [author.address]
         email = "ietf@filippo.io"
-
-    [[author]]
-    initials = "I."
-    surname = "Lovecruft"
-    fullname = "Isis Lovecruft"
-    [author.address]
-        email = "ietf@en.ciph.re"
-
-    [[author]]
-    initials = "M."
-    surname = "Hamburg"
-    fullname = "Mike Hamburg"
-    [author.address]
-        email = "ietf@shiftleft.org"
 
 %%%
 
