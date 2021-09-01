@@ -483,11 +483,14 @@ The one-way map on an input string b proceeds as follows:
 
 The MAP function is defined on a bytestring of 32 bytes in length as:
 
-1. Interpret the least significant 255 bits of the string as an
-   integer r in little-endian representation. Reduce r modulo p to
-   obtain a field element t.
+1. Interpret the input bytestring as in integer r in little-endian
+   convention, then reduce it modulo 2^255 (this is equivalent to
+   "masking out the most significant bit" as in [@RFC7748],
+   section 5). The resulting integer, which is lower than 2^255,
+   is then further reduced modulo p, yielding a field element t.
    * Note: similarly to [@RFC7748] field element decoding, the most
      significant bit of the representation of r is masked.
+
 2. Process t as follows:
 
 ```
