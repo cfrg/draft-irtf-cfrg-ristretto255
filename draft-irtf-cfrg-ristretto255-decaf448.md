@@ -118,9 +118,6 @@ overhead, and only in the encoding and decoding phases.
 While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which MAY be implemented using Curve25519.
-(The curve we refer to here as "Curve25519", in [@?RFC7748] follows
-the curve designer's retroactive renaming to "edwards25519" and its
-isogenous Montgomery form is therein referred to as "curve25519".)
 
 There are other elliptic curves that can be used internally to
 implement ristretto255 or decaf448, and those implementations would be
@@ -165,7 +162,12 @@ Diffie-Hellman key exchange mechanism. Over time, use shifted, and
 curve, or its concrete representation in Montgomery form, or the
 specific Diffie-Hellman mechanism. This document uses the term
 "Curve25519" to refer to the abstract underlying curve, as recommended
-in [@Naming].
+in [@Naming].  More concretely, the abstract Edwards form of the curve
+we refer to here as "Curve25519", is in [@?RFC7748] referred to
+following the curve designer's retroactive renaming to "edwards25519"
+and its isogenous Montgomery form is therein referred to as "curve25519",
+following the shifting conventions stemming from its alternate usage
+in conjuction with Diffie-Hellman key exchanges.
 
 Elliptic curve points in this document are represented in extended
 Edwards coordinates in the `(x, y, z, t)` format [@Twisted]. Field
