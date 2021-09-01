@@ -179,7 +179,8 @@ noted.
 The `|` symbol represents a constant-time logical OR.
 
 The notation `array[A:B]` means the elements of `array` from `A`
-to `B-1`.  That is, it is exclusive of `B`.
+to `B-1`.  That is, it is exclusive of `B`.  Arrays are indexed
+starting from 0.
 
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
