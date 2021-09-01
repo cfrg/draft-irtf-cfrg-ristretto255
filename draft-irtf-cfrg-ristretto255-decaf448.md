@@ -90,7 +90,7 @@ compression</title>
 
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and the fastest known formulas for curve operations.  However,
+points and formulae among the fastest known for curve operations.  However,
 every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.
 This abstraction mismatch is usually handled by means of ad-hoc
