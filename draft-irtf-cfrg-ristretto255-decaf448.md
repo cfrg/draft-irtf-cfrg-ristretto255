@@ -309,6 +309,21 @@ Implementations **MUST NOT** expose them to their API consumers.
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
 
+## Internal point representations
+
+Ristretto is agnostic to the underlying elliptic curve and hence also
+coordinate choices for expressing points on the curve.  However, in
+this document, we follow the use of extended homogenous coordinates as
+in [@?RFC8032]:
+
+A point (x,y) is represented in extended homogeneous coordinates
+(X, Y, Z, T), with x = X/Z, y = Y/Z, x * y = T/Z.
+
+The neutral point is (0,1), or equivalently in extended homogeneous
+coordinates (0, Z, Z, 0) for any non-zero Z.
+
+Implementation **MUST NOT** expose underlying elliptic curve points.
+
 ## Square root of a ratio of field elements {#sqrtratio255}
 
 The following function is defined on field elements, and is used to
