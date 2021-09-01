@@ -259,7 +259,7 @@ that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.
 
-# ristretto255
+# ristretto255 (#ristretto255)
 
 ristretto255 is an instantiation of the abstract prime-order group
 interface defined in (#interface). This documents describes how to
@@ -296,7 +296,7 @@ or its field implementation and **MUST NOT** expose any operations
 defined on the internal representations unless specified in this
 document.
 
-## Internal constants
+## Internal constants (#constants255)
 
 This document references the following constant field element values.
 Implementations **MUST NOT** expose them to their API consumers.
@@ -309,7 +309,7 @@ Implementations **MUST NOT** expose them to their API consumers.
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
 
-## Internal point representations
+## Internal point representations (#pointrepr)
 
 Ristretto is agnostic to the underlying elliptic curve and hence also
 coordinate choices for expressing points on the curve.  However, in
@@ -533,7 +533,7 @@ in [@RFC8032].
 Note that this is the same scalar field as Curve25519, allowing
 existing implementations to be reused.
 
-# decaf448
+# decaf448 (#decaf448)
 
 decaf448 is an instantiation of the abstract prime-order group
 interface defined in (#interface). This documents describes how to
@@ -575,7 +575,7 @@ or its field implementation and **MUST NOT** expose any operations
 defined on the internal representations unless specified in this
 document.
 
-## Internal constants
+## Internal constants (#constants448)
 
 This document references the following constant field element values.
 Implementations **MUST NOT** expose them to their API consumers.
