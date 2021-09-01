@@ -431,6 +431,7 @@ enchanted_denominator = den1 * INVSQRT_A_MINUS_D
 
 rotate = IS_NEGATIVE(t0 * z_inv)
 
+// Conditionally rotate x and y.
 x = CT_SELECT(iy0 IF rotate ELSE x0)
 y = CT_SELECT(ix0 IF rotate ELSE y0)
 z = z0
