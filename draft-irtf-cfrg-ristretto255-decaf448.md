@@ -781,8 +781,8 @@ checking is never necessary, and invalid states are unrepresentable.
 
 # Acknowledgements
 
-The authors would like to thank Daira Hopwood, Riad S. Wahby, and
-Chris Wood for their comments on the draft.
+The authors would like to thank Daira Hopwood, Riad S. Wahby, Chris Wood,
+and Thomas Pornin for their comments on the draft.
 
 {backmatter}
 
