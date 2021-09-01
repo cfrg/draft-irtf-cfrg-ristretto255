@@ -358,7 +358,8 @@ return (was_square, r)
 
 ### Decode {#decoding255}
 
-All elements are encoded as a 32-byte string. Decoding proceeds as follows:
+All elements are encoded as a bytestring of length exactly 32 bytes each.
+Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
