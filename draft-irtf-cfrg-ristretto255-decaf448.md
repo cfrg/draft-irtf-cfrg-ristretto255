@@ -285,10 +285,10 @@ Since ristretto255 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:
+multiplication. This is the hexadecimal encoding of its bytestring:
 
 ```
-e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
+e2f2ae0a6abc4e71a884a961c500515f58e30b6aa582dd8db6a65945e08d2d76
 ```
 
 Implementations **MUST NOT** expose either the internal representation
