@@ -182,6 +182,9 @@ The notation `array[A:B]` means the elements of `array` from `A`
 to `B-1`.  That is, it is exclusive of `B`.  Arrays are indexed
 starting from 0.
 
+In this document, a `byte` is an 8-bit entity (also known as
+"octet") and a `bytestring` is an ordered sequence of bytes.
+
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
         <title>Twisted Edwards Curves Revisited</title>
