@@ -470,7 +470,7 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes255}
 
-The one-way map operates an uniformly distributed 64-byte strings. To
+The one-way map operates on an uniformly distributed 64-byte strings. To
 obtain such an input from an arbitrary length bytestring, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
