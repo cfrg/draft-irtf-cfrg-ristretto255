@@ -519,7 +519,7 @@ w3 = 1 + s^2
 The scalars for the ristretto255 group are integers modulo the order l
 of the ristretto255 group.
 
-Scalars are encoded as 32-byte strings in little-endian order.
+Scalars are encoded as bytestrings of 32 bytes length in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
 0 <= s < l when parsing them and reject non-canonical scalar
 encodings. Implementations **SHOULD** reduce scalars modulo l when
@@ -627,10 +627,11 @@ return (was_square, r)
 
 ### Decode {#decoding448}
 
-All elements are encoded as a 56-byte string. Decoding proceeds as follows:
+All elements are encoded as a bytestring of 56 bytes in length.
+Decoding proceeds as follows:
 
-1. First, interpret the string as an integer s in little-endian
-   representation. If the length of the string is not 56 bytes, or if
+1. First, interpret the bytestring as an integer s in little-endian
+   representation. If the length of the bytestring is not 56 bytes, or if
    the resulting value is >= p, decoding fails.
    * Note: unlike [@RFC7748] field element decoding, the most
      significant bit is not masked, and will necessarily be unset. The
@@ -699,8 +700,8 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes448}
 
-The one-way map operates an uniformly distributed 112-byte strings. To
-obtain such an input from an arbitrary length bytestring, applications
+The one-way map operates an uniformly distributed bytestrings of 112 bytes
+in length. To obtain such an input from an arbitrary length bytestring, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
@@ -710,9 +711,11 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[56:112])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a 56-bytes string as:
+The MAP function is defined on a bytestring of 56 bytes in length as:
 
-1. Interpret the string as an integer r in little-endian representation. Reduce r modulo p to obtain a field element t.
+1. Interpret the bytestring as an integer r in little-endian representation.
+   Reduce r modulo p to obtain a field element t.
+
 2. Process t as follows:
 
 ```
@@ -739,14 +742,14 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
 The scalars for the decaf448 group are integers modulo the order l
 of the decaf448 group.
 
-Scalars are encoded as 56-byte strings in little-endian order.
+Scalars are encoded as bytestrings of 56 bytes in length, in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
 0 <= s < l when parsing them and reject non-canonical scalar
 encodings. Implementations **SHOULD** reduce scalars modulo l when
-encoding them as byte strings.
+encoding them as bytestrings.
 
-Given a uniformly distributed 64-byte string b, implementations can
-obtain a scalar by interpreting the 64-byte string as a 512-bit
+Given a uniformly distributed bytestring b of 64 bytes length, implementations can
+obtain a scalar by interpreting b as a 512-bit
 integer in little-endian order and reducing the integer modulo l.
 
 Note that this is the same scalar field as edwards448, allowing
