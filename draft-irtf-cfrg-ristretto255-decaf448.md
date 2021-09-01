@@ -172,7 +172,7 @@ in conjuction with Diffie-Hellman key exchanges.
 Elliptic curve points in this document are represented in extended
 Edwards coordinates in the `(x, y, z, t)` format [@Twisted]. Field
 elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-edwards448 prime, as specified in Sections 4.1 and 4.2 of [@RFC7748],
+edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and 4.2 of [@RFC7748],
 respectively. All formulas specify field operations unless otherwise
 noted.
 
