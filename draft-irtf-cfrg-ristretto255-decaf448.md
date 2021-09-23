@@ -603,7 +603,7 @@ On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 
 where `+sqrt(x)` indicates the non-negative square root of x.
 
-The computation is similar to Section 5.1.3 of [@RFC8032], with the
+The computation is similar to Section 5.2.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
 for efficient implementation of the one-way map functionality. The
