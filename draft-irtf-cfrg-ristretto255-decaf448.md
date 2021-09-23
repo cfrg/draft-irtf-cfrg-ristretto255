@@ -99,7 +99,7 @@ appropriate place), or not at all.
 
 Even for simple protocols such as signatures, these tweaks can cause
 subtle issues.  For instance, Ed25519 implementations may have
-different validation behaviour between batched and singleton
+different validation behavior between batched and singleton
 verification, and at least as specified in [@RFC8032], the set of
 valid signatures is not defined by the standard.
 
