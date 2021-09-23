@@ -262,7 +262,7 @@ multiplication is the repeated addition of an element.
 # ristretto255 (#ristretto255)
 
 ristretto255 is an instantiation of the abstract prime-order group
-interface defined in (#interface). This documents describes how to
+interface defined in (#interface). This document describes how to
 implement the ristretto255 prime-order group using Curve25519 points as
 internal representations.
 
