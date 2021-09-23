@@ -701,7 +701,7 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes448}
 
-The one-way map operates an uniformly distributed bytestrings of 112 bytes
+The one-way map operates on uniformly distributed bytestrings of 112 bytes
 in length. To obtain such an input from an arbitrary length bytestring, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
