@@ -627,7 +627,7 @@ return (was_square, r)
 
 ### Decode {#decoding448}
 
-All elements are encoded as a bytestring of 56 bytes in length.
+All elements are encoded as bytestrings of 56 bytes in length.
 Decoding proceeds as follows:
 
 1. First, interpret the bytestring as an integer s in little-endian
