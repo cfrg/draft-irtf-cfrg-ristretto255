@@ -672,7 +672,8 @@ u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 ```
 
-2. Return the 56-byte little-endian encoding of s, reduced modulo p.
+2. Return the 56-byte little-endian encoding of the unique integer
+representation of s as an integer in the 0 to p-1 range.
 
 Note that decoding and then re-encoding a valid group element will
 yield an identical bytestring.
