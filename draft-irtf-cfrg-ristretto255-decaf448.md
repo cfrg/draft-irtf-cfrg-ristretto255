@@ -756,8 +756,11 @@ Given a uniformly distributed bytestring b of 64 bytes length, implementations c
 obtain a scalar by interpreting b as a 512-bit
 integer in little-endian order and reducing the integer modulo l.
 
-Note that this is the same scalar field as edwards448, allowing
-existing implementations to be reused.
+This is the same scalar field as edwards448. Note that while it is
+very strongly recommended to ensure any scalar s is canonicalized in
+the range 0 <= s < l, it is not a strict requirement in order to
+allow scalar arithmetic implementations in existing edwards448
+libraries to be reused.
 
 # API Considerations {#api}
 
