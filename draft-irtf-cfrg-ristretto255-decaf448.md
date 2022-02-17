@@ -530,8 +530,11 @@ obtain a scalar by interpreting the 64-byte string as a 512-bit
 integer in little-endian order and reducing the integer modulo l, as
 in [@RFC8032].
 
-Note that this is the same scalar field as Curve25519, allowing
-existing implementations to be reused.
+This is the same scalar field as Curve25519. Note that while it is
+very strongly recommended to ensure any scalar s is canonicalized in
+the range 0 <= s < l, it is not a strict requirement in order to
+allow scalar arithmetic implementations in existing Curve25519
+libraries to be reused.
 
 # decaf448 (#decaf448)
 
