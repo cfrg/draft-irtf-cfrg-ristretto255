@@ -90,7 +90,7 @@ compression</title>
 
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and formulae among the fastest known for curve operations. However,
+points and formulas among the fastest known for curve operations. However,
 every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.
 This abstraction mismatch is usually handled by means of ad-hoc
@@ -308,8 +308,8 @@ Implementations **MUST NOT** expose them to their API consumers.
 * `D` = 37095705934669439343138083508754565189542113879843219016388785533085940283555
   * This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of [@RFC7748].
 * `SQRT_M1` = 19681161376707505956807079304988542015446066515923890162744021073123829784752
-* `INVSQRT_A_MINUS_D` = 54469307008909316920995813868745141605393597292927456921205312896311721017578
 * `SQRT_AD_MINUS_ONE` = 25063068953384623474111414158702152701244531502492656460079210482610430750235
+* `INVSQRT_A_MINUS_D` = 54469307008909316920995813868745141605393597292927456921205312896311721017578
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
 
@@ -362,7 +362,7 @@ return (was_square, r)
 
 ### Decode {#decoding255}
 
-All elements are encoded as as a 32-byte strings. Decoding proceeds as follows:
+All elements are encoded as a 32-byte string. Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
@@ -506,7 +506,7 @@ The scalars for the ristretto255 group are integers modulo the order l
 of the ristretto255 group. Note that this is the same scalar field as
 Curve25519, allowing existing implementations to be reused.
 
-Scalars are encoded as 56-byte strings in little-endian order.
+Scalars are encoded as 32-byte strings in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
 0 <= s < l when parsing them and reject non-canonical scalar
 encodings. Implementations **SHOULD** reduce scalars modulo l when
@@ -567,7 +567,8 @@ This document references the following constant field element values.
 Implementations **MUST NOT** expose them to their API consumers.
 
 * `D` = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358
-  * This is the Edwards d parameter for edwards448, as specified in Section 4.2 of [@RFC7748], and is equal to -39081 in the field.
+  * This is the Edwards d parameter for edwards448, as specified in
+    Section 4.2 of [@RFC7748], and is equal to -39081 in the field.
 * `ONE_MINUS_D` = 39082
 * `ONE_MINUS_TWO_D` = 78163
 * `SQRT_MINUS_D` = 98944233647732219769177004876929019128417576295529901074099889598043702116001257856802131563896515373927712232092845883226922417596214
