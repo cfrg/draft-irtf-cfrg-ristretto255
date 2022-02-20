@@ -90,7 +90,7 @@ compression</title>
 
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and formulae among the fastest known for curve operations.  However,
+points and formulae among the fastest known for curve operations. However,
 every Edwards curve has a point of order 4. Thus, the group of
 points on the curve is not of prime order but has a small cofactor.
 This abstraction mismatch is usually handled by means of ad-hoc
@@ -98,7 +98,7 @@ protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.
 
 Even for simple protocols such as signatures, these tweaks can cause
-subtle issues.  For instance, Ed25519 implementations may have
+subtle issues. For instance, Ed25519 implementations may have
 different validation behavior between batched and singleton
 verification, and at least as specified in [@RFC8032], the set of
 valid signatures is not defined by the standard.
@@ -162,28 +162,30 @@ Diffie-Hellman key exchange mechanism. Over time, use shifted, and
 curve, or its concrete representation in Montgomery form, or the
 specific Diffie-Hellman mechanism. This document uses the term
 "Curve25519" to refer to the abstract underlying curve, as recommended
-in [@Naming].  More concretely, the abstract Edwards form of the curve
-we refer to here as "Curve25519", is in [@?RFC7748] referred to
-following the curve designer's retroactive renaming to "edwards25519"
-and its isogenous Montgomery form is therein referred to as "curve25519",
-following the shifting conventions stemming from its alternate usage
-in conjuction with Diffie-Hellman key exchanges.
+in [@Naming]. The abstract Edwards form of the curve we refer to here
+as "Curve25519" is in [@?RFC7748] referred to as "edwards25519"
+and its isogenous Montgomery form is referred to as "curve25519".
 
 Elliptic curve points in this document are represented in extended
-Edwards coordinates in the `(x, y, z, t)` format [@Twisted]. Field
+Edwards coordinates in the `(x, y, z, t)` format [@Twisted], also called
+extended homogeneous coordinates in Section 5.1.4 of [@?RFC8032]. Field
 elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and 4.2 of [@RFC7748],
-respectively. All formulas specify field operations unless otherwise
-noted.
+edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and
+4.2 of [@RFC7748], respectively. All formulas specify field operations
+unless otherwise noted.
 
 The `|` symbol represents a constant-time logical OR.
 
 The notation `array[A:B]` means the elements of `array` from `A`
-to `B-1`.  That is, it is exclusive of `B`.  Arrays are indexed
+to `B-1`. That is, it is exclusive of `B`. Arrays are indexed
 starting from 0.
 
-In this document, a `byte` is an 8-bit entity (also known as
-"octet") and a `bytestring` is an ordered sequence of bytes.
+A byte is an 8-bit entity (also known as "octet") and a byte string
+is an ordered sequence of bytes. A N-byte string is a byte string of
+N bytes length.
+
+Element encodings are presented as hex encoded byte strings with
+whitespace added for readability.
 
 <reference anchor='Twisted' target='https://eprint.iacr.org/2008/522'>
     <front>
@@ -233,23 +235,25 @@ The only operations exposed by each abstract group are decoding,
 encoding, equality, a one-way map, addition, negation, and the
 derived subtraction and (multi-)scalar multiplication.
 
-Decoding is a function from bytestrings to abstract elements with
+Decoding is a function from byte strings to abstract elements with
 built-in validation, so that only the canonical encodings of valid
 elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.
 
-Encoding is a function from abstract elements to bytestrings so that all
+Encoding is a function from abstract elements to byte strings so that all
 equivalent representations of the same element are encoded as identical
-bytestrings. Decoding the output of the encoding function always
+byte strings. Decoding the output of the encoding function always
 succeeds and returns an equivalent element to the encoding input.
 
 The equality check reports whether two representations of an abstract
 element are equivalent.
 
-The one-way map is a function from uniformly distributed bytestrings
+The one-way map is a function from uniformly distributed byte strings
 of a fixed length to uniformly distributed abstract elements. This map
-is not invertible and is suitable for hash-to-group operations and to
-select random elements.
+is suitable for hash-to-group operations and to select random elements.
+The map is not intended to be invertible, but its one-way nature alone
+should not be relied on for security, as it's possible to find valid
+inputs for a given output.
 
 Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many times as the order of
@@ -285,10 +289,10 @@ Since ristretto255 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is the hexadecimal encoding of its bytestring:
+multiplication. This is its encoding:
 
 ```
-e2f2ae0a6abc4e71a884a961c500515f58e30b6aa582dd8db6a65945e08d2d76
+e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 ```
 
 Implementations **MUST NOT** expose either the internal representation
@@ -303,30 +307,11 @@ Implementations **MUST NOT** expose them to their API consumers.
 
 * `D` = 37095705934669439343138083508754565189542113879843219016388785533085940283555
   * This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of [@RFC7748].
-* `A` = -1
 * `SQRT_M1` = 19681161376707505956807079304988542015446066515923890162744021073123829784752
 * `INVSQRT_A_MINUS_D` = 54469307008909316920995813868745141605393597292927456921205312896311721017578
 * `SQRT_AD_MINUS_ONE` = 25063068953384623474111414158702152701244531502492656460079210482610430750235
-  * The non-negative square roots are used in the choice of constants
-    for `SQRT_M1` and `INVSQRT_A_MINUS_D`, while `SQRT_AD_MINUS_ONE`
-    uses the negative square root as it has the least absolute residue.
 * `ONE_MINUS_D_SQ` = 1159843021668779879193775521855586647937357759715417654439879720876111806838
 * `D_MINUS_ONE_SQ` = 40440834346308536858101042469323190826248399146238708352240133220865137265952
-
-## Internal point representations {#pointrepr}
-
-Ristretto is agnostic to the underlying elliptic curve and hence also
-coordinate choices for expressing points on the curve.  However, in
-this document, we follow the use of extended homogenous coordinates as
-in [@?RFC8032]:
-
-A point (x,y) is represented in extended homogeneous coordinates
-(X, Y, Z, T), with x = X/Z, y = Y/Z, x * y = T/Z.
-
-The neutral point is (0,1), or equivalently in extended homogeneous
-coordinates (0, Z, Z, 0) for any non-zero Z.
-
-Implementation **MUST NOT** expose underlying elliptic curve points.
 
 ## Square root of a ratio of field elements {#sqrtratio255}
 
@@ -377,8 +362,7 @@ return (was_square, r)
 
 ### Decode {#decoding255}
 
-All elements are encoded as a bytestring of length exactly 32 bytes each.
-Decoding proceeds as follows:
+All elements are encoded as as a 32-byte strings. Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
@@ -422,7 +406,7 @@ encoded as follows:
 u1 = (z0 + y0) * (z0 - y0)
 u2 = x0 * y0
 
-// Ignore was_square since this is always square
+// Ignore was_square since this is always square.
 (_, invsqrt) = SQRT_RATIO_M1(1, u1 * u2^2)
 
 den1 = invsqrt * u1
@@ -446,10 +430,10 @@ y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 s = CT_ABS(den_inv * (z - y))
 ```
 
-2. Return the 32-byte little-endian encoding of s, reduced modulo p.
+2. Return the 32-byte little-endian encoding of s.
 
 Note that decoding and then re-encoding a valid group element will
-yield an identical bytestring.
+yield an identical byte string.
 
 ### Equals {#equals255}
 
@@ -474,8 +458,8 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes255}
 
-The one-way map operates on an uniformly distributed 64-byte strings. To
-obtain such an input from an arbitrary length bytestring, applications
+The one-way map operates on uniformly distributed 64-byte strings. To
+obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
@@ -485,13 +469,11 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[32:64])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a bytestring of 32 bytes in length as:
+The MAP function is defined on a 32-byte string as:
 
-1. Interpret the input bytestring as in integer r in little-endian
-   convention, then reduce it modulo 2^255 (this is equivalent to
-   "masking out the most significant bit" as in [@RFC7748],
-   section 5). The resulting integer, which is lower than 2^255,
-   is then further reduced modulo p, yielding a field element t.
+1. First, interpret the string as an integer r in little-endian
+   representation. Reduce r modulo 2^255, then further reduce it
+   modulo p, to obtain a field element t.
    * Note: similarly to [@RFC7748] field element decoding, the most
      significant bit of the representation of r is masked.
 
@@ -521,29 +503,26 @@ w3 = 1 + s^2
 ## Scalar field
 
 The scalars for the ristretto255 group are integers modulo the order l
-of the ristretto255 group.
+of the ristretto255 group. Note that this is the same scalar field as
+Curve25519, allowing existing implementations to be reused.
 
-Scalars are encoded as bytestrings of 32 bytes length in little-endian order.
+Scalars are encoded as 56-byte strings in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
 0 <= s < l when parsing them and reject non-canonical scalar
 encodings. Implementations **SHOULD** reduce scalars modulo l when
-encoding them as byte strings.
+encoding them as byte strings. Omitting these strict range checks is
+**NOT RECOMMENDED** but is allowed to enable reuse of scalar
+arithmetic implementations in existing Curve25519 libraries.
 
 Given a uniformly distributed 64-byte string b, implementations can
-obtain a scalar by interpreting the 64-byte string as a 512-bit
-integer in little-endian order and reducing the integer modulo l, as
-in [@RFC8032].
-
-This is the same scalar field as Curve25519. Note that while it is
-very strongly recommended to ensure any scalar s is canonicalized in
-the range 0 <= s < l, it is not a strict requirement in order to
-allow scalar arithmetic implementations in existing Curve25519
-libraries to be reused.
+obtain a uniformly distributed scalar by interpreting the 64-byte
+string as a 512-bit integer in little-endian order and reducing the
+integer modulo l, as in [@RFC8032].
 
 # decaf448 {#decaf448}
 
 decaf448 is an instantiation of the abstract prime-order group
-interface defined in (#interface). This documents describes how to
+interface defined in (#interface). This document describes how to
 implement the decaf448 prime-order group using edwards448 points as
 internal representations.
 
@@ -634,11 +613,10 @@ return (was_square, r)
 
 ### Decode {#decoding448}
 
-All elements are encoded as bytestrings of 56 bytes in length.
-Decoding proceeds as follows:
+All elements are encoded as a 56-byte string. Decoding proceeds as follows:
 
-1. First, interpret the bytestring as an integer s in little-endian
-   representation. If the length of the bytestring is not 56 bytes, or if
+1. First, interpret the string as an integer s in little-endian
+   representation. If the length of the string is not 56 bytes, or if
    the resulting value is >= p, decoding fails.
    * Note: unlike [@RFC7748] field element decoding, the most
      significant bit is not masked, and will necessarily be unset. The
@@ -671,7 +649,7 @@ encoded as follows:
 ```
 u1 = (x0 + t0) * (x0 - t0)
 
-// Ignore was_square since this is always square
+// Ignore was_square since this is always square.
 (_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
 
 ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
@@ -679,11 +657,10 @@ u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 ```
 
-2. Return the 56-byte little-endian encoding of the unique integer
-representation of s as an integer in the 0 to p-1 range.
+2. Return the 56-byte little-endian encoding of s.
 
 Note that decoding and then re-encoding a valid group element will
-yield an identical bytestring.
+yield an identical byte string.
 
 ### Equals {#equals448}
 
@@ -708,8 +685,8 @@ an equivalent, although less efficient, result.
 
 ### One-way map {#from_uniform_bytes448}
 
-The one-way map operates on uniformly distributed bytestrings of 112 bytes
-in length. To obtain such an input from an arbitrary length bytestring, applications
+The one-way map operates on uniformly distributed 112-byte strings. To
+obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
@@ -719,9 +696,9 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[56:112])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a bytestring of 56 bytes in length as:
+The MAP function is defined on a 56-byte string as:
 
-1. Interpret the bytestring as an integer r in little-endian representation.
+1. Interpret the string as an integer r in little-endian representation.
    Reduce r modulo p to obtain a field element t.
 
 2. Process t as follows:
@@ -748,23 +725,20 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
 ## Scalar field
 
 The scalars for the decaf448 group are integers modulo the order l
-of the decaf448 group.
+of the decaf448 group. Note that this is the same scalar field as
+edwards448, allowing existing implementations to be reused.
 
-Scalars are encoded as bytestrings of 56 bytes in length, in little-endian order.
+Scalars are encoded as 56-byte strings in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
 0 <= s < l when parsing them and reject non-canonical scalar
 encodings. Implementations **SHOULD** reduce scalars modulo l when
-encoding them as bytestrings.
+encoding them as byte strings. Omitting these strict range checks is
+**NOT RECOMMENDED** but is allowed to enable reuse of scalar
+arithmetic implementations in existing edwards448 libraries.
 
-Given a uniformly distributed bytestring b of 64 bytes length, implementations can
-obtain a scalar by interpreting b as a 512-bit
+Given a uniformly distributed 64-byte string b, implementations can
+obtain a scalar by interpreting the 64-byte string as a 512-bit
 integer in little-endian order and reducing the integer modulo l.
-
-This is the same scalar field as edwards448. Note that while it is
-very strongly recommended to ensure any scalar s is canonicalized in
-the range 0 <= s < l, it is not a strict requirement in order to
-allow scalar arithmetic implementations in existing edwards448
-libraries to be reused.
 
 # API Considerations {#api}
 
@@ -781,7 +755,8 @@ case, as long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
 implementations **MUST NOT** define any external ristretto255 or decaf448
 interface as operating on arbitrary curve points, and they **MUST NOT**
-construct group elements except via decoding and the one-way map. They are
+construct group elements except via decoding, the one-way map, or group
+operations on other valid group elements per (#interface). They are
 however allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.
@@ -805,10 +780,10 @@ of the abstraction can be defeated by implementations that do not follow
 the guidance in (#api).
 
 There is no function to test whether an elliptic curve point is a
-valid internal representation of a group element.  The decoding
+valid internal representation of a group element. The decoding
 function always returns a valid internal representation, or an error, and
 allowed operations on valid internal representations return valid
-internal representations.  In this way, an implementation can maintain
+internal representations. In this way, an implementation can maintain
 the invariant that an internal representation is always valid, so that
 checking is never necessary, and invalid states are unrepresentable.
 
@@ -903,7 +878,7 @@ d483fe81 3c6ba647 ebbfd3ec 41adca1c 6130c2be eee9d9bf 065c8d15 1c5f396e
 ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 ```
 
-## Group elements from uniform bytestrings
+## Group elements from uniform byte strings
 
 The following pairs are inputs to the one-way map of
 (#from_uniform_bytes255), and their encoded outputs.
@@ -1112,7 +1087,7 @@ f063769e 4241e76d 815800e4 933a3a14 4327a30e c40758ad 3723a788
 cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 ```
 
-## Group elements from uniform bytestrings
+## Group elements from uniform byte strings
 
 The following pairs are inputs to the one-way map of
 (#from_uniform_bytes448), and their encoded outputs.
