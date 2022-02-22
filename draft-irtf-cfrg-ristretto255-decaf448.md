@@ -91,8 +91,7 @@ compression</title>
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and formulas among the fastest known for curve operations. However,
-every Edwards curve has a point of order 4. Thus, the group of
-points on the curve is not of prime order but has a small cofactor.
+the group of points on the curve is not of prime order and has a cofactor.
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.
@@ -117,7 +116,8 @@ overhead, and only in the encoding and decoding phases.
 
 While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
-the ristretto255 group, which MAY be implemented using Curve25519.
+the ristretto255 group, which MAY be implemented using Curve25519,
+and the decaf448 group, which MAY be implemented using edwards448.
 
 There are other elliptic curves that can be used internally to
 implement ristretto255 or decaf448, and those implementations would be
