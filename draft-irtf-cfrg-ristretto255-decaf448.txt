@@ -5,19 +5,19 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 5 February 2022                                                
-                                                           G. Tankersley
-                                                                        
-                                                             F. Valsorda
+Expires: 27 August 2022                                                 
+                                                              M. Hamburg
                                                                         
                                                             I. Lovecruft
                                                                         
-                                                              M. Hamburg
-                                                           4 August 2021
+                                                           G. Tankersley
+                                                                        
+                                                             F. Valsorda
+                                                        23 February 2022
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-01
+                draft-irtf-cfrg-ristretto255-decaf448-03
 
 Abstract
 
@@ -43,11 +43,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 February 2022.
+   This Internet-Draft will expire on 27 August 2022.
 
 Copyright Notice
 
-   Copyright (c) 2021 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -93,12 +93,12 @@ Table of Contents
    Appendix A.  Test vectors for ristretto255
      A.1.  Multiples of the generator
      A.2.  Invalid encodings
-     A.3.  Group elements from uniform bytestrings
+     A.3.  Group elements from uniform byte strings
      A.4.  Square root of a ratio of field elements
    Appendix B.  Test vectors for decaf448
      B.1.  Multiples of the generator
      B.2.  Invalid encodings
-     B.3.  Group elements from uniform bytestrings
+     B.3.  Group elements from uniform byte strings
    Authors' Addresses
 
 1.  Introduction
@@ -112,16 +112,15 @@ Table of Contents
 
    Edwards curves provide a number of implementation benefits for
    cryptography, such as complete addition formulas with no exceptional
-   points and the fastest known formulas for curve operations.  However,
-   every Edwards curve has a point of order 4.  Thus, the group of
-   points on the curve is not of prime order but has a small cofactor.
-   This abstraction mismatch is usually handled by means of ad-hoc
-   protocol tweaks (such as multiplying by the cofactor in an
-   appropriate place), or not at all.
+   points and formulas among the fastest known for curve operations.
+   However, the group of points on the curve is not of prime order,
+   i.e., it has a cofactor larger than 1.  This abstraction mismatch is
+   usually handled by means of ad-hoc protocol tweaks (such as
+   multiplying by the cofactor in an appropriate place), or not at all.
 
    Even for simple protocols such as signatures, these tweaks can cause
    subtle issues.  For instance, Ed25519 implementations may have
-   different validation behaviour between batched and singleton
+   different validation behavior between batched and singleton
    verification, and at least as specified in [RFC8032], the set of
    valid signatures is not defined by the standard.
 
@@ -139,7 +138,8 @@ Table of Contents
 
    While Ristretto is a general method, and can be used in conjunction
    with any Edwards curve with cofactor 4 or 8, this document specifies
-   the ristretto255 group, which MAY be implemented using Curve25519.
+   the ristretto255 group, which can be implemented using Curve25519,
+   and the decaf448 group, which can be implemented using edwards448.
 
    There are other elliptic curves that can be used internally to
    implement ristretto255 or decaf448, and those implementations would
@@ -147,7 +147,7 @@ Table of Contents
    those constructions are out-of-scope for this document.
 
    The Ristretto construction is described and justified in detail at
-   https://ristretto.group (https://ristretto.group).
+   [RistrettoGroup].
 
 2.  Notation and Conventions Used In This Document
 
@@ -165,19 +165,31 @@ Table of Contents
    curve, or its concrete representation in Montgomery form, or the
    specific Diffie-Hellman mechanism.  This document uses the term
    "Curve25519" to refer to the abstract underlying curve, as
-   recommended in [Naming].
+   recommended in [Naming].  The abstract Edwards form of the curve we
+   refer to here as "Curve25519" is in [RFC7748] referred to as
+   "edwards25519" and its isogenous Montgomery form is referred to as
+   "curve25519".
 
    Elliptic curve points in this document are represented in extended
-   Edwards coordinates in the "(x, y, z, t)" format [Twisted].  Field
-   elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-   edwards448 prime, as specified in Sections 4.1 and 4.2 of [RFC7748],
-   respectively.  All formulas specify field operations unless otherwise
-   noted.
+   Edwards coordinates in the "(x, y, z, t)" format [Twisted], also
+   called extended homogeneous coordinates in Section 5.1.4 of
+   [RFC8032].  Field elements are values modulo p, the Curve25519 prime
+   2^255 - 19 or the edwards448 prime 2^448 - 2^224 - 1, as specified in
+   Sections 4.1 and 4.2 of [RFC7748], respectively.  All formulas
+   specify field operations unless otherwise noted.
 
    The "|" symbol represents a constant-time logical OR.
 
    The notation "array[A:B]" means the elements of "array" from "A" to
-   "B-1".  That is, it is exclusive of "B".
+   "B-1".  That is, it is exclusive of "B".  Arrays are indexed starting
+   from 0.
+
+   A byte is an 8-bit entity (also known as "octet") and a byte string
+   is an ordered sequence of bytes.  A N-byte string is a byte string of
+   N bytes length.
+
+   Element encodings are presented as hex encoded byte strings with
+   whitespace added for readability.
 
 2.1.  Negative field elements
 
@@ -211,24 +223,26 @@ Table of Contents
    encoding, equality, a one-way map, addition, negation, and the
    derived subtraction and (multi-)scalar multiplication.
 
-   Decoding is a function from bytestrings to abstract elements with
+   Decoding is a function from byte strings to abstract elements with
    built-in validation, so that only the canonical encodings of valid
    elements are accepted.  The built-in validation avoids the need for
    explicit invalid curve checks.
 
-   Encoding is a function from abstract elements to bytestrings so that
+   Encoding is a function from abstract elements to byte strings so that
    all equivalent representations of the same element are encoded as
-   identical bytestrings.  Decoding the output of the encoding function
+   identical byte strings.  Decoding the output of the encoding function
    always succeeds and returns an equivalent element to the encoding
    input.
 
    The equality check reports whether two representations of an abstract
    element are equivalent.
 
-   The one-way map is a function from uniformly distributed bytestrings
+   The one-way map is a function from uniformly distributed byte strings
    of a fixed length to uniformly distributed abstract elements.  This
-   map is not invertible and is suitable for hash-to-group operations
-   and to select random elements.
+   map is suitable for hash-to-group operations and to select random
+   elements.  The map is not invertible, but also not pre-image
+   resistant, meaning an attacker can find a valid input for a given
+   output.
 
    Addition is the group operation.  The group has an identity element
    and prime order.  Adding an element to itself as many times as the
@@ -241,7 +255,7 @@ Table of Contents
 4.  ristretto255
 
    ristretto255 is an instantiation of the abstract prime-order group
-   interface defined in Section 3.  This documents describes how to
+   interface defined in Section 3.  This document describes how to
    implement the ristretto255 prime-order group using Curve25519 points
    as internal representations.
 
@@ -397,7 +411,7 @@ return (was_square, r)
    u1 = (z0 + y0) * (z0 - y0)
    u2 = x0 * y0
 
-   // Ignore was_square since this is always square
+   // Ignore was_square since this is always square.
    (_, invsqrt) = SQRT_RATIO_M1(1, u1 * u2^2)
 
    den1 = invsqrt * u1
@@ -410,6 +424,7 @@ return (was_square, r)
 
    rotate = IS_NEGATIVE(t0 * z_inv)
 
+   // Conditionally rotate x and y.
    x = CT_SELECT(iy0 IF rotate ELSE x0)
    y = CT_SELECT(ix0 IF rotate ELSE y0)
    z = z0
@@ -419,10 +434,10 @@ return (was_square, r)
 
    s = CT_ABS(den_inv * (z - y))
 
-   2.  Return the 32-byte little-endian encoding of s, reduced modulo p.
+   2.  Return the 32-byte little-endian encoding of s.
 
    Note that decoding and then re-encoding a valid group element will
-   yield an identical bytestring.
+   yield an identical byte string.
 
 4.3.3.  Equals
 
@@ -448,8 +463,8 @@ return (was_square, r)
 
 4.3.4.  One-way map
 
-   The one-way map operates an uniformly distributed 64-byte strings.
-   To obtain such an input from an arbitrary length bytestring,
+   The one-way map operates on uniformly distributed 64-byte strings.
+   To obtain such an input from an arbitrary length byte string,
    applications should use a domain-separated hash construction, the
    choice of which is out-of-scope for this document.
 
@@ -461,11 +476,11 @@ return (was_square, r)
 
    3.  Return P1 + P2.
 
-   The MAP function is defined on a 32-bytes string as:
+   The MAP function is defined on a 32-byte string as:
 
-   1.  Interpret the least significant 255 bits of the string as an
-       integer r in little-endian representation.  Reduce r modulo p to
-       obtain a field element t.
+   1.  First, interpret the string as an integer r in little-endian
+       representation.  Reduce r modulo 2^255, then further reduce it
+       modulo p, to obtain a field element t.
 
        *  Note: similarly to [RFC7748] field element decoding, the most
           significant bit of the representation of r is masked.
@@ -494,26 +509,26 @@ return (was_square, r)
 4.4.  Scalar field
 
    The scalars for the ristretto255 group are integers modulo the order
-   l of the ristretto255 group.
+   l of the ristretto255 group.  Note that this is the same scalar field
+   as Curve25519, allowing existing implementations to be reused.
 
    Scalars are encoded as 32-byte strings in little-endian order.
    Implementations SHOULD check that any scalar s falls in the range 0
    <= s < l when parsing them and reject non-canonical scalar encodings.
    Implementations SHOULD reduce scalars modulo l when encoding them as
-   byte strings.
+   byte strings.  Omitting these strict range checks is NOT RECOMMENDED
+   but is allowed to enable reuse of scalar arithmetic implementations
+   in existing Curve25519 libraries.
 
    Given a uniformly distributed 64-byte string b, implementations can
-   obtain a scalar by interpreting the 64-byte string as a 512-bit
-   integer in little-endian order and reducing the integer modulo l, as
-   in [RFC8032].
-
-   Note that this is the same scalar field as Curve25519, allowing
-   existing implementations to be reused.
+   obtain a uniformly distributed scalar by interpreting the 64-byte
+   string as a 512-bit integer in little-endian order and reducing the
+   integer modulo l, as in [RFC8032].
 
 5.  decaf448
 
    decaf448 is an instantiation of the abstract prime-order group
-   interface defined in Section 3.  This documents describes how to
+   interface defined in Section 3.  This document describes how to
    implement the decaf448 prime-order group using edwards448 points as
    internal representations.
 
@@ -594,7 +609,7 @@ return (was_square, r)
 
    where "+sqrt(x)" indicates the non-negative square root of x.
 
-   The computation is similar to Section 5.1.3 of [RFC8032], with the
+   The computation is similar to Section 5.2.3 of [RFC8032], with the
    difference that if the input is non-square, the function returns a
    result with a defined relationship to the inputs.  This result is
    used for efficient implementation of the one-way map functionality.
@@ -655,17 +670,17 @@ return (was_square, r)
 
    u1 = (x0 + t0) * (x0 - t0)
 
-   // Ignore was_square since this is always square
+   // Ignore was_square since this is always square.
    (_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
 
    ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
    u2 = INVSQRT_MINUS_D * ratio * z0 - t0
    s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 
-   2.  Return the 56-byte little-endian encoding of s, reduced modulo p.
+   2.  Return the 56-byte little-endian encoding of s.
 
    Note that decoding and then re-encoding a valid group element will
-   yield an identical bytestring.
+   yield an identical byte string.
 
 5.3.3.  Equals
 
@@ -691,8 +706,8 @@ return (was_square, r)
 
 5.3.4.  One-way map
 
-   The one-way map operates an uniformly distributed 112-byte strings.
-   To obtain such an input from an arbitrary length bytestring,
+   The one-way map operates on uniformly distributed 112-byte strings.
+   To obtain such an input from an arbitrary length byte string,
    applications should use a domain-separated hash construction, the
    choice of which is out-of-scope for this document.
 
@@ -704,7 +719,7 @@ return (was_square, r)
 
    3.  Return P1 + P2.
 
-   The MAP function is defined on a 56-bytes string as:
+   The MAP function is defined on a 56-byte string as:
 
    1.  Interpret the string as an integer r in little-endian
        representation.  Reduce r modulo p to obtain a field element t.
@@ -731,20 +746,20 @@ return (was_square, r)
 5.4.  Scalar field
 
    The scalars for the decaf448 group are integers modulo the order l of
-   the decaf448 group.
+   the decaf448 group.  Note that this is the same scalar field as
+   edwards448, allowing existing implementations to be reused.
 
    Scalars are encoded as 56-byte strings in little-endian order.
    Implementations SHOULD check that any scalar s falls in the range 0
    <= s < l when parsing them and reject non-canonical scalar encodings.
    Implementations SHOULD reduce scalars modulo l when encoding them as
-   byte strings.
+   byte strings.  Omitting these strict range checks is NOT RECOMMENDED
+   but is allowed to enable reuse of scalar arithmetic implementations
+   in existing edwards448 libraries.
 
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a scalar by interpreting the 64-byte string as a 512-bit
    integer in little-endian order and reducing the integer modulo l.
-
-   Note that this is the same scalar field as edwards448, allowing
-   existing implementations to be reused.
 
 6.  API Considerations
 
@@ -762,7 +777,8 @@ return (was_square, r)
    this document.  In particular, implementations MUST NOT define any
    external ristretto255 or decaf448 interface as operating on arbitrary
    curve points, and they MUST NOT construct group elements except via
-   decoding and the one-way map.  They are however allowed to apply any
+   decoding, the one-way map, or group operations on other valid group
+   elements per Section 3.  They are however allowed to apply any
    optimization strategy to the internal representations as long as it
    doesn't change the exposed behavior of the API.
 
@@ -795,8 +811,8 @@ return (was_square, r)
 
 9.  Acknowledgements
 
-   The authors would like to thank Daira Hopwood, Riad S.  Wahby, and
-   Chris Wood for their comments on the draft.
+   The authors would like to thank Daira Hopwood, Riad S.  Wahby, Chris
+   Wood, and Thomas Pornin for their comments on the draft.
 
 10.  Normative References
 
@@ -811,21 +827,18 @@ return (was_square, r)
 
 11.  Informative References
 
-   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
-              <https://mailarchive.ietf.org/arch/msg/cfrg/-
-              9LEdnzVrE5RORux3Oo_oDDRksU/>.
+   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
+              for Security", RFC 7748, DOI 10.17487/RFC7748, January
+              2016, <https://www.rfc-editor.org/info/rfc7748>.
 
-   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
-              "Twisted Edwards Curves Revisited", 2008,
-              <https://eprint.iacr.org/2008/522>.
+   [RistrettoGroup]
+              de Valence, H., Lovecruft, I., Arcieri, T., and M.
+              Hamburg, "The Ristretto Group", 2018,
+              <https://ristretto.group>.
 
    [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
               compression", 2015,
               <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
-
-   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
-              for Security", RFC 7748, DOI 10.17487/RFC7748, January
-              2016, <https://www.rfc-editor.org/info/rfc7748>.
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
@@ -837,6 +850,14 @@ return (was_square, r)
               Ring Signatures", 2017,
               <https://jonasnick.github.io/blog/2017/05/23/exploiting-
               low-order-generators-in-one-time-ring-signatures/>.
+
+   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
+              <https://mailarchive.ietf.org/arch/msg/cfrg/-
+              9LEdnzVrE5RORux3Oo_oDDRksU/>.
+
+   [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
+              "Twisted Edwards Curves Revisited", 2008,
+              <https://eprint.iacr.org/2008/522>.
 
 Appendix A.  Test vectors for ristretto255
 
@@ -918,7 +939,7 @@ A.2.  Invalid encodings
  # s = -1, which causes y = 0.
  ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 
-A.3.  Group elements from uniform bytestrings
+A.3.  Group elements from uniform byte strings
 
    The following pairs are inputs to the one-way map of Section 4.3.4,
    and their encoded outputs.
@@ -1116,7 +1137,7 @@ B.2.  Invalid encodings
    5a0104f1 f55d152c eb68bc13 81824998 91d90ee8 f09b4003 8ccc1e07
    cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 
-B.3.  Group elements from uniform bytestrings
+B.3.  Group elements from uniform byte strings
 
    The following pairs are inputs to the one-way map of Section 5.3.4,
    and their encoded outputs.
@@ -1182,6 +1203,16 @@ Authors' Addresses
    Email: ietf@jackgrigg.com
 
 
+   Mike Hamburg
+
+   Email: ietf@shiftleft.org
+
+
+   Isis Lovecruft
+
+   Email: ietf@en.ciph.re
+
+
    George Tankersley
 
    Email: ietf@gtank.cc
@@ -1190,13 +1221,3 @@ Authors' Addresses
    Filippo Valsorda
 
    Email: ietf@filippo.io
-
-
-   Isis Lovecruft
-
-   Email: ietf@en.ciph.re
-
-
-   Mike Hamburg
-
-   Email: ietf@shiftleft.org
