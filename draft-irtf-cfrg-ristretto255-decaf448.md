@@ -91,7 +91,7 @@ compression</title>
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and formulas among the fastest known for curve operations. However,
-the group of points on the curve is not of prime order and has a cofactor.
+the group of points on the curve is not of prime order, i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.
@@ -116,8 +116,8 @@ overhead, and only in the encoding and decoding phases.
 
 While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
-the ristretto255 group, which MAY be implemented using Curve25519,
-and the decaf448 group, which MAY be implemented using edwards448.
+the ristretto255 group, which can be implemented using Curve25519,
+and the decaf448 group, which can be implemented using edwards448.
 
 There are other elliptic curves that can be used internally to
 implement ristretto255 or decaf448, and those implementations would be
@@ -251,9 +251,8 @@ element are equivalent.
 The one-way map is a function from uniformly distributed byte strings
 of a fixed length to uniformly distributed abstract elements. This map
 is suitable for hash-to-group operations and to select random elements.
-The map is not intended to be invertible, but its one-way nature alone
-should not be relied on for security, as it's possible to find valid
-inputs for a given output.
+The map is not invertible, but also not pre-image resistant,
+meaning an attacker can find a valid input for a given output.
 
 Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many times as the order of
