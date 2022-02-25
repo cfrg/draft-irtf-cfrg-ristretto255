@@ -90,8 +90,9 @@ compression</title>
 
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and formulas among the fastest known for curve operations. However,
-the group of points on the curve is not of prime order, i.e., it has a cofactor larger than 1.
+points and formulas among the fastest known for curve operations.
+However, the group of points on the curve is not of prime order,
+i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.
@@ -366,9 +367,9 @@ All elements are encoded as a 32-byte string. Decoding proceeds as follows:
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
    the resulting value is >= p, decoding fails.
-   * Note: unlike [@RFC7748] field element decoding, the most
-     significant bit is not masked, and will necessarily be unset. The
-     test vectors in (#invalid255) exercise these edge cases.
+   * Note: unlike [@RFC7748] field element decoding, the most significant
+     bit is not masked, and non-canonical values are rejected.
+     The test vectors in (#invalid255) exercise these edge cases.
 2. If `IS_NEGATIVE(s)` returns TRUE, decoding fails.
 3. Process s as follows:
 
@@ -470,11 +471,15 @@ The one-way map on an input string b proceeds as follows:
 
 The MAP function is defined on a 32-byte string as:
 
-1. First, interpret the string as an integer r in little-endian
-   representation. Reduce r modulo 2^255, then further reduce it
-   modulo p, to obtain a field element t.
-   * Note: similarly to [@RFC7748] field element decoding, the most
-     significant bit of the representation of r is masked.
+1. First, mask the most significant bit in the final byte of the string,
+   and interpret the string as an integer r in little-endian
+   representation. Reduce r modulo p to obtain a field element t.
+   * Masking the most significant bit is equivalent to interpreting the
+     whole string as an integer in little-endian representation and then
+     reducing it modulo 2^255.
+   * Note: similarly to [@RFC7748] field element decoding, and unlike
+     field element decoding in (#decoding255), the most significant bit
+     is masked, and non-canonical values are accepted.
 
 2. Process t as follows:
 
@@ -618,9 +623,9 @@ All elements are encoded as a 56-byte string. Decoding proceeds as follows:
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 56 bytes, or if
    the resulting value is >= p, decoding fails.
-   * Note: unlike [@RFC7748] field element decoding, the most
-     significant bit is not masked, and will necessarily be unset. The
-     test vectors in (#invalid448) exercise these edge cases.
+   * Note: unlike [@RFC7748] field element decoding, non-canonical
+     values are rejected. The test vectors in (#invalid448) exercise
+     these edge cases.
 2. If `IS_NEGATIVE(s)` returns TRUE, decoding fails.
 3. Process s as follows:
 
@@ -700,6 +705,9 @@ The MAP function is defined on a 56-byte string as:
 
 1. Interpret the string as an integer r in little-endian representation.
    Reduce r modulo p to obtain a field element t.
+   * Note: similarly to [@RFC7748] field element decoding, and unlike
+     field element decoding in (#decoding448), non-canonical values are
+     accepted.
 
 2. Process t as follows:
 

@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 27 August 2022                                                 
+Expires: 29 August 2022                                                 
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,7 +13,7 @@ Expires: 27 August 2022
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                        23 February 2022
+                                                        25 February 2022
 
 
                   The ristretto255 and decaf448 Groups
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 August 2022.
+   This Internet-Draft will expire on 29 August 2022.
 
 Copyright Notice
 
@@ -373,8 +373,9 @@ return (was_square, r)
        if the resulting value is >= p, decoding fails.
 
        *  Note: unlike [RFC7748] field element decoding, the most
-          significant bit is not masked, and will necessarily be unset.
-          The test vectors in Appendix A.2 exercise these edge cases.
+          significant bit is not masked, and non-canonical values are
+          rejected.  The test vectors in Appendix A.2 exercise these
+          edge cases.
 
    2.  If "IS_NEGATIVE(s)" returns TRUE, decoding fails.
 
@@ -478,12 +479,18 @@ return (was_square, r)
 
    The MAP function is defined on a 32-byte string as:
 
-   1.  First, interpret the string as an integer r in little-endian
-       representation.  Reduce r modulo 2^255, then further reduce it
-       modulo p, to obtain a field element t.
+   1.  First, mask the most significant bit in the final byte of the
+       string, and interpret the string as an integer r in little-endian
+       representation.  Reduce r modulo p to obtain a field element t.
 
-       *  Note: similarly to [RFC7748] field element decoding, the most
-          significant bit of the representation of r is masked.
+       *  Masking the most significant bit is equivalent to interpreting
+          the whole string as an integer in little-endian representation
+          and then reducing it modulo 2^255.
+
+       *  Note: similarly to [RFC7748] field element decoding, and
+          unlike field element decoding in Section 4.3.1, the most
+          significant bit is masked, and non-canonical values are
+          accepted.
 
    2.  Process t as follows:
 
@@ -639,9 +646,9 @@ return (was_square, r)
        representation.  If the length of the string is not 56 bytes, or
        if the resulting value is >= p, decoding fails.
 
-       *  Note: unlike [RFC7748] field element decoding, the most
-          significant bit is not masked, and will necessarily be unset.
-          The test vectors in Appendix B.2 exercise these edge cases.
+       *  Note: unlike [RFC7748] field element decoding, non-canonical
+          values are rejected.  The test vectors in Appendix B.2
+          exercise these edge cases.
 
    2.  If "IS_NEGATIVE(s)" returns TRUE, decoding fails.
 
@@ -723,6 +730,10 @@ return (was_square, r)
 
    1.  Interpret the string as an integer r in little-endian
        representation.  Reduce r modulo p to obtain a field element t.
+
+       *  Note: similarly to [RFC7748] field element decoding, and
+          unlike field element decoding in Section 5.3.1, non-canonical
+          values are accepted.
 
    2.  Process t as follows:
 
@@ -816,29 +827,24 @@ return (was_square, r)
 
 10.  Normative References
 
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+
 11.  Informative References
+
+   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
+              <https://mailarchive.ietf.org/arch/msg/cfrg/-
+              9LEdnzVrE5RORux3Oo_oDDRksU/>.
 
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
               2016, <https://www.rfc-editor.org/info/rfc7748>.
-
-   [RistrettoGroup]
-              de Valence, H., Lovecruft, I., Arcieri, T., and M.
-              Hamburg, "The Ristretto Group", 2018,
-              <https://ristretto.group>.
-
-   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
-              compression", 2015,
-              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
@@ -851,9 +857,14 @@ return (was_square, r)
               <https://jonasnick.github.io/blog/2017/05/23/exploiting-
               low-order-generators-in-one-time-ring-signatures/>.
 
-   [Naming]   Bernstein, D. J., "[Cfrg] 25519 naming", 2014,
-              <https://mailarchive.ietf.org/arch/msg/cfrg/-
-              9LEdnzVrE5RORux3Oo_oDDRksU/>.
+   [RistrettoGroup]
+              de Valence, H., Lovecruft, I., Arcieri, T., and M.
+              Hamburg, "The Ristretto Group", 2018,
+              <https://ristretto.group>.
+
+   [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
+              compression", 2015,
+              <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
 
    [Twisted]  Hisil, H., Wong, K. K., Carter, G., and E. Dawson,
               "Twisted Edwards Curves Revisited", 2008,

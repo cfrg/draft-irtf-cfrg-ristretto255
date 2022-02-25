@@ -48,8 +48,9 @@ Curve25519 library to provide a prime-order group with only a thin
 abstraction layer.</t>
 <t>Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and formulas among the fastest known for curve operations. However,
-the group of points on the curve is not of prime order, i.e., it has a cofactor larger than 1.
+points and formulas among the fastest known for curve operations.
+However, the group of points on the curve is not of prime order,
+i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks (such as multiplying by the cofactor in an
 appropriate place), or not at all.</t>
@@ -282,9 +283,9 @@ representation. If the length of the string is not 32 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul>
-<li><t>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most
-significant bit is not masked, and will necessarily be unset. The
-test vectors in <xref target="invalid255"></xref> exercise these edge cases.</t>
+<li><t>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most significant
+bit is not masked, and non-canonical values are rejected.
+The test vectors in <xref target="invalid255"></xref> exercise these edge cases.</t>
 </li>
 </ul></li>
 <li><t>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</t>
@@ -398,13 +399,18 @@ is out-of-scope for this document.</t>
 <t>The MAP function is defined on a 32-byte string as:</t>
 
 <ol>
-<li><t>First, interpret the string as an integer r in little-endian
-representation. Reduce r modulo 2^255, then further reduce it
-modulo p, to obtain a field element t.</t>
+<li><t>First, mask the most significant bit in the final byte of the string,
+and interpret the string as an integer r in little-endian
+representation. Reduce r modulo p to obtain a field element t.</t>
 
 <ul>
-<li><t>Note: similarly to <xref target="RFC7748"></xref> field element decoding, the most
-significant bit of the representation of r is masked.</t>
+<li><t>Masking the most significant bit is equivalent to interpreting the
+whole string as an integer in little-endian representation and then
+reducing it modulo 2^255.</t>
+</li>
+<li><t>Note: similarly to <xref target="RFC7748"></xref> field element decoding, and unlike
+field element decoding in <xref target="decoding255"></xref>, the most significant bit
+is masked, and non-canonical values are accepted.</t>
 </li>
 </ul></li>
 <li><t>Process t as follows:</t>
@@ -560,9 +566,9 @@ representation. If the length of the string is not 56 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul>
-<li><t>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most
-significant bit is not masked, and will necessarily be unset. The
-test vectors in <xref target="invalid448"></xref> exercise these edge cases.</t>
+<li><t>Note: unlike <xref target="RFC7748"></xref> field element decoding, non-canonical
+values are rejected. The test vectors in <xref target="invalid448"></xref> exercise
+these edge cases.</t>
 </li>
 </ul></li>
 <li><t>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</t>
@@ -654,7 +660,13 @@ is out-of-scope for this document.</t>
 <ol>
 <li><t>Interpret the string as an integer r in little-endian representation.
 Reduce r modulo p to obtain a field element t.</t>
+
+<ul>
+<li><t>Note: similarly to <xref target="RFC7748"></xref> field element decoding, and unlike
+field element decoding in <xref target="decoding448"></xref>, non-canonical values are
+accepted.</t>
 </li>
+</ul></li>
 <li><t>Process t as follows:</t>
 </li>
 </ol>
@@ -752,11 +764,26 @@ and Thomas Pornin for their comments on the draft.</t>
 
 <back>
 <references><name>Normative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
+<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
+  <front>
+    <title>[Cfrg] 25519 naming</title>
+    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
+    <date year="2014"></date>
+  </front>
+</reference>
 <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<reference anchor="MoneroVuln" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
+  <front>
+    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
+    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
+    <date year="2017"></date>
+  </front>
+</reference>
 <reference anchor="RistrettoGroup" target="https://ristretto.group">
   <front>
     <title>The Ristretto Group</title>
@@ -774,21 +801,6 @@ and Thomas Pornin for their comments on the draft.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
-  </front>
-</reference>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
-<reference anchor="MoneroVuln" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">
-  <front>
-    <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
-    <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
-  </front>
-</reference>
-<reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
-  <front>
-    <title>[Cfrg] 25519 naming</title>
-    <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
-    <date year="2014"></date>
   </front>
 </reference>
 <reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
