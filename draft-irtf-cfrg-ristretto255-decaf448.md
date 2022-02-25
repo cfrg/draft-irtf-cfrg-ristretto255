@@ -362,7 +362,7 @@ return (was_square, r)
 
 ### Decode {#decoding255}
 
-All elements are encoded as a 32-byte string. Decoding proceeds as follows:
+All elements are encoded as 32-byte strings. Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
@@ -469,7 +469,7 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[32:64])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a 32-byte string as:
+The MAP function is defined on 32-byte strings as:
 
 1. First, mask the most significant bit in the final byte of the string,
    and interpret the string as an integer r in little-endian
@@ -618,7 +618,7 @@ return (was_square, r)
 
 ### Decode {#decoding448}
 
-All elements are encoded as a 56-byte string. Decoding proceeds as follows:
+All elements are encoded as 56-byte strings. Decoding proceeds as follows:
 
 1. First, interpret the string as an integer s in little-endian
    representation. If the length of the string is not 56 bytes, or if
@@ -701,7 +701,7 @@ The one-way map on an input string b proceeds as follows:
 2. Compute P2 as `MAP(b[56:112])`.
 3. Return P1 + P2.
 
-The MAP function is defined on a 56-byte string as:
+The MAP function is defined on 56-byte strings as:
 
 1. Interpret the string as an integer r in little-endian representation.
    Reduce r modulo p to obtain a field element t.
