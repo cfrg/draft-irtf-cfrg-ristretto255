@@ -10,7 +10,7 @@
     [seriesInfo]
     status = "informational"
     name = "Internet-Draft"
-    value = "draft-irtf-cfrg-ristretto255-decaf448-03"
+    value = "draft-irtf-cfrg-ristretto255-decaf448-04"
     stream = "IETF"
 
     [[author]]
