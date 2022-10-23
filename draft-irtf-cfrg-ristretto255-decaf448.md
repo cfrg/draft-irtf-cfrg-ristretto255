@@ -360,6 +360,9 @@ return (was_square, r)
 
 ## External ristretto255 functions {#functions255}
 
+This section describes the implementation of the external functions
+exposesd by the ristretto255 prime-order group.
+
 ### Decode {#decoding255}
 
 All elements are encoded as 32-byte strings. Decoding proceeds as follows:
@@ -615,6 +618,9 @@ return (was_square, r)
 ```
 
 ## External decaf448 functions {#functions448}
+
+This section describes the implementation of the external functions
+exposesd by the decaf448 prime-order group.
 
 ### Decode {#decoding448}
 
