@@ -232,9 +232,11 @@ Ristretto and Decaf implement an abstract prime-order group interface
 that exposes only the behavior that is useful to higher-level protocols,
 without leaking curve-related details and pitfalls.
 
-The only operations exposed by each abstract group are decoding,
-encoding, equality, a one-way map, addition, negation, and the
-derived subtraction and (multi-)scalar multiplication.
+Each abstract group exposes a number of interfaces, including: decoding, 
+encoding, equality, addition, negation, and the derived subtraction and 
+(multi-)scalar multiplication. Each abstract group also exposes a deterministic
+function to derive an abstract element from a fixed-length byte string.
+A description of each of these operations is below.
 
 Decoding is a function from byte strings to abstract elements with
 built-in validation, so that only the canonical encodings of valid
@@ -249,11 +251,11 @@ succeeds and returns an equivalent element to the encoding input.
 The equality check reports whether two representations of an abstract
 element are equivalent.
 
-The one-way map is a function from uniformly distributed byte strings
-of a fixed length to uniformly distributed abstract elements. This map
+Element derivation is a function from uniformly distributed byte strings
+of a fixed length to uniformly distributed abstract elements. This function
 is suitable for hash-to-group operations and to select random elements.
-The map is not invertible, but also not pre-image resistant,
-meaning an attacker can find a valid input for a given output.
+The derivation function is not pre-image resistant, meaning an attacker
+can find a valid input for a given output.
 
 Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many times as the order of
@@ -276,7 +278,7 @@ of a group element. An "internal representation" is a point on the
 curve used to implement ristretto255. Each group element can have
 multiple equivalent internal representations.
 
-Encoding, decoding, equality, and one-way map are defined in
+Encoding, decoding, equality, and the element derivation function are defined in
 (#functions255). Element addition, subtraction, negation, and scalar
 multiplication are implemented by applying the corresponding operations
 directly to the internal representation.
@@ -332,8 +334,8 @@ where `+sqrt(x)` indicates the non-negative square root of x.
 The computation is similar to Section 5.1.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
-for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing Ed25519 implementation.
+for efficient implementation of the derivation function. The function
+can be refactored from an existing Ed25519 implementation.
 
 `SQRT_RATIO_M1(u, v)` is defined as follows:
 
@@ -456,14 +458,14 @@ representations themselves might not be identical.
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
-### One-way map {#from_uniform_bytes255}
+### Element derivation {#from_uniform_bytes255}
 
-The one-way map operates on uniformly distributed 64-byte strings. To
-obtain such an input from an arbitrary length byte string, applications
+The element derivation function operates on uniformly distributed 64-byte strings.
+To obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
-The one-way map on an input string b proceeds as follows:
+The element derivation function on an input string b proceeds as follows:
 
 1. Compute P1 as `MAP(b[0:32])`.
 2. Compute P2 as `MAP(b[32:64])`.
@@ -536,7 +538,7 @@ group element. An "internal representation" is a point on the curve
 used to implement decaf448. Each group element can have multiple
 equivalent internal representations.
 
-Encoding, decoding, equality, and one-way map are defined in
+Encoding, decoding, equality, and the element derivation functions are defined in
 (#functions448). Element addition, subtraction, negation, and scalar
 multiplication are implemented by applying the corresponding operations
 directly to the internal representation.
@@ -597,8 +599,8 @@ where `+sqrt(x)` indicates the non-negative square root of x.
 The computation is similar to Section 5.2.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
-for efficient implementation of the one-way map functionality. The
-function can be refactored from an existing edwards448 implementation.
+for efficient implementation of the derivation function. The function
+can be refactored from an existing edwards448 implementation.
 
 `SQRT_RATIO_M1(u, v)` is defined as follows:
 
@@ -688,14 +690,14 @@ representations themselves might not be identical.
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
-### One-way map {#from_uniform_bytes448}
+### Element derivation {#from_uniform_bytes448}
 
-The one-way map operates on uniformly distributed 112-byte strings. To
-obtain such an input from an arbitrary length byte string, applications
+The element derivation function operates on uniformly distributed 112-byte strings.
+To obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
-The one-way map on an input string b proceeds as follows:
+The element derivation function on an input string b proceeds as follows:
 
 1. Compute P1 as `MAP(b[0:56])`.
 2. Compute P2 as `MAP(b[56:112])`.
@@ -763,8 +765,8 @@ case, as long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
 implementations **MUST NOT** define any external ristretto255 or decaf448
 interface as operating on arbitrary curve points, and they **MUST NOT**
-construct group elements except via decoding, the one-way map, or group
-operations on other valid group elements per (#interface). They are
+construct group elements except via decoding, the element derivation function,
+or group operations on other valid group elements per (#interface). They are
 however allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.
@@ -888,7 +890,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 
 ## Group elements from uniform byte strings
 
-The following pairs are inputs to the one-way map of
+The following pairs are inputs to the element derivation function of
 (#from_uniform_bytes255), and their encoded outputs.
 
 ```
@@ -921,7 +923,7 @@ I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
 ```
 
-The following one-way map inputs all produce the same encoded
+The following element derivation function inputs all produce the same encoded
 output.
 
 ```
@@ -1097,7 +1099,7 @@ cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 
 ## Group elements from uniform byte strings
 
-The following pairs are inputs to the one-way map of
+The following pairs are inputs to the element derivation function of
 (#from_uniform_bytes448), and their encoded outputs.
 
 ```
