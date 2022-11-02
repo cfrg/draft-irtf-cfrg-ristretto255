@@ -93,7 +93,7 @@ Table of Contents
    Appendix A.  Test vectors for ristretto255
      A.1.  Multiples of the generator
      A.2.  Invalid encodings
-     A.3.  Group elements from uniform byte strings
+     A.3.  Group elements from byte strings
      A.4.  Square root of a ratio of field elements
    Appendix B.  Test vectors for decaf448
      B.1.  Multiples of the generator
@@ -229,11 +229,13 @@ Table of Contents
    elements are accepted.  The built-in validation avoids the need for
    explicit invalid curve checks.
 
-   Encoding is a function from abstract elements to byte strings so that
-   all equivalent representations of the same element are encoded as
-   identical byte strings.  Decoding the output of the encoding function
-   always succeeds and returns an equivalent element to the encoding
-   input.
+   Encoding is a function from abstract elements to byte strings.
+   Internally, an abstract element might have more than one possible
+   representation -- for example, the implementation might use
+   projective coordinates.  When encoding, all equivalent
+   representations of the same element are encoded as identical byte
+   strings.  Decoding the output of the encoding function always
+   succeeds and returns an equivalent element to the encoding input.
 
    The equality check reports whether two representations of an abstract
    element are equivalent.
@@ -250,17 +252,18 @@ Table of Contents
    the contrary, given an arbitrary abstract group element P, there is
    an efficient algorithm to randomly sample from byte strings that map
    to P.  In some contexts this property would be a weakness, but it is
-   important in some contexts: in particular, it means that the element
-   derivation function is suitable for use in hash_to_curve
-   [draft-irtf-cfrg-hash-to-curve-16].
+   important in some contexts: in particular, it means that a
+   combination of a cryptographic hash function and the element
+   derivation function is suitable for use in algorithms such as
+   hash_to_curve [draft-irtf-cfrg-hash-to-curve-16].
 
    Addition is the group operation.  The group has an identity element
-   and prime order.  Adding an element to itself as many times as the
-   order of the group returns the identity element.  Adding the identity
-   element to any element returns that element unchanged.  Negation
-   returns an element that added to the negation input returns the
-   identity element.  Subtraction is the addition of a negated element,
-   and scalar multiplication is the repeated addition of an element.
+   and prime order l.  Adding together l copies of the same element
+   gives the identity.  Adding the identity element to any element
+   returns that element unchanged.  Negation returns an element that
+   added to the negation input returns the identity element.
+   Subtraction is the addition of a negated element, and scalar
+   multiplication is the repeated addition of an element.
 
 4.  ristretto255
 
@@ -460,10 +463,10 @@ return (was_square, r)
 
 4.3.4.  Element derivation
 
-   The element derivation function operates on uniformly distributed
-   64-byte strings.  To obtain such an input from an arbitrary length
-   byte string, applications should use a domain-separated hash
-   construction, the choice of which is out-of-scope for this document.
+   The element derivation function operates on 64-byte strings.  To
+   obtain such an input from an arbitrary-length byte string,
+   applications should use a domain-separated hash construction, the
+   choice of which is out-of-scope for this document.
 
    The element derivation function on an input string b proceeds as
    follows:
@@ -525,7 +528,7 @@ return (was_square, r)
    obtain a uniformly distributed scalar by interpreting the 64-byte
    string as a 512-bit integer in little-endian order and reducing the
    integer modulo l, as in [RFC8032].  To obtain such an input from an
-   arbitrary length byte string, applications should use a domain-
+   arbitrary-length byte string, applications should use a domain-
    separated hash construction, the choice of which is out-of-scope for
    this document.
 
@@ -698,10 +701,10 @@ return (was_square, r)
 
 5.3.4.  Element derivation
 
-   The element derivation function operates on uniformly distributed
-   112-byte strings.  To obtain such an input from an arbitrary length
-   byte string, applications should use a domain-separated hash
-   construction, the choice of which is out-of-scope for this document.
+   The element derivation function operates on 112-byte strings.  To
+   obtain such an input from an arbitrary-length byte string,
+   applications should use a domain-separated hash construction, the
+   choice of which is out-of-scope for this document.
 
    The element derivation function on an input string b proceeds as
    follows:
@@ -755,7 +758,7 @@ return (was_square, r)
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a uniformly distributed scalar by interpreting the 64-byte
    string as a 512-bit integer in little-endian order and reducing the
-   integer modulo l.  To obtain such an input from an arbitrary length
+   integer modulo l.  To obtain such an input from an arbitrary-length
    byte string, applications should use a domain-separated hash
    construction, the choice of which is out-of-scope for this document.
 
@@ -948,7 +951,7 @@ A.2.  Invalid encodings
  # s = -1, which causes y = 0.
  ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 
-A.3.  Group elements from uniform byte strings
+A.3.  Group elements from byte strings
 
    The following pairs are inputs to the element derivation function of
    Section 4.3.4, and their encoded outputs.

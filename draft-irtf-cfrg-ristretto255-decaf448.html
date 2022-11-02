@@ -1409,7 +1409,7 @@ decaf448 group can be implemented using edwards448.<a href="#section-abstract-1"
                 <p id="section-toc.1-1.12.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-invalid-encodings" class="internal xref">Invalid encodings</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
-                <p id="section-toc.1-1.12.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-group-elements-from-uniform" class="internal xref">Group elements from uniform byte strings</a></p>
+                <p id="section-toc.1-1.12.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-group-elements-from-byte-st" class="internal xref">Group elements from byte strings</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.4">
                 <p id="section-toc.1-1.12.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-square-root-of-a-ratio-of-fie" class="internal xref">Square root of a ratio of field elements</a></p>
@@ -1426,7 +1426,7 @@ decaf448 group can be implemented using edwards448.<a href="#section-abstract-1"
                 <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-invalid-encodings-2" class="internal xref">Invalid encodings</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
-                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-group-elements-from-uniform-" class="internal xref">Group elements from uniform byte strings</a></p>
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-group-elements-from-uniform" class="internal xref">Group elements from uniform byte strings</a></p>
 </li>
             </ul>
 </li>
@@ -1575,8 +1575,10 @@ operations is below.<a href="#section-3-2" class="pilcrow">¶</a></p>
 built-in validation, so that only the canonical encodings of valid
 elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">Encoding is a function from abstract elements to byte strings so that all
-equivalent representations of the same element are encoded as identical
+<p id="section-3-4">Encoding is a function from abstract elements to byte strings.  Internally,
+an abstract element might have more than one possible representation -- for
+example, the implementation might use projective coordinates.  When encoding,
+all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
 succeeds and returns an equivalent element to the encoding input.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <p id="section-3-5">The equality check reports whether two representations of an abstract
@@ -1592,11 +1594,12 @@ not strictly invertible, it is not pre-image resistent.  On the contrary,
 given an arbitrary abstract group element <code>P</code>, there is an efficient algorithm
 to randomly sample from byte strings that map to <code>P</code>.  In some contexts this
 property would be a weakness, but it is important in some contexts: in particular,
-it means that the element derivation function is suitable for use in
+it means that a combination of a cryptographic hash function and the element
+derivation function is suitable for use in algorithms such as
 <code>hash_to_curve</code> <span>[<a href="#draft-irtf-cfrg-hash-to-curve-16" class="cite xref">draft-irtf-cfrg-hash-to-curve-16</a>]</span>.<a href="#section-3-7" class="pilcrow">¶</a></p>
 <p id="section-3-8">Addition is the group operation. The group has an identity element and
-prime order. Adding an element to itself as many times as the order of
-the group returns the identity element. Adding the identity element to
+prime order l. Adding together l copies of the same element gives the
+identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
 that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
@@ -1848,13 +1851,13 @@ representations themselves might not be identical.<a href="#section-4.3.3-5" cla
 an equivalent, although less efficient, result.<a href="#section-4.3.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="from_uniform_bytes255">
+<div id="from_bytes_uniform255">
 <section id="section-4.3.4">
           <h4 id="name-element-derivation">
 <a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-element-derivation" class="section-name selfRef">Element derivation</a>
           </h4>
-<p id="section-4.3.4-1">The element derivation function operates on uniformly distributed 64-byte strings.
-To obtain such an input from an arbitrary length byte string, applications
+<p id="section-4.3.4-1">The element derivation function operates on 64-byte strings.
+To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
 <p id="section-4.3.4-2">The element derivation function on an input string b proceeds as follows:<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
@@ -1933,7 +1936,7 @@ arithmetic implementations in existing Curve25519 libraries.<a href="#section-4.
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit integer in little-endian order and reducing the
 integer modulo l, as in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. To obtain such an input from an
-arbitrary length byte string, applications should use a domain-separated
+arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out-of-scope for this document.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2153,13 +2156,13 @@ representations themselves might not be identical.<a href="#section-5.3.3-5" cla
 an equivalent, although less efficient, result.<a href="#section-5.3.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="from_uniform_bytes448">
+<div id="from_bytes_uniform448">
 <section id="section-5.3.4">
           <h4 id="name-element-derivation-2">
 <a href="#section-5.3.4" class="section-number selfRef">5.3.4. </a><a href="#name-element-derivation-2" class="section-name selfRef">Element derivation</a>
           </h4>
-<p id="section-5.3.4-1">The element derivation function operates on uniformly distributed 112-byte strings.
-To obtain such an input from an arbitrary length byte string, applications
+<p id="section-5.3.4-1">The element derivation function operates on 112-byte strings.
+To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.<a href="#section-5.3.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.3.4-2">The element derivation function on an input string b proceeds as follows:<a href="#section-5.3.4-2" class="pilcrow">¶</a></p>
@@ -2230,7 +2233,7 @@ arithmetic implementations in existing edwards448 libraries.<a href="#section-5.
 <p id="section-5.4-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit integer in little-endian order and reducing the
-integer modulo l. To obtain such an input from an arbitrary length
+integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out-of-scope for this document.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
 </section>
@@ -2452,13 +2455,13 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 </div>
 </section>
 </div>
-<div id="group-elements-from-uniform-byte-strings">
+<div id="group-elements-from-byte-strings">
 <section id="appendix-A.3">
-        <h3 id="name-group-elements-from-uniform">
-<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-group-elements-from-uniform" class="section-name selfRef">Group elements from uniform byte strings</a>
+        <h3 id="name-group-elements-from-byte-st">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-group-elements-from-byte-st" class="section-name selfRef">Group elements from byte strings</a>
         </h3>
 <p id="appendix-A.3-1">The following pairs are inputs to the element derivation function of
-<a href="#from_uniform_bytes255" class="auto internal xref">Section 4.3.4</a>, and their encoded outputs.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<a href="#from_bytes_uniform255" class="auto internal xref">Section 4.3.4</a>, and their encoded outputs.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.3-2">
 <pre>I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
    4d98b696a1bbfb5ca32c436cc61c16563790306c79eaca7705668b47dffe5bb6
@@ -2680,13 +2683,13 @@ cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 </div>
 </section>
 </div>
-<div id="group-elements-from-uniform-byte-strings-1">
+<div id="group-elements-from-uniform-byte-strings">
 <section id="appendix-B.3">
-        <h3 id="name-group-elements-from-uniform-">
-<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-group-elements-from-uniform-" class="section-name selfRef">Group elements from uniform byte strings</a>
+        <h3 id="name-group-elements-from-uniform">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-group-elements-from-uniform" class="section-name selfRef">Group elements from uniform byte strings</a>
         </h3>
 <p id="appendix-B.3-1">The following pairs are inputs to the element derivation function of
-<a href="#from_uniform_bytes448" class="auto internal xref">Section 5.3.4</a>, and their encoded outputs.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
+<a href="#from_bytes_uniform448" class="auto internal xref">Section 5.3.4</a>, and their encoded outputs.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-B.3-2">
 <pre>I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
    d5ee6cdccea57be3416e166fd06718a31af45a2f8e987e301be59ae6
