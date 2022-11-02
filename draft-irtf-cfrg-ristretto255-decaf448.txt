@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 6 May 2023                                                     
+Expires: 7 May 2023                                                     
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,11 +13,11 @@ Expires: 6 May 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                         2 November 2022
+                                                         3 November 2022
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-04
+                draft-irtf-cfrg-ristretto255-decaf448-05
 
 Abstract
 
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 May 2023.
+   This Internet-Draft will expire on 7 May 2023.
 
 Copyright Notice
 
@@ -866,10 +866,10 @@ return (was_square, r)
               <https://eprint.iacr.org/2008/522>.
 
    [draft-irtf-cfrg-hash-to-curve-16]
-              Hamburg, M., Armando Faz-Hernández, A., Scott, S.,
-              Sullivan, N., Wahby, R.S., and C.A. Wood, "Hashing to
-              Elliptic Curves", 2022, <https://datatracker.ietf.org/doc/
-              draft-irtf-cfrg-hash-to-curve/>.
+              Faz-Hernández, A., Scott, S., Sullivan, N., Wahby, R.S.,
+              and C.A. Wood, "Hashing to Elliptic Curves", 2022,
+              <https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-
+              curve/>.
 
 Appendix A.  Test vectors for ristretto255
 

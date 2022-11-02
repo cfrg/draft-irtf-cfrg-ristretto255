@@ -10,7 +10,7 @@
     [seriesInfo]
     status = "informational"
     name = "Internet-Draft"
-    value = "draft-irtf-cfrg-ristretto255-decaf448-04"
+    value = "draft-irtf-cfrg-ristretto255-decaf448-05"
     stream = "IETF"
 
     [[author]]
@@ -275,8 +275,7 @@ derivation function is suitable for use in algorithms such as
    target='https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/'>
     <front>
         <title>Hashing to Elliptic Curves</title>
-        <author initials='M.' surname='Hamburg' fullname='Mike Hamburg'/>
-        <author initials="A." surname="Armando Faz-Hernández" fullname="Armando Faz-Hernández"/>
+        <author initials="A." surname="Faz-Hernández" fullname="Armando Faz-Hernández"/>
         <author initials="S." surname="Scott" fullname="Sam Scott"/>
         <author initials="N." surname="Sullivan" fullname="Nick Sullivan"/>
         <author initials="R.S." surname="Wahby" fullname="Riad S. Wahby"/>
