@@ -232,11 +232,12 @@ Ristretto and Decaf implement an abstract prime-order group interface
 that exposes only the behavior that is useful to higher-level protocols,
 without leaking curve-related details and pitfalls.
 
-Each abstract group exposes a number of interfaces, including: decoding, 
-encoding, equality, addition, negation, and the derived subtraction and 
-(multi-)scalar multiplication. Each abstract group also exposes a deterministic
-function to derive an abstract element from a fixed-length byte string.
-A description of each of these operations is below.
+Each abstract group exposes operations on abstract element and abstract
+scalar types. The operations defined on these types include: decoding, encoding,
+equality, addition, negation, and the derived subtraction and (multi-)scalar
+multiplication. Each abstract group also exposes a deterministic function to
+derive abstract elements from fixed-length byte strings. A description
+of each of these operations is below.
 
 Decoding is a function from byte strings to abstract elements with
 built-in validation, so that only the canonical encodings of valid
@@ -251,9 +252,9 @@ succeeds and returns an equivalent element to the encoding input.
 The equality check reports whether two representations of an abstract
 element are equivalent.
 
-Element derivation is a function from uniformly distributed byte strings
-of a fixed length to uniformly distributed abstract elements. This function
-is suitable for hash-to-group operations and to select random elements.
+Deterministic element derivation is a function from uniformly distributed byte
+strings of a fixed length to uniformly distributed abstract elements. This
+function is suitable for hash-to-group operations and to select random elements.
 The derivation function is not pre-image resistant, meaning an attacker
 can find a valid input for a given output.
 
@@ -521,7 +522,9 @@ arithmetic implementations in existing Curve25519 libraries.
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit integer in little-endian order and reducing the
-integer modulo l, as in [@RFC8032].
+integer modulo l, as in [@RFC8032]. To obtain such an input from an
+arbitrary length byte string, applications should use a domain-separated
+hash construction, the choice of which is out-of-scope for this document.
 
 # decaf448 {#decaf448}
 
@@ -743,8 +746,11 @@ encoding them as byte strings. Omitting these strict range checks is
 arithmetic implementations in existing edwards448 libraries.
 
 Given a uniformly distributed 64-byte string b, implementations can
-obtain a scalar by interpreting the 64-byte string as a 512-bit
-integer in little-endian order and reducing the integer modulo l.
+obtain a uniformly distributed scalar by interpreting the 64-byte
+string as a 512-bit integer in little-endian order and reducing the
+integer modulo l. To obtain such an input from an arbitrary length
+byte string, applications should use a domain-separated hash
+construction, the choice of which is out-of-scope for this document.
 
 # API Considerations {#api}
 
