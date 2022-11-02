@@ -182,8 +182,8 @@ to `B-1`. That is, it is exclusive of `B`. Arrays are indexed
 starting from 0.
 
 A byte is an 8-bit entity (also known as "octet") and a byte string
-is an ordered sequence of bytes. A N-byte string is a byte string of
-N bytes length.
+is an ordered sequence of bytes. An N-byte string is a byte string of
+N bytes in length.
 
 Element encodings are presented as hex encoded byte strings with
 whitespace added for readability.
@@ -220,7 +220,7 @@ operations, which **SHOULD** be implemented in constant time:
 
 * `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
 * `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
-* `CT_ABS(u)`: return -u if u is negative, else return u.
+* `CT_ABS(u)`: return -u if IS_NEGATIVE(u), else return u.
 
 Note that `CT_ABS` **MAY** be implemented as:
 
