@@ -198,7 +198,7 @@ directly to the internal representation.</t>
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:</t>
+multiplication. This is its encoding <xref target="encoding255"></xref>:</t>
 
 <artwork>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 </artwork>
@@ -234,7 +234,8 @@ to implement some of the group operations.</t>
 <li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
 non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
 </ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x in the
+field.</t>
 <t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
@@ -242,9 +243,7 @@ for efficient implementation of the derivation function. The function
 can be refactored from an existing Ed25519 implementation.</t>
 <t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
-<artwork>v3 = v^2  * v
-v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+<artwork>r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
 check = v * r^2
 
 correct_sign_sqrt   = CT_EQ(check,          u)
@@ -304,7 +303,8 @@ t = x * y
 <ol spacing="compact" start="4">
 <li>If was_square is FALSE, or <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
 0, decoding fails. Otherwise, return the group element represented
-by the internal representation <tt>(x, y, 1, t)</tt>.</li>
+by the internal representation <tt>(x, y, 1, t)</tt> as the result of
+decoding.</li>
 </ol>
 </section>
 
@@ -466,7 +466,7 @@ directly to the internal representation.</t>
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:</t>
+multiplication. This is its encoding <xref target="encoding448"></xref>:</t>
 
 <artwork>66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
@@ -505,7 +505,8 @@ to implement some of the group operations.</t>
 <li><tt>(FALSE, +sqrt(-u/v))</tt> if u and v are non-zero, and u/v is
 non-square (so <tt>-(u/v)</tt> is square),</li>
 </ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x.</t>
+<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x in
+the field.</t>
 <t>The computation is similar to Section 5.2.3 of <xref target="RFC8032"></xref>, with the
 difference that if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
@@ -559,7 +560,7 @@ t = x * y
 <ol spacing="compact" start="4">
 <li>If was_square is FALSE then decoding fails. Otherwise,
 return the group element represented by the internal representation
-<tt>(x, y, 1, t)</tt>.</li>
+<tt>(x, y, 1, t)</tt> as the result of decoding.</li>
 </ol>
 </section>
 

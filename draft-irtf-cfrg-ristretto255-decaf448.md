@@ -319,7 +319,7 @@ Since ristretto255 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:
+multiplication. This is its encoding (#encoding255):
 
 ```
 e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
@@ -352,7 +352,8 @@ On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 * `(FALSE, +sqrt(SQRT_M1*(u/v)))` if u and v are non-zero, and u/v is
   non-square (so `SQRT_M1*(u/v)` is square),
 
-where `+sqrt(x)` indicates the non-negative square root of x.
+where `+sqrt(x)` indicates the non-negative square root of x in the
+field.
 
 The computation is similar to Section 5.1.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
@@ -363,9 +364,7 @@ can be refactored from an existing Ed25519 implementation.
 `SQRT_RATIO_M1(u, v)` is defined as follows:
 
 ```
-v3 = v^2  * v
-v7 = v3^2 * v
-r = (u * v3) * (u * v7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
 check = v * r^2
 
 correct_sign_sqrt   = CT_EQ(check,          u)
@@ -421,7 +420,8 @@ t = x * y
 
 4. If was\_square is FALSE, or `IS_NEGATIVE(t)` returns TRUE, or y =
    0, decoding fails. Otherwise, return the group element represented
-   by the internal representation `(x, y, 1, t)`.
+   by the internal representation `(x, y, 1, t)` as the result of
+   decoding.
 
 ### Encode {#encoding255}
 
@@ -580,7 +580,7 @@ Since decaf448 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding:
+multiplication. This is its encoding (#encoding448):
 
 ```
 66666666 66666666 66666666 66666666 66666666 66666666 66666666
@@ -617,7 +617,8 @@ On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 * `(FALSE, +sqrt(-u/v))` if u and v are non-zero, and u/v is
   non-square (so `-(u/v)` is square),
 
-where `+sqrt(x)` indicates the non-negative square root of x.
+where `+sqrt(x)` indicates the non-negative square root of x in
+the field.
 
 The computation is similar to Section 5.2.3 of [@RFC8032], with the
 difference that if the input is non-square, the function returns a
@@ -670,7 +671,7 @@ t = x * y
 
 4. If was\_square is FALSE then decoding fails. Otherwise,
    return the group element represented by the internal representation
-   `(x, y, 1, t)`.
+   `(x, y, 1, t)` as the result of decoding.
 
 ### Encode {#encoding448}
 
