@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 18 April 2023                                                  
+Expires: 6 May 2023                                                     
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,7 +13,7 @@ Expires: 18 April 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                         15 October 2022
+                                                         2 November 2022
 
 
                   The ristretto255 and decaf448 Groups
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 April 2023.
+   This Internet-Draft will expire on 6 May 2023.
 
 Copyright Notice
 
@@ -67,22 +67,22 @@ Table of Contents
      2.2.  Constant time operations
    3.  The group abstraction
    4.  ristretto255
-     4.1.  Internal constants
+     4.1.  Implementation constants
      4.2.  Square root of a ratio of field elements
-     4.3.  External ristretto255 functions
+     4.3.  ristretto255 group operations
        4.3.1.  Decode
        4.3.2.  Encode
        4.3.3.  Equals
-       4.3.4.  One-way map
+       4.3.4.  Element derivation
      4.4.  Scalar field
    5.  decaf448
-     5.1.  Internal constants
+     5.1.  Implementation constants
      5.2.  Square root of a ratio of field elements
-     5.3.  External decaf448 functions
+     5.3.  decaf448 group operations
        5.3.1.  Decode
        5.3.2.  Encode
        5.3.3.  Equals
-       5.3.4.  One-way map
+       5.3.4.  Element derivation
      5.4.  Scalar field
    6.  API Considerations
    7.  IANA Considerations
@@ -115,8 +115,8 @@ Table of Contents
    points and formulas among the fastest known for curve operations.
    However, the group of points on the curve is not of prime order,
    i.e., it has a cofactor larger than 1.  This abstraction mismatch is
-   usually handled by means of ad-hoc protocol tweaks (such as
-   multiplying by the cofactor in an appropriate place), or not at all.
+   usually handled by means of ad-hoc protocol tweaks, such as
+   multiplying by the cofactor in an appropriate place, or not at all.
 
    Even for simple protocols such as signatures, these tweaks can cause
    subtle issues.  For instance, Ed25519 implementations may have
@@ -184,8 +184,8 @@ Table of Contents
    That is, it is exclusive of B.  Arrays are indexed starting from 0.
 
    A byte is an 8-bit entity (also known as "octet") and a byte string
-   is an ordered sequence of bytes.  A N-byte string is a byte string of
-   N bytes length.
+   is an ordered sequence of bytes.  An N-byte string is a byte string
+   of N bytes in length.
 
    Element encodings are presented as hex encoded byte strings with
    whitespace added for readability.
@@ -204,7 +204,7 @@ Table of Contents
    *  CT_EQ(u, v): return TRUE if u = v, FALSE otherwise.
    *  CT_SELECT(v IF cond ELSE u): return v if cond is TRUE, else return
       u.
-   *  CT_ABS(u): return -u if u is negative, else return u.
+   *  CT_ABS(u): return -u if IS_NEGATIVE(u), else return u.
 
    Note that CT_ABS MAY be implemented as:
 
@@ -216,9 +216,13 @@ Table of Contents
    that exposes only the behavior that is useful to higher-level
    protocols, without leaking curve-related details and pitfalls.
 
-   The only operations exposed by each abstract group are decoding,
-   encoding, equality, a one-way map, addition, negation, and the
-   derived subtraction and (multi-)scalar multiplication.
+   Each abstract group exposes operations on abstract element and
+   abstract scalar types.  The operations defined on these types
+   include: decoding, encoding, equality, addition, negation,
+   subtraction and (multi-)scalar multiplication.  Each abstract group
+   also exposes a deterministic function to derive abstract elements
+   from fixed-length byte strings.  A description of each of these
+   operations is below.
 
    Decoding is a function from byte strings to abstract elements with
    built-in validation, so that only the canonical encodings of valid
@@ -234,12 +238,21 @@ Table of Contents
    The equality check reports whether two representations of an abstract
    element are equivalent.
 
-   The one-way map is a function from uniformly distributed byte strings
-   of a fixed length to uniformly distributed abstract elements.  This
-   map is suitable for hash-to-group operations and to select random
-   elements.  The map is not invertible, but also not pre-image
-   resistant, meaning an attacker can find a valid input for a given
-   output.
+   The element derivation function maps deterministically from byte
+   strings of a fixed length to abstract elements.  It has two important
+   properties.  First, if the input is a uniformly random byte string,
+   then the output is (within a negligible statistical distance of) a
+   uniformly random abstract group element.  This means the function is
+   suitable for selecting random group elements.
+
+   Second, although the element derivation function is many-to-one and
+   therefore not strictly invertible, it is not pre-image resistent.  On
+   the contrary, given an arbitrary abstract group element P, there is
+   an efficient algorithm to randomly sample from byte strings that map
+   to P.  In some contexts this property would be a weakness, but it is
+   important in some contexts: in particular, it means that the element
+   derivation function is suitable for use in hash_to_curve
+   [draft-irtf-cfrg-hash-to-curve-16].
 
    Addition is the group operation.  The group has an identity element
    and prime order.  Adding an element to itself as many times as the
@@ -262,9 +275,9 @@ Table of Contents
    curve used to implement ristretto255.  Each group element can have
    multiple equivalent internal representations.
 
-   Encoding, decoding, equality, and one-way map are defined in
-   Section 4.3.  Element addition, subtraction, negation, and scalar
-   multiplication are implemented by applying the corresponding
+   Encoding, decoding, equality, and the element derivation function are
+   defined in Section 4.3.  Element addition, subtraction, negation, and
+   scalar multiplication are implemented by applying the corresponding
    operations directly to the internal representation.
 
    The group order is the same as the order of the Curve25519 prime-
@@ -280,14 +293,10 @@ Table of Contents
 
  e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 
-   Implementations MUST NOT expose either the internal representation or
-   its field implementation and MUST NOT expose any operations defined
-   on the internal representations unless specified in this document.
+4.1.  Implementation constants
 
-4.1.  Internal constants
-
-   This document references the following constant field element values.
-   Implementations MUST NOT expose them to their API consumers.
+   This document references the following constant field element values
+   that are used for the implementation of group operations.
 
    *  D = 37095705934669439343138083508754565189542113879843219016388785
       533085940283555
@@ -307,8 +316,8 @@ Table of Contents
 4.2.  Square root of a ratio of field elements
 
    The following function is defined on field elements, and is used to
-   implement other ristretto255 functions.  Implementations MUST NOT
-   expose it to their API consumers.
+   implement other ristretto255 functions.  This function is only used
+   internally to implement some of the group operations.
 
    On input field elements u and v, the function SQRT_RATIO_M1(u, v)
    returns:
@@ -324,9 +333,8 @@ Table of Contents
    The computation is similar to Section 5.1.3 of [RFC8032], with the
    difference that if the input is non-square, the function returns a
    result with a defined relationship to the inputs.  This result is
-   used for efficient implementation of the one-way map functionality.
-   The function can be refactored from an existing Ed25519
-   implementation.
+   used for efficient implementation of the derivation function.  The
+   function can be refactored from an existing Ed25519 implementation.
 
    SQRT_RATIO_M1(u, v) is defined as follows:
 
@@ -349,7 +357,10 @@ was_square = correct_sign_sqrt | flipped_sign_sqrt
 
 return (was_square, r)
 
-4.3.  External ristretto255 functions
+4.3.  ristretto255 group operations
+
+   This section describes the implementation of the external functions
+   exposed by the ristretto255 prime-order group.
 
 4.3.1.  Decode
 
@@ -447,14 +458,15 @@ return (was_square, r)
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-4.3.4.  One-way map
+4.3.4.  Element derivation
 
-   The one-way map operates on uniformly distributed 64-byte strings.
-   To obtain such an input from an arbitrary length byte string,
-   applications should use a domain-separated hash construction, the
-   choice of which is out-of-scope for this document.
+   The element derivation function operates on uniformly distributed
+   64-byte strings.  To obtain such an input from an arbitrary length
+   byte string, applications should use a domain-separated hash
+   construction, the choice of which is out-of-scope for this document.
 
-   The one-way map on an input string b proceeds as follows:
+   The element derivation function on an input string b proceeds as
+   follows:
 
    1.  Compute P1 as MAP(b[0:32]).
    2.  Compute P2 as MAP(b[32:64]).
@@ -512,7 +524,10 @@ return (was_square, r)
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a uniformly distributed scalar by interpreting the 64-byte
    string as a 512-bit integer in little-endian order and reducing the
-   integer modulo l, as in [RFC8032].
+   integer modulo l, as in [RFC8032].  To obtain such an input from an
+   arbitrary length byte string, applications should use a domain-
+   separated hash construction, the choice of which is out-of-scope for
+   this document.
 
 5.  decaf448
 
@@ -527,10 +542,10 @@ return (was_square, r)
    used to implement decaf448.  Each group element can have multiple
    equivalent internal representations.
 
-   Encoding, decoding, equality, and one-way map are defined in
-   Section 5.3.  Element addition, subtraction, negation, and scalar
-   multiplication are implemented by applying the corresponding
-   operations directly to the internal representation.
+   Encoding, decoding, equality, and the element derivation functions
+   are defined in Section 5.3.  Element addition, subtraction, negation,
+   and scalar multiplication are implemented by applying the
+   corresponding operations directly to the internal representation.
 
    The group order is the same as the order of the edwards448 prime-
    order subgroup:
@@ -550,14 +565,10 @@ return (was_square, r)
    This repetitive constant is equal to 1/sqrt(5) in decaf448's field,
    corresponding to the curve448 base point with x = 5.
 
-   Implementations MUST NOT expose either the internal representation or
-   its field implementation and MUST NOT expose any operations defined
-   on the internal representations unless specified in this document.
+5.1.  Implementation constants
 
-5.1.  Internal constants
-
-   This document references the following constant field element values.
-   Implementations MUST NOT expose them to their API consumers.
+   This document references the following constant field element values
+   that are used for the implementation of group operations.
 
    *  D = 72683872429560689054932380788800453435364136068731806028149019
       918061232816673077268639638369867654593008888446184363736105349801
@@ -576,8 +587,8 @@ return (was_square, r)
 5.2.  Square root of a ratio of field elements
 
    The following function is defined on field elements, and is used to
-   implement other decaf448 functions.  Implementations MUST NOT expose
-   it to their API consumers.
+   implement other decaf448 functions.  This function is only used
+   internally to implement some of the group operations.
 
    On input field elements u and v, the function SQRT_RATIO_M1(u, v)
    returns:
@@ -593,8 +604,8 @@ return (was_square, r)
    The computation is similar to Section 5.2.3 of [RFC8032], with the
    difference that if the input is non-square, the function returns a
    result with a defined relationship to the inputs.  This result is
-   used for efficient implementation of the one-way map functionality.
-   The function can be refactored from an existing edwards448
+   used for efficient implementation of the derivation function.  The
+   function can be refactored from an existing edwards448
    implementation.
 
    SQRT_RATIO_M1(u, v) is defined as follows:
@@ -609,7 +620,10 @@ return (was_square, r)
 
    return (was_square, r)
 
-5.3.  External decaf448 functions
+5.3.  decaf448 group operations
+
+   This section describes the implementation of the external functions
+   exposed by the decaf448 prime-order group.
 
 5.3.1.  Decode
 
@@ -682,14 +696,15 @@ return (was_square, r)
    Implementations MAY also perform byte comparisons on encodings for an
    equivalent, although less efficient, result.
 
-5.3.4.  One-way map
+5.3.4.  Element derivation
 
-   The one-way map operates on uniformly distributed 112-byte strings.
-   To obtain such an input from an arbitrary length byte string,
-   applications should use a domain-separated hash construction, the
-   choice of which is out-of-scope for this document.
+   The element derivation function operates on uniformly distributed
+   112-byte strings.  To obtain such an input from an arbitrary length
+   byte string, applications should use a domain-separated hash
+   construction, the choice of which is out-of-scope for this document.
 
-   The one-way map on an input string b proceeds as follows:
+   The element derivation function on an input string b proceeds as
+   follows:
 
    1.  Compute P1 as MAP(b[0:56]).
    2.  Compute P2 as MAP(b[56:112]).
@@ -738,26 +753,33 @@ return (was_square, r)
    in existing edwards448 libraries.
 
    Given a uniformly distributed 64-byte string b, implementations can
-   obtain a scalar by interpreting the 64-byte string as a 512-bit
-   integer in little-endian order and reducing the integer modulo l.
+   obtain a uniformly distributed scalar by interpreting the 64-byte
+   string as a 512-bit integer in little-endian order and reducing the
+   integer modulo l.  To obtain such an input from an arbitrary length
+   byte string, applications should use a domain-separated hash
+   construction, the choice of which is out-of-scope for this document.
 
 6.  API Considerations
 
    ristretto255 and decaf448 are abstractions which implement two prime-
    order groups, and their elements are represented by curve points, but
-   they are not curve points.  The API needs to reflect that: the type
-   representing an element of the group SHOULD be opaque and MUST NOT
-   expose the underlying curve point or field elements.
+   they are not curve points.  Implementations SHOULD reflect that: the
+   type representing an element of the group SHOULD be opaque to the
+   caller, meaning they do not expose the underlying curve point or
+   field elements.  Moreover, implementations SHOULD NOT expose any
+   internal constants or functions used in the implementation of the
+   group operations.
 
-   It is expected that a ristretto255 or decaf448 implementation can
-   change its underlying curve without causing any breaking change.  The
-   ristretto255 and decaf448 constructions are carefully designed so
-   that this will be the case, as long as implementations do not expose
-   internal representations or operate on them except as described in
-   this document.  In particular, implementations MUST NOT define any
-   external ristretto255 or decaf448 interface as operating on arbitrary
-   curve points, and they MUST NOT construct group elements except via
-   decoding, the one-way map, or group operations on other valid group
+   The reason for this encapsulation is that ristretto255 and decaf448
+   implementations can change their underlying curve without causing any
+   breaking change.  The ristretto255 and decaf448 constructions are
+   carefully designed so that this will be the case, as long as
+   implementations do not expose internal representations or operate on
+   them except as described in this document.  In particular,
+   implementations SHOULD NOT define any external ristretto255 or
+   decaf448 interface as operating on arbitrary curve points, and they
+   SHOULD NOT construct group elements except via decoding, the element
+   derivation function, or group operations on other valid group
    elements per Section 3.  They are however allowed to apply any
    optimization strategy to the internal representations as long as it
    doesn't change the exposed behavior of the API.
@@ -839,6 +861,12 @@ return (was_square, r)
               "Twisted Edwards Curves Revisited", 2008,
               <https://eprint.iacr.org/2008/522>.
 
+   [draft-irtf-cfrg-hash-to-curve-16]
+              Hamburg, M., Armando Faz-Hernández, A., Scott, S.,
+              Sullivan, N., Wahby, R.S., and C.A. Wood, "Hashing to
+              Elliptic Curves", 2022, <https://datatracker.ietf.org/doc/
+              draft-irtf-cfrg-hash-to-curve/>.
+
 Appendix A.  Test vectors for ristretto255
 
    This section contains test vectors for ristretto255.  The octets are
@@ -847,9 +875,10 @@ Appendix A.  Test vectors for ristretto255
 A.1.  Multiples of the generator
 
    The following are the encodings of the multiples 0 to 15 of the
-   canonical generator.  That is, the first line is the encoding of the
-   identity element, and each successive line is obtained by adding the
-   generator to the previous line.
+   canonical generator, represented as an array of elements.  That is,
+   the first entry is the encoding of the identity element, and each
+   successive entry is obtained by adding the generator to the previous
+   entry.
 
 B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
 B[ 1]: e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
@@ -921,8 +950,8 @@ A.2.  Invalid encodings
 
 A.3.  Group elements from uniform byte strings
 
-   The following pairs are inputs to the one-way map of Section 4.3.4,
-   and their encoded outputs.
+   The following pairs are inputs to the element derivation function of
+   Section 4.3.4, and their encoded outputs.
 
 I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
    4d98b696a1bbfb5ca32c436cc61c16563790306c79eaca7705668b47dffe5bb6
@@ -952,7 +981,8 @@ I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
    2c9965a697a3b345ec24ee56335b556e677b30e6f90ac77d781064f866a3c982
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
 
-   The following one-way map inputs all produce the same encoded output.
+   The following element derivation function inputs all produce the same
+   encoded output.
 
 I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
    1200000000000000000000000000000000000000000000000000000000000000
@@ -1009,9 +1039,10 @@ Appendix B.  Test vectors for decaf448
 B.1.  Multiples of the generator
 
    The following are the encodings of the multiples 0 to 15 of the
-   canonical generator.  That is, the first pair of lines is the
-   encoding of the identity element, and each successive line is
-   obtained by adding the generator to the previous line.
+   canonical generator, represented as an array of elements.  That is,
+   the first entry is the encoding of the identity element, and each
+   successive entry is obtained by adding the generator to the previous
+   entry.
 
    B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
           00000000 00000000 00000000 00000000 00000000 00000000 00000000
@@ -1119,8 +1150,8 @@ B.2.  Invalid encodings
 
 B.3.  Group elements from uniform byte strings
 
-   The following pairs are inputs to the one-way map of Section 5.3.4,
-   and their encoded outputs.
+   The following pairs are inputs to the element derivation function of
+   Section 5.3.4, and their encoded outputs.
 
    I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
       d5ee6cdccea57be3416e166fd06718a31af45a2f8e987e301be59ae6

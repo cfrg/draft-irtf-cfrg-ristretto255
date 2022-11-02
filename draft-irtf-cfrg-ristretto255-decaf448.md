@@ -94,8 +94,8 @@ points and formulas among the fastest known for curve operations.
 However, the group of points on the curve is not of prime order,
 i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad-hoc
-protocol tweaks (such as multiplying by the cofactor in an
-appropriate place), or not at all.
+protocol tweaks, such as multiplying by the cofactor in an
+appropriate place, or not at all.
 
 Even for simple protocols such as signatures, these tweaks can cause
 subtle issues. For instance, Ed25519 implementations may have
@@ -234,29 +234,56 @@ without leaking curve-related details and pitfalls.
 
 Each abstract group exposes operations on abstract element and abstract
 scalar types. The operations defined on these types include: decoding, encoding,
-equality, addition, negation, and the derived subtraction and (multi-)scalar
-multiplication. Each abstract group also exposes a deterministic function to
-derive abstract elements from fixed-length byte strings. A description
-of each of these operations is below.
+equality, addition, negation, subtraction and (multi-)scalar multiplication.
+Each abstract group also exposes a deterministic function to derive abstract
+elements from fixed-length byte strings. A description of each of these
+operations is below.
 
 Decoding is a function from byte strings to abstract elements with
 built-in validation, so that only the canonical encodings of valid
 elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.
 
-Encoding is a function from abstract elements to byte strings so that all
-equivalent representations of the same element are encoded as identical
+Encoding is a function from abstract elements to byte strings.  Internally,
+an abstract element might have more than one possible representation -- for
+example, the implementation might use projective coordinates.  When encoding,
+all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
 succeeds and returns an equivalent element to the encoding input.
 
 The equality check reports whether two representations of an abstract
 element are equivalent.
 
-Deterministic element derivation is a function from uniformly distributed byte
-strings of a fixed length to uniformly distributed abstract elements. This
-function is suitable for hash-to-group operations and to select random elements.
-The derivation function is not pre-image resistant, meaning an attacker
-can find a valid input for a given output.
+The element derivation function maps deterministically from byte strings of
+a fixed length to abstract elements.  It has two important properties.  First,
+if the input is a uniformly random byte string, then the output is (within
+a negligible statistical distance of) a uniformly random abstract group
+element.  This means the function is suitable for selecting random group
+elements.
+
+Second, although the element derivation function is many-to-one and therefore
+not strictly invertible, it is not pre-image resistent.  On the contrary,
+given an arbitrary abstract group element `P`, there is an efficient algorithm
+to randomly sample from byte strings that map to `P`.  In some contexts this
+property would be a weakness, but it is important in some contexts: in particular,
+it means that a combination of a cryptographic hash function and the element
+derivation function is suitable for use in algorithms such as
+`hash_to_curve` [@?draft-irtf-cfrg-hash-to-curve-16].
+
+
+<reference anchor='draft-irtf-cfrg-hash-to-curve-16'
+   target='https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/'>
+    <front>
+        <title>Hashing to Elliptic Curves</title>
+        <author initials='M.' surname='Hamburg' fullname='Mike Hamburg'/>
+        <author initials="A." surname="Armando Faz-Hernández" fullname="Armando Faz-Hernández"/>
+        <author initials="S." surname="Scott" fullname="Sam Scott"/>
+        <author initials="N." surname="Sullivan" fullname="Nick Sullivan"/>
+        <author initials="R.S." surname="Wahby" fullname="Riad S. Wahby"/>
+        <author initials="C.A." surname="Wood" fullname="Christopher A. Wood"/>
+        <date year='2022'/>
+    </front>
+</reference>
 
 Addition is the group operation. The group has an identity element and
 prime order. Adding an element to itself as many times as the order of
@@ -359,7 +386,7 @@ return (was_square, r)
 ## ristretto255 group operations {#functions255}
 
 This section describes the implementation of the external functions
-exposesd by the ristretto255 prime-order group.
+exposed by the ristretto255 prime-order group.
 
 ### Decode {#decoding255}
 
@@ -457,9 +484,9 @@ representations themselves might not be identical.
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
-### Element derivation {#from_uniform_bytes255}
+### Element derivation {#from_bytes_uniform255}
 
-The element derivation function operates on uniformly distributed 64-byte strings.
+The element derivation function operates on 64-byte strings.
 To obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
@@ -615,7 +642,7 @@ return (was_square, r)
 ## decaf448 group operations {#functions448}
 
 This section describes the implementation of the external functions
-exposesd by the decaf448 prime-order group.
+exposed by the decaf448 prime-order group.
 
 ### Decode {#decoding448}
 
@@ -689,9 +716,9 @@ representations themselves might not be identical.
 Implementations **MAY** also perform byte comparisons on encodings for
 an equivalent, although less efficient, result.
 
-### Element derivation {#from_uniform_bytes448}
+### Element derivation {#from_bytes_uniform448}
 
-The element derivation function operates on uniformly distributed 112-byte strings.
+The element derivation function operates on 112-byte strings.
 To obtain such an input from an arbitrary length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
@@ -892,10 +919,10 @@ d483fe81 3c6ba647 ebbfd3ec 41adca1c 6130c2be eee9d9bf 065c8d15 1c5f396e
 ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 ```
 
-## Group elements from uniform byte strings
+## Group elements from byte strings
 
 The following pairs are inputs to the element derivation function of
-(#from_uniform_bytes255), and their encoded outputs.
+(#from_bytes_uniform255), and their encoded outputs.
 
 ```
 I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
@@ -1104,7 +1131,7 @@ cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 ## Group elements from uniform byte strings
 
 The following pairs are inputs to the element derivation function of
-(#from_uniform_bytes448), and their encoded outputs.
+(#from_bytes_uniform448), and their encoded outputs.
 
 ```
 I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
