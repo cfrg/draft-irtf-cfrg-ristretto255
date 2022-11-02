@@ -286,8 +286,8 @@ derivation function is suitable for use in algorithms such as
 </reference>
 
 Addition is the group operation. The group has an identity element and
-prime order. Adding an element to itself as many times as the order of
-the group returns the identity element. Adding the identity element to
+prime order l. Adding together l copies of the same element gives the
+identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
 that added to the negation input returns the identity element.
 Subtraction is the addition of a negated element, and scalar
@@ -487,7 +487,7 @@ an equivalent, although less efficient, result.
 ### Element derivation {#from_bytes_uniform255}
 
 The element derivation function operates on 64-byte strings.
-To obtain such an input from an arbitrary length byte string, applications
+To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
@@ -550,7 +550,7 @@ Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit integer in little-endian order and reducing the
 integer modulo l, as in [@RFC8032]. To obtain such an input from an
-arbitrary length byte string, applications should use a domain-separated
+arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out-of-scope for this document.
 
 # decaf448 {#decaf448}
@@ -719,7 +719,7 @@ an equivalent, although less efficient, result.
 ### Element derivation {#from_bytes_uniform448}
 
 The element derivation function operates on 112-byte strings.
-To obtain such an input from an arbitrary length byte string, applications
+To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
 is out-of-scope for this document.
 
@@ -775,7 +775,7 @@ arithmetic implementations in existing edwards448 libraries.
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit integer in little-endian order and reducing the
-integer modulo l. To obtain such an input from an arbitrary length
+integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out-of-scope for this document.
 
