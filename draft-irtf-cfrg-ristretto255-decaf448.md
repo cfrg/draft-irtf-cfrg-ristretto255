@@ -816,9 +816,9 @@ hex encoded, and whitespace is inserted for readability.
 ## Multiples of the generator
 
 The following are the encodings of the multiples 0 to 15 of the
-canonical generator. That is, the first line is the encoding of the
-identity element, and each successive line is obtained by adding the
-generator to the previous line.
+canonical generator, represented as an array of elements. That is,
+the first entry is the encoding of the identity element, and each
+successive entry is obtained by adding the generator to the previous entry.
 
 ```
 B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
@@ -989,9 +989,9 @@ hex encoded, and whitespace is inserted for readability.
 ## Multiples of the generator
 
 The following are the encodings of the multiples 0 to 15 of the
-canonical generator. That is, the first pair of lines is the encoding
-of the identity element, and each successive line is obtained by
-adding the generator to the previous line.
+canonical generator, represented as an array of elements. That is,
+the first entry is the encoding of the identity element, and each
+successive entry is obtained by adding the generator to the previous entry.
 
 ```
 B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
