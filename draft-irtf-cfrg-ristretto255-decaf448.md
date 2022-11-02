@@ -295,15 +295,10 @@ multiplication. This is its encoding:
 e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 ```
 
-Implementations **MUST NOT** expose either the internal representation
-or its field implementation and **MUST NOT** expose any operations
-defined on the internal representations unless specified in this
-document.
+## Implementation constants {#constants255}
 
-## Internal constants {#constants255}
-
-This document references the following constant field element values.
-Implementations **MUST NOT** expose them to their API consumers.
+This document references the following constant field element values
+that are used for the implementation of group operations.
 
 * `D` = 37095705934669439343138083508754565189542113879843219016388785533085940283555
   * This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of [@RFC7748].
@@ -316,8 +311,8 @@ Implementations **MUST NOT** expose them to their API consumers.
 ## Square root of a ratio of field elements {#sqrtratio255}
 
 The following function is defined on field elements, and is used to
-implement other ristretto255 functions. Implementations **MUST NOT**
-expose it to their API consumers.
+implement other ristretto255 functions. This function is only used internally
+to implement some of the group operations.
 
 On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 
@@ -358,7 +353,7 @@ was_square = correct_sign_sqrt | flipped_sign_sqrt
 return (was_square, r)
 ```
 
-## External ristretto255 functions {#functions255}
+## ristretto255 group operations {#functions255}
 
 This section describes the implementation of the external functions
 exposesd by the ristretto255 prime-order group.
@@ -563,15 +558,10 @@ multiplication. This is its encoding:
 This repetitive constant is equal to `1/sqrt(5)` in decaf448's field,
 corresponding to the curve448 base point with x = 5.
 
-Implementations **MUST NOT** expose either the internal representation
-or its field implementation and **MUST NOT** expose any operations
-defined on the internal representations unless specified in this
-document.
+## Implementation constants {#constants448}
 
-## Internal constants {#constants448}
-
-This document references the following constant field element values.
-Implementations **MUST NOT** expose them to their API consumers.
+This document references the following constant field element values
+that are used for the implementation of group operations.
 
 * `D` = 726838724295606890549323807888004534353641360687318060281490199180612328166730772686396383698676545930088884461843637361053498018326358
   * This is the Edwards d parameter for edwards448, as specified in
@@ -584,8 +574,8 @@ Implementations **MUST NOT** expose them to their API consumers.
 ## Square root of a ratio of field elements {#sqrtratio448}
 
 The following function is defined on field elements, and is used to
-implement other decaf448 functions. Implementations **MUST NOT**
-expose it to their API consumers.
+implement other decaf448 functions. This function is only used internally
+to implement some of the group operations.
 
 On input field elements u and v, the function `SQRT_RATIO_M1(u, v)` returns:
 
@@ -617,7 +607,7 @@ r = CT_ABS(r)
 return (was_square, r)
 ```
 
-## External decaf448 functions {#functions448}
+## decaf448 group operations {#functions448}
 
 This section describes the implementation of the external functions
 exposesd by the decaf448 prime-order group.
@@ -758,17 +748,19 @@ integer in little-endian order and reducing the integer modulo l.
 
 ristretto255 and decaf448 are abstractions which implement two prime-order
 groups, and their elements are represented by curve points, but they are
-not curve points. The API needs to reflect that: the type representing an
-element of the group **SHOULD** be opaque and **MUST NOT** expose the
-underlying curve point or field elements.
+not curve points. Implementations **SHOULD** reflect that: the type 
+representing an element of the group **SHOULD** be opaque to the caller,
+meaning they do not expose the underlying curve point or field elements.
+Moreover, implementations **SHOULD NOT** expose any internal constants
+or functions used in the implementation of the group operations.
 
-It is expected that a ristretto255 or decaf448 implementation can change
-its underlying curve without causing any breaking change. The ristretto255
+The reason for this encapsulation is that ristretto255 and decaf448 implementations
+can change their underlying curve without causing any breaking change. The ristretto255
 and decaf448 constructions are carefully designed so that this will be the
 case, as long as implementations do not expose internal representations or
 operate on them except as described in this document. In particular,
-implementations **MUST NOT** define any external ristretto255 or decaf448
-interface as operating on arbitrary curve points, and they **MUST NOT**
+implementations **SHOULD NOT** define any external ristretto255 or decaf448
+interface as operating on arbitrary curve points, and they **SHOULD NOT**
 construct group elements except via decoding, the one-way map, or group
 operations on other valid group elements per (#interface). They are
 however allowed to apply any optimization strategy to the internal
