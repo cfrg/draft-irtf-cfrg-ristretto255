@@ -251,7 +251,7 @@ element are equivalent.
 
 The one-way map is a function from uniformly distributed byte strings
 of a fixed length to uniformly distributed abstract elements. This map
-is suitable for hash-to-group operations and to select random elements.
+is suitable for hash-to-group operations.
 The map is not invertible, but also not pre-image resistant,
 meaning an attacker can find a valid input for a given output.
 
