@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 7 May 2023                                                     
+Expires: 29 May 2023                                                    
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,7 +13,7 @@ Expires: 7 May 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                         3 November 2022
+                                                        25 November 2022
 
 
                   The ristretto255 and decaf448 Groups
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 May 2023.
+   This Internet-Draft will expire on 29 May 2023.
 
 Copyright Notice
 
@@ -369,9 +369,9 @@ return (was_square, r)
    All elements are encoded as 32-byte strings.  Decoding proceeds as
    follows:
 
-   1.  First, interpret the string as an integer s in little-endian
-       representation.  If the length of the string is not 32 bytes, or
-       if the resulting value is >= p, decoding fails.
+   1.  First, interpret the string as an unsigned integer s in little-
+       endian representation.  If the length of the string is not 32
+       bytes, or if the resulting value is >= p, decoding fails.
        *  Note: unlike [RFC7748] field element decoding, the most
           significant bit is not masked, and non-canonical values are
           rejected.  The test vectors in Appendix A.2 exercise these
@@ -478,12 +478,13 @@ return (was_square, r)
    The MAP function is defined on 32-byte strings as:
 
    1.  First, mask the most significant bit in the final byte of the
-       string, and interpret the string as an integer r in little-endian
-       representation.  Reduce r modulo p to obtain a field element t.
+       string, and interpret the string as an unsigned integer r in
+       little-endian representation.  Reduce r modulo p to obtain a
+       field element t.
 
        *  Masking the most significant bit is equivalent to interpreting
-          the whole string as an integer in little-endian representation
-          and then reducing it modulo 2^255.
+          the whole string as an unsigned integer in little-endian
+          representation and then reducing it modulo 2^255.
        *  Note: similarly to [RFC7748] field element decoding, and
           unlike field element decoding in Section 4.3.1, the most
           significant bit is masked, and non-canonical values are
@@ -526,11 +527,11 @@ return (was_square, r)
 
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a uniformly distributed scalar by interpreting the 64-byte
-   string as a 512-bit integer in little-endian order and reducing the
-   integer modulo l, as in [RFC8032].  To obtain such an input from an
-   arbitrary-length byte string, applications should use a domain-
-   separated hash construction, the choice of which is out-of-scope for
-   this document.
+   string as a 512-bit unsigned integer in little-endian order and
+   reducing the integer modulo l, as in [RFC8032].  To obtain such an
+   input from an arbitrary-length byte string, applications should use a
+   domain-separated hash construction, the choice of which is out-of-
+   scope for this document.
 
 5.  decaf448
 
@@ -634,9 +635,9 @@ return (was_square, r)
    All elements are encoded as 56-byte strings.  Decoding proceeds as
    follows:
 
-   1.  First, interpret the string as an integer s in little-endian
-       representation.  If the length of the string is not 56 bytes, or
-       if the resulting value is >= p, decoding fails.
+   1.  First, interpret the string as an unsigned integer s in little-
+       endian representation.  If the length of the string is not 56
+       bytes, or if the resulting value is >= p, decoding fails.
        *  Note: unlike [RFC7748] field element decoding, non-canonical
           values are rejected.  The test vectors in Appendix B.2
           exercise these edge cases.
@@ -716,7 +717,7 @@ return (was_square, r)
 
    The MAP function is defined on 56-byte strings as:
 
-   1.  Interpret the string as an integer r in little-endian
+   1.  Interpret the string as an unsigned integer r in little-endian
        representation.  Reduce r modulo p to obtain a field element t.
 
        *  Note: similarly to [RFC7748] field element decoding, and
@@ -758,10 +759,11 @@ return (was_square, r)
 
    Given a uniformly distributed 64-byte string b, implementations can
    obtain a uniformly distributed scalar by interpreting the 64-byte
-   string as a 512-bit integer in little-endian order and reducing the
-   integer modulo l.  To obtain such an input from an arbitrary-length
-   byte string, applications should use a domain-separated hash
-   construction, the choice of which is out-of-scope for this document.
+   string as a 512-bit unsigned integer in little-endian order and
+   reducing the integer modulo l.  To obtain such an input from an
+   arbitrary-length byte string, applications should use a domain-
+   separated hash construction, the choice of which is out-of-scope for
+   this document.
 
 6.  API Considerations
 

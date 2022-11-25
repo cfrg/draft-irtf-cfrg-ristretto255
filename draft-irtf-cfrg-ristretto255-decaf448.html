@@ -1202,7 +1202,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">de Valence, et al.</td>
-<td class="center">Expires 7 May 2023</td>
+<td class="center">Expires 29 May 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1215,12 +1215,12 @@ li > p:last-of-type {
 <dd class="internet-draft">draft-irtf-cfrg-ristretto255-decaf448-05</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-11-03" class="published">3 November 2022</time>
+<time datetime="2022-11-25" class="published">25 November 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-05-07">7 May 2023</time></dd>
+<dd class="expires"><time datetime="2023-05-29">29 May 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1273,7 +1273,7 @@ decaf448 group can be implemented using edwards448.<a href="#section-abstract-1"
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 May 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 May 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1739,7 +1739,7 @@ exposed by the ristretto255 prime-order group.<a href="#section-4.3-1" class="pi
 <p id="section-4.3.1-1">All elements are encoded as 32-byte strings. Decoding proceeds as follows:<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="compact type-1" id="section-4.3.1-2">
 <li id="section-4.3.1-2.1">
-              <p id="section-4.3.1-2.1.1">First, interpret the string as an integer s in little-endian
+              <p id="section-4.3.1-2.1.1">First, interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 32 bytes, or if
 the resulting value is &gt;= p, decoding fails.<a href="#section-4.3.1-2.1.1" class="pilcrow">¶</a></p>
 <ul class="compact">
@@ -1873,11 +1873,11 @@ is out-of-scope for this document.<a href="#section-4.3.4-1" class="pilcrow">¶<
 <ol start="1" type="1" class="normal type-1" id="section-4.3.4-5">
 <li id="section-4.3.4-5.1">
               <p id="section-4.3.4-5.1.1">First, mask the most significant bit in the final byte of the string,
-and interpret the string as an integer r in little-endian
+and interpret the string as an unsigned integer r in little-endian
 representation. Reduce r modulo p to obtain a field element t.<a href="#section-4.3.4-5.1.1" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-4.3.4-5.1.2.1">Masking the most significant bit is equivalent to interpreting the
-whole string as an integer in little-endian representation and then
+whole string as an unsigned integer in little-endian representation and then
 reducing it modulo 2^255.<a href="#section-4.3.4-5.1.2.1" class="pilcrow">¶</a>
 </li>
                 <li class="compact" id="section-4.3.4-5.1.2.2">Note: similarly to <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> field element decoding, and unlike
@@ -1934,7 +1934,7 @@ encoding them as byte strings. Omitting these strict range checks is
 arithmetic implementations in existing Curve25519 libraries.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <p id="section-4.4-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l, as in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out-of-scope for this document.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
@@ -2070,7 +2070,7 @@ exposed by the decaf448 prime-order group.<a href="#section-5.3-1" class="pilcro
 <p id="section-5.3.1-1">All elements are encoded as 56-byte strings. Decoding proceeds as follows:<a href="#section-5.3.1-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="compact type-1" id="section-5.3.1-2">
 <li id="section-5.3.1-2.1">
-              <p id="section-5.3.1-2.1.1">First, interpret the string as an integer s in little-endian
+              <p id="section-5.3.1-2.1.1">First, interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 56 bytes, or if
 the resulting value is &gt;= p, decoding fails.<a href="#section-5.3.1-2.1.1" class="pilcrow">¶</a></p>
 <ul class="compact">
@@ -2178,7 +2178,7 @@ is out-of-scope for this document.<a href="#section-5.3.4-1" class="pilcrow">¶<
 <p id="section-5.3.4-4">The MAP function is defined on 56-byte strings as:<a href="#section-5.3.4-4" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5.3.4-5">
 <li id="section-5.3.4-5.1">
-              <p id="section-5.3.4-5.1.1">Interpret the string as an integer r in little-endian representation.
+              <p id="section-5.3.4-5.1.1">Interpret the string as an unsigned integer r in little-endian representation.
 Reduce r modulo p to obtain a field element t.<a href="#section-5.3.4-5.1.1" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-5.3.4-5.1.2.1">Note: similarly to <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> field element decoding, and unlike
@@ -2233,7 +2233,7 @@ encoding them as byte strings. Omitting these strict range checks is
 arithmetic implementations in existing edwards448 libraries.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out-of-scope for this document.<a href="#section-5.4-3" class="pilcrow">¶</a></p>

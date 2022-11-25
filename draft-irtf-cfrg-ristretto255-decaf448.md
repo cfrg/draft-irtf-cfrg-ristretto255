@@ -457,7 +457,9 @@ y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 s = CT_ABS(den_inv * (z - y))
 ```
 
-2. Return the 32-byte little-endian encoding of s.
+2. Return the 32-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.
 
 Note that decoding and then re-encoding a valid group element will
 yield an identical byte string.
@@ -690,7 +692,9 @@ u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 ```
 
-2. Return the 56-byte little-endian encoding of s.
+2. Return the 56-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.
 
 Note that decoding and then re-encoding a valid group element will
 yield an identical byte string.

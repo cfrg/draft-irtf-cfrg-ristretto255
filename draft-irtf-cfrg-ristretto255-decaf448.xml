@@ -270,7 +270,7 @@ exposed by the ristretto255 prime-order group.</t>
 <t>All elements are encoded as 32-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>First, interpret the string as an integer s in little-endian
+<li><t>First, interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 32 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
@@ -384,12 +384,12 @@ is out-of-scope for this document.</t>
 
 <ol>
 <li><t>First, mask the most significant bit in the final byte of the string,
-and interpret the string as an integer r in little-endian
+and interpret the string as an unsigned integer r in little-endian
 representation. Reduce r modulo p to obtain a field element t.</t>
 
 <ul spacing="compact">
 <li>Masking the most significant bit is equivalent to interpreting the
-whole string as an integer in little-endian representation and then
+whole string as an unsigned integer in little-endian representation and then
 reducing it modulo 2^255.</li>
 <li>Note: similarly to <xref target="RFC7748"></xref> field element decoding, and unlike
 field element decoding in <xref target="decoding255"></xref>, the most significant bit
@@ -436,7 +436,7 @@ encoding them as byte strings. Omitting these strict range checks is
 arithmetic implementations in existing Curve25519 libraries.</t>
 <t>Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l, as in <xref target="RFC8032"></xref>. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out-of-scope for this document.</t>
@@ -534,7 +534,7 @@ exposed by the decaf448 prime-order group.</t>
 <t>All elements are encoded as 56-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>First, interpret the string as an integer s in little-endian
+<li><t>First, interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 56 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
@@ -622,7 +622,7 @@ is out-of-scope for this document.</t>
 <t>The MAP function is defined on 56-byte strings as:</t>
 
 <ol>
-<li><t>Interpret the string as an integer r in little-endian representation.
+<li><t>Interpret the string as an unsigned integer r in little-endian representation.
 Reduce r modulo p to obtain a field element t.</t>
 
 <ul spacing="compact">
@@ -669,7 +669,7 @@ encoding them as byte strings. Omitting these strict range checks is
 arithmetic implementations in existing edwards448 libraries.</t>
 <t>Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out-of-scope for this document.</t>
