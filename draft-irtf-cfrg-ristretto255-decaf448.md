@@ -390,7 +390,7 @@ exposed by the ristretto255 prime-order group.
 
 All elements are encoded as 32-byte strings. Decoding proceeds as follows:
 
-1. First, interpret the string as an integer s in little-endian
+1. First, interpret the string as an unsigned integer s in little-endian
    representation. If the length of the string is not 32 bytes, or if
    the resulting value is >= p, decoding fails.
    * Note: unlike [@RFC7748] field element decoding, the most significant
@@ -499,10 +499,10 @@ The element derivation function on an input string b proceeds as follows:
 The MAP function is defined on 32-byte strings as:
 
 1. First, mask the most significant bit in the final byte of the string,
-   and interpret the string as an integer r in little-endian
+   and interpret the string as an unsigned integer r in little-endian
    representation. Reduce r modulo p to obtain a field element t.
    * Masking the most significant bit is equivalent to interpreting the
-     whole string as an integer in little-endian representation and then
+     whole string as an unsigned integer in little-endian representation and then
      reducing it modulo 2^255.
    * Note: similarly to [@RFC7748] field element decoding, and unlike
      field element decoding in (#decoding255), the most significant bit
@@ -547,7 +547,7 @@ arithmetic implementations in existing Curve25519 libraries.
 
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l, as in [@RFC8032]. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out-of-scope for this document.
@@ -648,7 +648,7 @@ exposed by the decaf448 prime-order group.
 
 All elements are encoded as 56-byte strings. Decoding proceeds as follows:
 
-1. First, interpret the string as an integer s in little-endian
+1. First, interpret the string as an unsigned integer s in little-endian
    representation. If the length of the string is not 56 bytes, or if
    the resulting value is >= p, decoding fails.
    * Note: unlike [@RFC7748] field element decoding, non-canonical
@@ -731,7 +731,7 @@ The element derivation function on an input string b proceeds as follows:
 
 The MAP function is defined on 56-byte strings as:
 
-1. Interpret the string as an integer r in little-endian representation.
+1. Interpret the string as an unsigned integer r in little-endian representation.
    Reduce r modulo p to obtain a field element t.
    * Note: similarly to [@RFC7748] field element decoding, and unlike
      field element decoding in (#decoding448), non-canonical values are
@@ -774,7 +774,7 @@ arithmetic implementations in existing edwards448 libraries.
 
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
-string as a 512-bit integer in little-endian order and reducing the
+string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out-of-scope for this document.
