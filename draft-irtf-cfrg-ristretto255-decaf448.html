@@ -1821,7 +1821,9 @@ s = CT_ABS(den_inv * (z - y))
 </pre><a href="#section-4.3.2-3" class="pilcrow">¶</a>
 </div>
 <ol start="2" type="1" class="compact type-1" id="section-4.3.2-4">
-<li id="section-4.3.2-4.1">Return the 32-byte little-endian encoding of s.<a href="#section-4.3.2-4.1" class="pilcrow">¶</a>
+<li id="section-4.3.2-4.1">Return the 32-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.<a href="#section-4.3.2-4.1" class="pilcrow">¶</a>
 </li>
           </ol>
 <p id="section-4.3.2-5">Note that decoding and then re-encoding a valid group element will
@@ -2127,7 +2129,9 @@ s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 </pre><a href="#section-5.3.2-3" class="pilcrow">¶</a>
 </div>
 <ol start="2" type="1" class="compact type-1" id="section-5.3.2-4">
-<li id="section-5.3.2-4.1">Return the 56-byte little-endian encoding of s.<a href="#section-5.3.2-4.1" class="pilcrow">¶</a>
+<li id="section-5.3.2-4.1">Return the 56-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.<a href="#section-5.3.2-4.1" class="pilcrow">¶</a>
 </li>
           </ol>
 <p id="section-5.3.2-5">Note that decoding and then re-encoding a valid group element will

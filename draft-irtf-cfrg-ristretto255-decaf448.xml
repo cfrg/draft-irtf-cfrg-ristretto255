@@ -344,7 +344,9 @@ s = CT_ABS(den_inv * (z - y))
 </artwork>
 
 <ol spacing="compact" start="2">
-<li>Return the 32-byte little-endian encoding of s.</li>
+<li>Return the 32-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.</li>
 </ol>
 <t>Note that decoding and then re-encoding a valid group element will
 yield an identical byte string.</t>
@@ -583,7 +585,9 @@ s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
 </artwork>
 
 <ol spacing="compact" start="2">
-<li>Return the 56-byte little-endian encoding of s.</li>
+<li>Return the 56-byte little-endian encoding of s.  More specifically,
+this is the encoding of the canonical representation of s as an integer
+between 0 and p-1, inclusive.</li>
 </ol>
 <t>Note that decoding and then re-encoding a valid group element will
 yield an identical byte string.</t>
