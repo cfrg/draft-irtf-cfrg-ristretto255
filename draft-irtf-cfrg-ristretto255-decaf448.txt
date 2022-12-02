@@ -17,7 +17,7 @@ Expires: 5 June 2023
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-05
+                draft-irtf-cfrg-ristretto255-decaf448-06
 
 Abstract
 
