@@ -65,6 +65,8 @@ using Curve25519, allowing existing Curve25519 implementations to be
 reused and extended to provide a prime-order group. Likewise, the
 decaf448 group can be implemented using edwards448.
 
+This document is a product of the Crypto Forum Research Group (CFRG) in the IRTF.
+
 {mainmatter}
 
 # Introduction
@@ -127,6 +129,8 @@ constructions are out-of-scope for this document.
 
 The Ristretto construction is described and justified in detail at
 [@RistrettoGroup].
+
+This document represents the consensus of the Crypto Forum Research Group (CFRG).
 
 <reference anchor='RistrettoGroup' target='https://ristretto.group'>
     <front>

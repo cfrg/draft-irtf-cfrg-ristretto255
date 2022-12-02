@@ -27,6 +27,7 @@ cryptographic protocols. The ristretto255 group can be implemented
 using Curve25519, allowing existing Curve25519 implementations to be
 reused and extended to provide a prime-order group. Likewise, the
 decaf448 group can be implemented using edwards448.</t>
+<t>This document is a product of the Crypto Forum Research Group (CFRG) in the IRTF.</t>
 </abstract>
 
 </front>
@@ -73,6 +74,7 @@ interoperable with a Curve25519- or edwards448-based one, but those
 constructions are out-of-scope for this document.</t>
 <t>The Ristretto construction is described and justified in detail at
 <xref target="RistrettoGroup"></xref>.</t>
+<t>This document represents the consensus of the Crypto Forum Research Group (CFRG).</t>
 </section>
 
 <section anchor="notation-and-conventions-used-in-this-document"><name>Notation and Conventions Used In This Document</name>
