@@ -725,8 +725,9 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Implementations **MAY** also perform byte comparisons on encoded
-representations elements for an equivalent, although less efficient, result.
+Implementations **MAY** also perform byte comparisons on the encodings
+of group elements (produced by (#encoding448)) for an equivalent, although
+less efficient, result.
 
 ### Element derivation {#from_bytes_uniform448}
 
