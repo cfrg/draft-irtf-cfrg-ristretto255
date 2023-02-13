@@ -587,7 +587,8 @@ Since decaf448 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding using the method described in (#encoding448):
+multiplication. This is its encoding as produced by the function
+specified in (#encoding448):
 
 ```
 66666666 66666666 66666666 66666666 66666666 66666666 66666666
