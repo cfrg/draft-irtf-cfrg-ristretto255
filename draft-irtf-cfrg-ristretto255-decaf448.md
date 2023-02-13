@@ -131,6 +131,7 @@ The Ristretto construction is described and justified in detail at
 [@RistrettoGroup].
 
 This document represents the consensus of the Crypto Forum Research Group (CFRG).
+This document is not an IETF product and is not a standard.
 
 <reference anchor='RistrettoGroup' target='https://ristretto.group'>
     <front>
@@ -177,7 +178,7 @@ extended homogeneous coordinates in Section 5.1.4 of [@?RFC8032]. Field
 elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
 edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and
 4.2 of [@RFC7748], respectively. All formulas specify field operations
-unless otherwise noted.
+unless otherwise noted. The symbol ^ denotes exponentiation.
 
 The `|` symbol represents a constant-time logical OR.
 
@@ -322,7 +323,7 @@ Since ristretto255 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding (#encoding255):
+multiplication. This is its encoding using the method described in (#encoding255):
 
 ```
 e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
@@ -486,8 +487,8 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Implementations **MAY** also perform byte comparisons on encodings for
-an equivalent, although less efficient, result.
+Implementations **MAY** also perform byte comparisons on encoded
+representations elements for an equivalent, although less efficient, result.
 
 ### Element derivation {#from_bytes_uniform255}
 
@@ -585,7 +586,7 @@ Since decaf448 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding (#encoding448):
+multiplication. This is its encoding using the method described in (#encoding448):
 
 ```
 66666666 66666666 66666666 66666666 66666666 66666666 66666666
@@ -721,8 +722,8 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Implementations **MAY** also perform byte comparisons on encodings for
-an equivalent, although less efficient, result.
+Implementations **MAY** also perform byte comparisons on encoded
+representations elements for an equivalent, although less efficient, result.
 
 ### Element derivation {#from_bytes_uniform448}
 
@@ -838,7 +839,7 @@ checking is never necessary, and invalid states are unrepresentable.
 
 # Acknowledgements
 
-The authors would like to thank Daira Hopwood, Riad S. Wahby, Chris Wood,
+The authors would like to thank Daira Hopwood, Riad S. Wahby, Christopher Wood,
 and Thomas Pornin for their comments on the draft.
 
 {backmatter}
