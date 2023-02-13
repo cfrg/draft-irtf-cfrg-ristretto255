@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-decaf448-06" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" consensus="true">
+<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-decaf448-07" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" consensus="true">
 
 <front>
-<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="draft-irtf-cfrg-ristretto255-decaf448-06" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="draft-irtf-cfrg-ristretto255-decaf448-07" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
 <author initials="H." surname="de Valence" fullname="Henry de Valence"><organization></organization><address><postal><street></street>
 </postal><email>ietf@hdevalence.ca</email>
 </address></author><author initials="J." surname="Grigg" fullname="Jack Grigg"><organization></organization><address><postal><street></street>
@@ -74,7 +74,8 @@ interoperable with a Curve25519- or edwards448-based one, but those
 constructions are out-of-scope for this document.</t>
 <t>The Ristretto construction is described and justified in detail at
 <xref target="RistrettoGroup"></xref>.</t>
-<t>This document represents the consensus of the Crypto Forum Research Group (CFRG).</t>
+<t>This document represents the consensus of the Crypto Forum Research Group (CFRG).
+This document is not an IETF product and is not a standard.</t>
 </section>
 
 <section anchor="notation-and-conventions-used-in-this-document"><name>Notation and Conventions Used In This Document</name>
@@ -100,7 +101,7 @@ extended homogeneous coordinates in Section 5.1.4 of <xref target="RFC8032"></xr
 elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
 edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and
 4.2 of <xref target="RFC7748"></xref>, respectively. All formulas specify field operations
-unless otherwise noted.</t>
+unless otherwise noted. The symbol ^ denotes exponentiation.</t>
 <t>The <tt>|</tt> symbol represents a constant-time logical OR.</t>
 <t>The notation <tt>array[A:B]</tt> means the elements of <tt>array</tt> from <tt>A</tt>
 to <tt>B-1</tt>. That is, it is exclusive of <tt>B</tt>. Arrays are indexed
@@ -200,7 +201,8 @@ directly to the internal representation.</t>
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the Curve25519
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding <xref target="encoding255"></xref>:</t>
+multiplication. This is its encoding as produced by the function
+specified in <xref target="encoding255"></xref>:</t>
 
 <artwork>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 </artwork>
@@ -368,8 +370,9 @@ if</t>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.</t>
-<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on encodings for
-an equivalent, although less efficient, result.</t>
+<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on the encodings
+of group elements (produced by <xref target="encoding255"></xref>) for an equivalent, although
+less efficient, result.</t>
 </section>
 
 <section anchor="from_bytes_uniform255"><name>Element derivation</name>
@@ -470,7 +473,8 @@ directly to the internal representation.</t>
 identity is a generator, but for interoperability a canonical generator
 is selected, which can be internally represented by the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding <xref target="encoding448"></xref>:</t>
+multiplication. This is its encoding as produced by the function
+specified in <xref target="encoding448"></xref>:</t>
 
 <artwork>66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
@@ -609,8 +613,9 @@ if</t>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.</t>
-<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on encodings for
-an equivalent, although less efficient, result.</t>
+<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on the encodings
+of group elements (produced by <xref target="encoding448"></xref>) for an equivalent, although
+less efficient, result.</t>
 </section>
 
 <section anchor="from_bytes_uniform448"><name>Element derivation</name>
@@ -729,7 +734,7 @@ checking is never necessary, and invalid states are unrepresentable.</t>
 </section>
 
 <section anchor="acknowledgements"><name>Acknowledgements</name>
-<t>The authors would like to thank Daira Hopwood, Riad S. Wahby, Chris Wood,
+<t>The authors would like to thank Daira Hopwood, Riad S. Wahby, Christopher Wood,
 and Thomas Pornin for their comments on the draft.</t>
 </section>
 

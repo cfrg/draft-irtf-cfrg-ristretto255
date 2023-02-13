@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 5 June 2023                                                    
+Expires: 17 August 2023                                                 
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,11 +13,11 @@ Expires: 5 June 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                         2 December 2022
+                                                        13 February 2023
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-06
+                draft-irtf-cfrg-ristretto255-decaf448-07
 
 Abstract
 
@@ -46,11 +46,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 June 2023.
+   This Internet-Draft will expire on 17 August 2023.
 
 Copyright Notice
 
-   Copyright (c) 2022 IETF Trust and the persons identified as the
+   Copyright (c) 2023 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -153,7 +153,8 @@ Table of Contents
    [RistrettoGroup].
 
    This document represents the consensus of the Crypto Forum Research
-   Group (CFRG).
+   Group (CFRG).  This document is not an IETF product and is not a
+   standard.
 
 2.  Notation and Conventions Used In This Document
 
@@ -182,7 +183,8 @@ Table of Contents
    Field elements are values modulo p, the Curve25519 prime 2^255 - 19
    or the edwards448 prime 2^448 - 2^224 - 1, as specified in Sections
    4.1 and 4.2 of [RFC7748], respectively.  All formulas specify field
-   operations unless otherwise noted.
+   operations unless otherwise noted.  The symbol ^ denotes
+   exponentiation.
 
    The | symbol represents a constant-time logical OR.
 
@@ -298,7 +300,8 @@ Table of Contents
    identity is a generator, but for interoperability a canonical
    generator is selected, which can be internally represented by the
    Curve25519 basepoint, enabling reuse of existing precomputation for
-   scalar multiplication.  This is its encoding Section 4.3.2:
+   scalar multiplication.  This is its encoding as produced by the
+   function specified in Section 4.3.2:
 
  e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 
@@ -466,8 +469,9 @@ return (was_square, r)
    obtained by encoding and then re-decoding it.  However, the internal
    representations themselves might not be identical.
 
-   Implementations MAY also perform byte comparisons on encodings for an
-   equivalent, although less efficient, result.
+   Implementations MAY also perform byte comparisons on the encodings of
+   group elements (produced by Section 4.3.2) for an equivalent,
+   although less efficient, result.
 
 4.3.4.  Element derivation
 
@@ -569,7 +573,8 @@ return (was_square, r)
    identity is a generator, but for interoperability a canonical
    generator is selected, which can be internally represented by the
    edwards448 basepoint, enabling reuse of existing precomputation for
-   scalar multiplication.  This is its encoding Section 5.3.2:
+   scalar multiplication.  This is its encoding as produced by the
+   function specified in Section 5.3.2:
 
    66666666 66666666 66666666 66666666 66666666 66666666 66666666
    33333333 33333333 33333333 33333333 33333333 33333333 33333333
@@ -708,8 +713,9 @@ return (was_square, r)
    obtained by encoding and then re-decoding it.  However, the internal
    representations themselves might not be identical.
 
-   Implementations MAY also perform byte comparisons on encodings for an
-   equivalent, although less efficient, result.
+   Implementations MAY also perform byte comparisons on the encodings of
+   group elements (produced by Section 5.3.2) for an equivalent,
+   although less efficient, result.
 
 5.3.4.  Element derivation
 
@@ -829,19 +835,19 @@ return (was_square, r)
 
 9.  Acknowledgements
 
-   The authors would like to thank Daira Hopwood, Riad S.  Wahby, Chris
-   Wood, and Thomas Pornin for their comments on the draft.
+   The authors would like to thank Daira Hopwood, Riad S.  Wahby,
+   Christopher Wood, and Thomas Pornin for their comments on the draft.
 
 10.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
 11.  Informative References
 
@@ -861,12 +867,12 @@ return (was_square, r)
 
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
-              2016, <https://www.rfc-editor.org/info/rfc7748>.
+              2016, <https://www.rfc-editor.org/rfc/rfc7748>.
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
               DOI 10.17487/RFC8032, January 2017,
-              <https://www.rfc-editor.org/info/rfc8032>.
+              <https://www.rfc-editor.org/rfc/rfc8032>.
 
    [RistrettoGroup]
               de Valence, H., Lovecruft, I., Arcieri, T., and M.
