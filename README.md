@@ -8,7 +8,7 @@ This is the working area for the CFRG Internet-Draft,
 The formatted text version of the draft is built from Markdown.
 
 ```sh
-$ go install github.com/mmarkdown/mmark/v2@a7178c47f0bcc66d1b1970f1bd5607fb4c151e76
+$ go install github.com/mmarkdown/mmark/v2@08b8fbb35701dab9a4972e1e29774a13f196ff53
 $ pipenv install
 $ pipenv run make
 ```
