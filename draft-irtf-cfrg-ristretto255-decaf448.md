@@ -90,6 +90,13 @@ compression</title>
     </front>
 </reference>
 
+Many group-based cryptographic protocols require the number of
+elements in the group (the group order) to be prime. Prime-order
+groups are useful because every non-identity element of the group
+is a generator of the entire group. This means the group has a
+cofactor of 1, and all elements are equivalent from the perspective
+of Discrete Log Hardness.
+
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and formulas among the fastest known for curve operations.

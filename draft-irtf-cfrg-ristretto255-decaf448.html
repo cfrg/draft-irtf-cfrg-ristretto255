@@ -1215,11 +1215,11 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">ristretto255-decaf448</td>
-<td class="right">March 2023</td>
+<td class="right">April 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">de Valence, et al.</td>
-<td class="center">Expires 30 September 2023</td>
+<td class="center">Expires 3 October 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1232,12 +1232,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-irtf-cfrg-ristretto255-decaf448-07</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-03-29" class="published">29 March 2023</time>
+<time datetime="2023-04-01" class="published">1 April 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-09-30">30 September 2023</time></dd>
+<dd class="expires"><time datetime="2023-10-03">3 October 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1291,7 +1291,7 @@ decaf448 group can be implemented using edwards448.<a href="#section-abstract-1"
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 September 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 October 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1466,41 +1466,47 @@ Ristretto extends this technique to support cofactor-8 curves such as
 Curve25519 <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>. In particular, this allows an existing
 Curve25519 library to provide a prime-order group with only a thin
 abstraction layer.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Edwards curves provide a number of implementation benefits for
+<p id="section-1-2">Many group-based cryptographic protocols require the number of
+elements in the group (the group order) to be prime. Prime-order
+groups are useful because every non-identity element of the group
+is a generator of the entire group. This means the group has a
+cofactor of 1, and all elements are equivalent from the perspective
+of Discrete Log Hardness.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
 points and formulas among the fastest known for curve operations.
 However, the group of points on the curve is not of prime order,
 i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad-hoc
 protocol tweaks, such as multiplying by the cofactor in an
-appropriate place, or not at all.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Even for simple protocols such as signatures, these tweaks can cause
+appropriate place, or not at all.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Even for simple protocols such as signatures, these tweaks can cause
 subtle issues. For instance, Ed25519 implementations may have
 different validation behavior between batched and singleton
 verification, and at least as specified in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>, the set of
-valid signatures is not defined by the standard.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">For more complex protocols, careful analysis is required as the
+valid signatures is not defined by the standard.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">For more complex protocols, careful analysis is required as the
 original security proofs may no longer apply, and the tweaks for one
 protocol may have disastrous effects when applied to another (for
-instance, the octuple-spend vulnerability in <span>[<a href="#MoneroVuln" class="cite xref">MoneroVuln</a>]</span>).<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">Decaf and Ristretto fix this abstraction mismatch in one place for
+instance, the octuple-spend vulnerability in <span>[<a href="#MoneroVuln" class="cite xref">MoneroVuln</a>]</span>).<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
 matches the abstraction commonly assumed in protocol specifications,
 while still allowing the use of high-performance curve
 implementations internally. The abstraction layer imposes minor
-overhead, and only in the encoding and decoding phases.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">While Ristretto is a general method, and can be used in conjunction
+overhead, and only in the encoding and decoding phases.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7">While Ristretto is a general method, and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which can be implemented using Curve25519,
-and the decaf448 group, which can be implemented using edwards448.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">There are other elliptic curves that can be used internally to
+and the decaf448 group, which can be implemented using edwards448.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-8">There are other elliptic curves that can be used internally to
 implement ristretto255 or decaf448, and those implementations would be
 interoperable with a Curve25519- or edwards448-based one, but those
-constructions are out-of-scope for this document.<a href="#section-1-7" class="pilcrow">¶</a></p>
-<p id="section-1-8">The Ristretto construction is described and justified in detail at
-<span>[<a href="#RistrettoGroup" class="cite xref">RistrettoGroup</a>]</span>.<a href="#section-1-8" class="pilcrow">¶</a></p>
-<p id="section-1-9">This document represents the consensus of the Crypto Forum Research Group (CFRG).
-This document is not an IETF product and is not a standard.<a href="#section-1-9" class="pilcrow">¶</a></p>
+constructions are out-of-scope for this document.<a href="#section-1-8" class="pilcrow">¶</a></p>
+<p id="section-1-9">The Ristretto construction is described and justified in detail at
+<span>[<a href="#RistrettoGroup" class="cite xref">RistrettoGroup</a>]</span>.<a href="#section-1-9" class="pilcrow">¶</a></p>
+<p id="section-1-10">This document represents the consensus of the Crypto Forum Research Group (CFRG).
+This document is not an IETF product and is not a standard.<a href="#section-1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="notation-and-conventions-used-in-this-document">
