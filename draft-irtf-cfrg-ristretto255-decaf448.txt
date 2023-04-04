@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 30 September 2023                                              
+Expires: 3 October 2023                                                 
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,7 +13,7 @@ Expires: 30 September 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                           29 March 2023
+                                                            1 April 2023
 
 
                   The ristretto255 and decaf448 Groups
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 September 2023.
+   This Internet-Draft will expire on 3 October 2023.
 
 Copyright Notice
 
@@ -112,6 +112,13 @@ Table of Contents
    Curve25519 [RFC7748].  In particular, this allows an existing
    Curve25519 library to provide a prime-order group with only a thin
    abstraction layer.
+
+   Many group-based cryptographic protocols require the number of
+   elements in the group (the group order) to be prime.  Prime-order
+   groups are useful because every non-identity element of the group is
+   a generator of the entire group.  This means the group has a cofactor
+   of 1, and all elements are equivalent from the perspective of
+   Discrete Log Hardness.
 
    Edwards curves provide a number of implementation benefits for
    cryptography, such as complete addition formulas with no exceptional
