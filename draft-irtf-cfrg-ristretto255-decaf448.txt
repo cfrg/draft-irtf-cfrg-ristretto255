@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 3 October 2023                                                 
+Expires: 6 October 2023                                                 
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,11 +13,11 @@ Expires: 3 October 2023
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                            1 April 2023
+                                                            4 April 2023
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-07
+                draft-irtf-cfrg-ristretto255-decaf448-08
 
 Abstract
 
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 October 2023.
+   This Internet-Draft will expire on 6 October 2023.
 
 Copyright Notice
 
