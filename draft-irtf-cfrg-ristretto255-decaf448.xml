@@ -135,7 +135,8 @@ operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 </ul>
 <t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
 
-<artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
+<artwork><![CDATA[CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
+]]>
 </artwork>
 </section>
 </section>
@@ -201,7 +202,8 @@ multiplication are implemented by applying the corresponding operations
 directly to the internal representation.</t>
 <t>The group order is the same as the order of the Curve25519 prime-order subgroup:</t>
 
-<artwork>l = 2^252 + 27742317777372353535851937790883648493
+<artwork><![CDATA[l = 2^252 + 27742317777372353535851937790883648493
+]]>
 </artwork>
 <t>Since ristretto255 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
@@ -210,7 +212,8 @@ basepoint, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in <xref target="encoding255"></xref>:</t>
 
-<artwork>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
+<artwork><![CDATA[e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
+]]>
 </artwork>
 
 <section anchor="constants255"><name>Implementation constants</name>
@@ -253,7 +256,7 @@ for efficient implementation of the derivation function. The function
 can be refactored from an existing Ed25519 implementation.</t>
 <t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
-<artwork>r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+<artwork><![CDATA[r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
 check = v * r^2
 
 correct_sign_sqrt   = CT_EQ(check,          u)
@@ -269,6 +272,7 @@ r = CT_ABS(r)
 was_square = correct_sign_sqrt | flipped_sign_sqrt
 
 return (was_square, r)
+]]>
 </artwork>
 </section>
 
@@ -293,7 +297,7 @@ The test vectors in <xref target="invalid255"></xref> exercise these edge cases.
 <li>Process s as follows:</li>
 </ol>
 
-<artwork>ss = s^2
+<artwork><![CDATA[ss = s^2
 u1 = 1 - ss
 u2 = 1 + ss
 u2_sqr = u2^2
@@ -308,6 +312,7 @@ den_y = invsqrt * den_x * v
 x = CT_ABS(2 * s * den_x)
 y = u1 * den_y
 t = x * y
+]]>
 </artwork>
 
 <ol spacing="compact" start="4">
@@ -326,7 +331,7 @@ encoded as follows:</t>
 <li>Process the internal representation into a field element s as follows:</li>
 </ol>
 
-<artwork>u1 = (z0 + y0) * (z0 - y0)
+<artwork><![CDATA[u1 = (z0 + y0) * (z0 - y0)
 u2 = x0 * y0
 
 // Ignore was_square since this is always square.
@@ -351,6 +356,7 @@ den_inv = CT_SELECT(enchanted_denominator IF rotate ELSE den2)
 y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 
 s = CT_ABS(den_inv * (z - y))
+]]>
 </artwork>
 
 <ol spacing="compact" start="2">
@@ -369,7 +375,8 @@ correspond to the same group element. Note that internal representations
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+<artwork><![CDATA[(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+]]>
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
 <t>Note that the equality function always returns TRUE when applied to an
@@ -412,7 +419,7 @@ is masked, and non-canonical values are accepted.</li>
 </li>
 </ol>
 
-<artwork>r = SQRT_M1 * t^2
+<artwork><![CDATA[r = SQRT_M1 * t^2
 u = (r + 1) * ONE_MINUS_D_SQ
 v = (-1 - r*D) * (r + D)
 
@@ -427,6 +434,7 @@ w0 = 2 * s * v
 w1 = N * SQRT_AD_MINUS_ONE
 w2 = 1 - s^2
 w3 = 1 + s^2
+]]>
 </artwork>
 
 <ol spacing="compact" start="3">
@@ -472,18 +480,20 @@ multiplication are implemented by applying the corresponding operations
 directly to the internal representation.</t>
 <t>The group order is the same as the order of the edwards448 prime-order subgroup:</t>
 
-<artwork>l = 2^446 -
+<artwork><![CDATA[l = 2^446 -
   13818066809895115352007386748515426880336692474882178609894547503885
+]]>
 </artwork>
 <t>Since decaf448 is a prime-order group, every element except the
 identity is a generator, but for interoperability a canonical generator
-is selected, which can be internally represented by the edwards448
+is selected.  This generator can be internally represented by 2*<tt>B</tt>, where <tt>B</tt> is the edwards448
 basepoint, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in <xref target="encoding448"></xref>:</t>
 
-<artwork>66666666 66666666 66666666 66666666 66666666 66666666 66666666
+<artwork><![CDATA[66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
+]]>
 </artwork>
 <t>This repetitive constant is equal to <tt>1/sqrt(5)</tt> in decaf448's field,
 corresponding to the curve448 base point with x = 5.</t>
@@ -528,7 +538,7 @@ for efficient implementation of the derivation function. The function
 can be refactored from an existing edwards448 implementation.</t>
 <t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
-<artwork>r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
+<artwork><![CDATA[r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
 
 check = v * r^2
 was_square = CT_EQ(check, u)
@@ -537,6 +547,7 @@ was_square = CT_EQ(check, u)
 r = CT_ABS(r)
 
 return (was_square, r)
+]]>
 </artwork>
 </section>
 
@@ -561,7 +572,7 @@ these edge cases.</li>
 <li>Process s as follows:</li>
 </ol>
 
-<artwork>ss = s^2
+<artwork><![CDATA[ss = s^2
 u1 = 1 + ss
 u2 = u1^2 - 4 * D * ss
 (was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
@@ -569,6 +580,7 @@ u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
 x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
 y = (1 - ss) * invsqrt * u1
 t = x * y
+]]>
 </artwork>
 
 <ol spacing="compact" start="4">
@@ -586,7 +598,7 @@ encoded as follows:</t>
 <li>Process the internal representation into a field element s as follows:</li>
 </ol>
 
-<artwork>u1 = (x0 + t0) * (x0 - t0)
+<artwork><![CDATA[u1 = (x0 + t0) * (x0 - t0)
 
 // Ignore was_square since this is always square.
 (_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
@@ -594,6 +606,7 @@ encoded as follows:</t>
 ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
 u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
+]]>
 </artwork>
 
 <ol spacing="compact" start="2">
@@ -612,7 +625,8 @@ correspond to the same group element. Note that internal representations
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork>x1 * y2 == y1 * x2
+<artwork><![CDATA[x1 * y2 == y1 * x2
+]]>
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
 <t>Note that the equality function always returns TRUE when applied to an
@@ -651,7 +665,7 @@ accepted.</li>
 </li>
 </ol>
 
-<artwork>r = -t^2
+<artwork><![CDATA[r = -t^2
 u0 = d * (r-1)
 u1 = (u0 + 1) * (u0 - r)
 
@@ -664,6 +678,7 @@ w0 = 2 * CT_ABS(s)
 w1 = s^2 + 1
 w2 = s^2 - 1
 w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
+]]>
 </artwork>
 
 <ol spacing="compact" start="3">
@@ -748,8 +763,8 @@ and Thomas Pornin for their comments on the draft.</t>
 
 <back>
 <references><name>Normative References</name>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
 </references>
 <references><name>Informative References</name>
 <reference anchor="Decaf" target="https://www.shiftleft.org/papers/decaf/decaf.pdf">
@@ -775,8 +790,8 @@ and Thomas Pornin for their comments on the draft.</t>
     <date year="2014"></date>
   </front>
 </reference>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
-<xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
 <reference anchor="RistrettoGroup" target="https://ristretto.group">
   <front>
     <title>The Ristretto Group</title>
@@ -820,7 +835,7 @@ canonical generator, represented as an array of elements. That is,
 the first entry is the encoding of the identity element, and each
 successive entry is obtained by adding the generator to the previous entry.</t>
 
-<artwork>B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+<artwork><![CDATA[B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
 B[ 1]: e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 B[ 2]: 6a493210 f7499cd1 7fecb510 ae0cea23 a110e8d5 b901f8ac add3095c 73a3b919
 B[ 3]: 94741f5d 5d52755e ce4f23f0 44ee27d5 d1ea1e2b d196b462 166b1615 2a9d0259
@@ -836,10 +851,12 @@ B[12]: e4549ee1 6b9aa030 99ca208c 67adafca fa4c3f3e 4e5303de 6026e3ca 8ff84460
 B[13]: aa52e000 df2e16f5 5fb1032f c33bc427 42dad6bd 5a8fc0be 0167436c 5948501f
 B[14]: 46376b80 f409b29d c2b5f6f0 c5259199 0896e571 6f41477c d30085ab 7f10301e
 B[15]: e0c418f7 c8d9c4cd d7395b93 ea124f3a d99021bb 681dfc33 02a9d99a 2e53e64e
+]]>
 </artwork>
 <t>Note that because</t>
 
-<artwork>B[i+1] = B[i] + B[1]
+<artwork><![CDATA[B[i+1] = B[i] + B[1]
+]]>
 </artwork>
 <t>these test vectors allow testing the encoding function and
 the implementation of addition simultaneously.</t>
@@ -849,7 +866,7 @@ the implementation of addition simultaneously.</t>
 <t>These are examples of encodings that <bcp14>MUST</bcp14> be rejected according to
 <xref target="decoding255"></xref>.</t>
 
-<artwork># Non-canonical field encodings.
+<artwork><![CDATA[# Non-canonical field encodings.
 00ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 f3ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
@@ -887,6 +904,7 @@ d483fe81 3c6ba647 ebbfd3ec 41adca1c 6130c2be eee9d9bf 065c8d15 1c5f396e
 
 # s = -1, which causes y = 0.
 ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
+]]>
 </artwork>
 </section>
 
@@ -894,7 +912,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 <t>The following pairs are inputs to the element derivation function of
 <xref target="from_bytes_uniform255"></xref>, and their encoded outputs.</t>
 
-<artwork>I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
+<artwork><![CDATA[I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
    4d98b696a1bbfb5ca32c436cc61c16563790306c79eaca7705668b47dffe5bb6
 O: 3066f82a 1a747d45 120d1740 f1435853 1a8f04bb ffe6a819 f86dfe50 f44a0a46
 
@@ -921,11 +939,12 @@ O: e2705652 ff9f5e44 d3e841bf 1c251cf7 dddb77d1 40870d1a b2ed64f1 a9ce8628
 I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
    2c9965a697a3b345ec24ee56335b556e677b30e6f90ac77d781064f866a3c982
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
+]]>
 </artwork>
 <t>The following element derivation function inputs all produce the same encoded
 output.</t>
 
-<artwork>I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+<artwork><![CDATA[I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
    1200000000000000000000000000000000000000000000000000000000000000
 I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -935,6 +954,7 @@ I: 0000000000000000000000000000000000000000000000000000000000000000
    1200000000000000000000000000000000000000000000000000000000000080
 
 O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
+]]>
 </artwork>
 </section>
 
@@ -943,7 +963,7 @@ O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
 in <xref target="sqrtratio255"></xref>. The values are little-endian encodings of field
 elements.</t>
 
-<artwork>u: 0000000000000000000000000000000000000000000000000000000000000000
+<artwork><![CDATA[u: 0000000000000000000000000000000000000000000000000000000000000000
 v: 0000000000000000000000000000000000000000000000000000000000000000
 was_square: TRUE
 r: 0000000000000000000000000000000000000000000000000000000000000000
@@ -972,6 +992,7 @@ u: 0100000000000000000000000000000000000000000000000000000000000000
 v: 0400000000000000000000000000000000000000000000000000000000000000
 was_square: TRUE
 r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+]]>
 </artwork>
 </section>
 </section>
@@ -986,7 +1007,7 @@ canonical generator, represented as an array of elements. That is,
 the first entry is the encoding of the identity element, and each
 successive entry is obtained by adding the generator to the previous entry.</t>
 
-<artwork>B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+<artwork><![CDATA[B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
        00000000 00000000 00000000 00000000 00000000 00000000 00000000
 B[ 1]: 66666666 66666666 66666666 66666666 66666666 66666666 66666666
        33333333 33333333 33333333 33333333 33333333 33333333 33333333
@@ -1018,6 +1039,7 @@ B[14]: 4ae7fdca e9453f19 5a8ead5c be1a7b96 99673b52 c40ab279 27464887
        be53237f 7f3a21b9 38d40d0e c9e15b1d 5130b13f fed81373 a53e2b43
 B[15]: 841981c3 bfeec3f6 0cfeca75 d9d8dc17 f46cf010 6f2422b5 9aec580a
        58f34227 2e3a5e57 5a055ddb 051390c5 4c24c6ec b1e0aceb 075f6056
+]]>
 </artwork>
 </section>
 
@@ -1025,7 +1047,7 @@ B[15]: 841981c3 bfeec3f6 0cfeca75 d9d8dc17 f46cf010 6f2422b5 9aec580a
 <t>These are examples of encodings that <bcp14>MUST</bcp14> be rejected according to
 <xref target="decoding448"></xref>.</t>
 
-<artwork># Non-canonical field encodings.
+<artwork><![CDATA[# Non-canonical field encodings.
 8e24f838 059ee9fe f1e20912 6defe53d cd74ef9b 6304601c 6966099e
 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
 
@@ -1090,6 +1112,7 @@ f063769e 4241e76d 815800e4 933a3a14 4327a30e c40758ad 3723a788
 
 5a0104f1 f55d152c eb68bc13 81824998 91d90ee8 f09b4003 8ccc1e07
 cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
+]]>
 </artwork>
 </section>
 
@@ -1097,7 +1120,7 @@ cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
 <t>The following pairs are inputs to the element derivation function of
 <xref target="from_bytes_uniform448"></xref>, and their encoded outputs.</t>
 
-<artwork>I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
+<artwork><![CDATA[I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
    d5ee6cdccea57be3416e166fd06718a31af45a2f8e987e301be59ae6
    673e963001dbbda80df47014a21a26d6c7eb4ebe0312aa6fffb8d1b2
    6bc62ca40ed51f8057a635a02c2b8c83f48fa6a2d70f58a1185902c0
@@ -1145,6 +1168,7 @@ I: e9fb440282e07145f1f7f5ecf3c273212cd3d26b836b41b02f108431
    98fdd885608f68bf0fdedd7b894081a63f70016a8abf04953affbefa
 O: 20b171cb 16be977f 15e013b9 752cf86c 54c631c4 fc8cbf7c 03c4d3ac
    9b8e8640 e7b0e930 0b987fe0 ab504466 9314f6ed 1650ae03 7db853f1
+]]>
 </artwork>
 </section>
 </section>
