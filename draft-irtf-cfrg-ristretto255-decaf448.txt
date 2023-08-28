@@ -5,7 +5,7 @@
 Crypto Forum Research Group                                H. de Valence
 Internet-Draft                                                          
 Intended status: Informational                                  J. Grigg
-Expires: 1 February 2024                                                
+Expires: 29 February 2024                                               
                                                               M. Hamburg
                                                                         
                                                             I. Lovecruft
@@ -13,11 +13,11 @@ Expires: 1 February 2024
                                                            G. Tankersley
                                                                         
                                                              F. Valsorda
-                                                            31 July 2023
+                                                          28 August 2023
 
 
                   The ristretto255 and decaf448 Groups
-                draft-irtf-cfrg-ristretto255-decaf448-07
+                draft-irtf-cfrg-ristretto255-decaf448-08
 
 Abstract
 
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 February 2024.
+   This Internet-Draft will expire on 29 February 2024.
 
 Copyright Notice
 
@@ -849,12 +849,12 @@ return (was_square, r)
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997, <httpss://www.rfc-
-              editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <httpss://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
 11.  Informative References
 
@@ -874,12 +874,12 @@ return (was_square, r)
 
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
-              2016, <httpss://www.rfc-editor.org/info/rfc7748>.
+              2016, <https://www.rfc-editor.org/info/rfc7748>.
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
-              DOI 10.17487/RFC8032, January 2017, <httpss://www.rfc-
-              editor.org/info/rfc8032>.
+              DOI 10.17487/RFC8032, January 2017,
+              <https://www.rfc-editor.org/info/rfc8032>.
 
    [RistrettoGroup]
               de Valence, H., Lovecruft, I., Arcieri, T., and M.
