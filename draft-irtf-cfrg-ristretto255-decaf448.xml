@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-irtf-cfrg-ristretto255-decaf448-08" submissionType="IETF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" consensus="true">
+<rfc version="3" ipr="trust200902" docName="9496" submissionType="IRTF" category="info" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" consensus="true" sortRefs="true" number="9496">
 
 <front>
-<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="draft-irtf-cfrg-ristretto255-decaf448-08" stream="IETF" status="informational" name="Internet-Draft"></seriesInfo>
+<title abbrev="ristretto255-decaf448">The ristretto255 and decaf448 Groups</title><seriesInfo value="9496" stream="IRTF" status="informational" name="RFC"></seriesInfo>
 <author initials="H." surname="de Valence" fullname="Henry de Valence"><organization></organization><address><postal><street></street>
 </postal><email>ietf@hdevalence.ca</email>
 </address></author><author initials="J." surname="Grigg" fullname="Jack Grigg"><organization></organization><address><postal><street></street>
@@ -16,9 +16,9 @@
 </postal><email>ietf@gtank.cc</email>
 </address></author><author initials="F." surname="Valsorda" fullname="Filippo Valsorda"><organization></organization><address><postal><street></street>
 </postal><email>ietf@filippo.io</email>
-</address></author><date/>
+</address></author><date year="2023" month="October" day="14"></date>
 <area>Internet</area>
-<workgroup>Crypto Forum Research Group</workgroup>
+<workgroup>Crypto Forum</workgroup>
 
 <abstract>
 <t>This memo specifies two prime-order groups, ristretto255 and decaf448,
@@ -36,7 +36,7 @@ decaf448 group can be implemented using edwards448.</t>
 
 <section anchor="introduction"><name>Introduction</name>
 <t>Decaf <xref target="Decaf"></xref> is a technique for constructing prime-order groups
-with non-malleable encodings from non-prime-order elliptic curves.
+with nonmalleable encodings from non-prime-order elliptic curves.
 Ristretto extends this technique to support cofactor-8 curves such as
 Curve25519 <xref target="RFC7748"></xref>. In particular, this allows an existing
 Curve25519 library to provide a prime-order group with only a thin
@@ -49,10 +49,10 @@ cofactor of 1, and all elements are equivalent from the perspective
 of Discrete Log Hardness.</t>
 <t>Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
-points and formulas among the fastest known for curve operations.
+points and formulas known to be among the fastest for curve operations.
 However, the group of points on the curve is not of prime order,
 i.e., it has a cofactor larger than 1.
-This abstraction mismatch is usually handled by means of ad-hoc
+This abstraction mismatch is usually handled by means of ad hoc
 protocol tweaks, such as multiplying by the cofactor in an
 appropriate place, or not at all.</t>
 <t>Even for simple protocols such as signatures, these tweaks can cause
@@ -63,68 +63,67 @@ valid signatures is not defined by the standard.</t>
 <t>For more complex protocols, careful analysis is required as the
 original security proofs may no longer apply, and the tweaks for one
 protocol may have disastrous effects when applied to another (for
-instance, the octuple-spend vulnerability in <xref target="MoneroVuln"></xref>).</t>
+instance, the octuple-spend vulnerability described in <xref target="MoneroVuln"></xref>).</t>
 <t>Decaf and Ristretto fix this abstraction mismatch in one place for
 all protocols, providing an abstraction to protocol implementors that
-matches the abstraction commonly assumed in protocol specifications,
+matches the abstraction commonly assumed in protocol specifications
 while still allowing the use of high-performance curve
 implementations internally. The abstraction layer imposes minor
-overhead, and only in the encoding and decoding phases.</t>
-<t>While Ristretto is a general method, and can be used in conjunction
+overhead but only in the encoding and decoding phases.</t>
+<t>While Ristretto is a general method and can be used in conjunction
 with any Edwards curve with cofactor 4 or 8, this document specifies
 the ristretto255 group, which can be implemented using Curve25519,
 and the decaf448 group, which can be implemented using edwards448.</t>
 <t>There are other elliptic curves that can be used internally to
-implement ristretto255 or decaf448, and those implementations would be
-interoperable with a Curve25519- or edwards448-based one, but those
-constructions are out-of-scope for this document.</t>
+implement ristretto255 or decaf448; those implementations would be
+interoperable with one based on Curve25519 or edwards448, but those
+constructions are out of scope for this document.</t>
 <t>The Ristretto construction is described and justified in detail at
 <xref target="RistrettoGroup"></xref>.</t>
 <t>This document represents the consensus of the Crypto Forum Research Group (CFRG).
 This document is not an IETF product and is not a standard.</t>
 </section>
 
-<section anchor="notation-and-conventions-used-in-this-document"><name>Notation and Conventions Used In This Document</name>
+<section anchor="notation-and-conventions-used-in-this-document"><name>Notation and Conventions Used in This Document</name>
 <t>The key words &quot;<bcp14>MUST</bcp14>&quot;, &quot;<bcp14>MUST NOT</bcp14>&quot;, &quot;<bcp14>REQUIRED</bcp14>&quot;, &quot;<bcp14>SHALL</bcp14>&quot;,
 &quot;<bcp14>SHALL NOT</bcp14>&quot;, &quot;<bcp14>SHOULD</bcp14>&quot;, &quot;<bcp14>SHOULD NOT</bcp14>&quot;, &quot;<bcp14>RECOMMENDED</bcp14>&quot;,
 &quot;<bcp14>NOT RECOMMENDED</bcp14>&quot;, &quot;<bcp14>MAY</bcp14>&quot;, and &quot;<bcp14>OPTIONAL</bcp14>&quot; in this document
 are to be interpreted as described in BCP 14 <xref target="RFC2119"></xref> <xref target="RFC8174"></xref>
 when, and only when, they appear in all capitals, as shown here.</t>
 <t>Readers are cautioned that the term &quot;Curve25519&quot; has varying
-interpretations in the literature, and that the canonical meaning of the
-term has shifted over time. Originally it referred to a specific
-Diffie-Hellman key exchange mechanism. Over time, use shifted, and
-&quot;Curve25519&quot; has been used to refer to either the abstract underlying
-curve, or its concrete representation in Montgomery form, or the
+interpretations in the literature and that the canonical meaning of the
+term has shifted over time. Originally, it referred to a specific
+Diffie-Hellman key exchange mechanism. Use shifted over time, and
+&quot;Curve25519&quot; has been used to refer to the abstract underlying
+curve, its concrete representation in Montgomery form, or the
 specific Diffie-Hellman mechanism. This document uses the term
 &quot;Curve25519&quot; to refer to the abstract underlying curve, as recommended
 in <xref target="Naming"></xref>. The abstract Edwards form of the curve we refer to here
-as &quot;Curve25519&quot; is in <xref target="RFC7748"></xref> referred to as &quot;edwards25519&quot;
+as &quot;Curve25519&quot; is referred to in <xref target="RFC7748"></xref> as &quot;edwards25519&quot;,
 and its isogenous Montgomery form is referred to as &quot;curve25519&quot;.</t>
 <t>Elliptic curve points in this document are represented in extended
 Edwards coordinates in the <tt>(x, y, z, t)</tt> format <xref target="Twisted"></xref>, also called
-extended homogeneous coordinates in Section 5.1.4 of <xref target="RFC8032"></xref>. Field
+extended homogeneous coordinates in <xref target="RFC8032" sectionFormat="of" section="5.1.4"></xref>. Field
 elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-edwards448 prime 2^448 - 2^224 - 1, as specified in Sections 4.1 and
-4.2 of <xref target="RFC7748"></xref>, respectively. All formulas specify field operations
+edwards448 prime 2^448 - 2^224 - 1, as specified in Sections <xref target="RFC7748" sectionFormat="bare" section="4.1"></xref> and <xref target="RFC7748" sectionFormat="bare" section="4.2"></xref> of <xref target="RFC7748"></xref>, respectively. All formulas specify field operations
 unless otherwise noted. The symbol ^ denotes exponentiation.</t>
 <t>The <tt>|</tt> symbol represents a constant-time logical OR.</t>
 <t>The notation <tt>array[A:B]</tt> means the elements of <tt>array</tt> from <tt>A</tt>
 to <tt>B-1</tt>. That is, it is exclusive of <tt>B</tt>. Arrays are indexed
 starting from 0.</t>
-<t>A byte is an 8-bit entity (also known as &quot;octet&quot;) and a byte string
+<t>A byte is an 8-bit entity (also known as &quot;octet&quot;), and a byte string
 is an ordered sequence of bytes. An N-byte string is a byte string of
 N bytes in length.</t>
-<t>Element encodings are presented as hex encoded byte strings with
+<t>Element encodings are presented as hex-encoded byte strings with
 whitespace added for readability.</t>
 
-<section anchor="negative-field-elements"><name>Negative field elements</name>
+<section anchor="negative-field-elements"><name>Negative Field Elements</name>
 <t>As in <xref target="RFC8032"></xref>, given a field element e, define <tt>IS_NEGATIVE(e)</tt> as
-TRUE if the least non-negative integer representing e is odd, and
+TRUE if the least nonnegative integer representing e is odd and
 FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.</t>
 </section>
 
-<section anchor="constant-time-operations"><name>Constant time operations</name>
+<section anchor="constant-time-operations"><name>Constant Time Operations</name>
 <t>We assume that the field element implementation supports the following
 operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 
@@ -135,19 +134,18 @@ operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 </ul>
 <t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
 
-<artwork><![CDATA[CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
-]]>
+<artwork>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
 </artwork>
 </section>
 </section>
 
-<section anchor="interface"><name>The group abstraction</name>
+<section anchor="interface"><name>The Group Abstraction</name>
 <t>Ristretto and Decaf implement an abstract prime-order group interface
 that exposes only the behavior that is useful to higher-level protocols,
 without leaking curve-related details and pitfalls.</t>
 <t>Each abstract group exposes operations on abstract element and abstract
 scalar types. The operations defined on these types include: decoding, encoding,
-equality, addition, negation, subtraction and (multi-)scalar multiplication.
+equality, addition, negation, subtraction, and (multi-)scalar multiplication.
 Each abstract group also exposes a deterministic function to derive abstract
 elements from fixed-length byte strings. A description of each of these
 operations is below.</t>
@@ -160,7 +158,7 @@ an abstract element might have more than one possible representation -- for
 example, the implementation might use projective coordinates.  When encoding,
 all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
-succeeds and returns an equivalent element to the encoding input.</t>
+succeeds and returns an element equivalent to the encoding input.</t>
 <t>The equality check reports whether two representations of an abstract
 element are equivalent.</t>
 <t>The element derivation function maps deterministically from byte strings of
@@ -170,18 +168,18 @@ a negligible statistical distance of) a uniformly random abstract group
 element.  This means the function is suitable for selecting random group
 elements.</t>
 <t>Second, although the element derivation function is many-to-one and therefore
-not strictly invertible, it is not pre-image resistent.  On the contrary,
+not strictly invertible, it is not pre-image resistant.  On the contrary,
 given an arbitrary abstract group element <tt>P</tt>, there is an efficient algorithm
-to randomly sample from byte strings that map to <tt>P</tt>.  In some contexts this
+to randomly sample from byte strings that map to <tt>P</tt>.  In some contexts, this
 property would be a weakness, but it is important in some contexts: in particular,
 it means that a combination of a cryptographic hash function and the element
 derivation function is suitable for use in algorithms such as
-<tt>hash_to_curve</tt> <xref target="draft-irtf-cfrg-hash-to-curve-16"></xref>.</t>
+<tt>hash_to_curve</tt> <xref target="RFC9380"></xref>.</t>
 <t>Addition is the group operation. The group has an identity element and
 prime order l. Adding together l copies of the same element gives the
 identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
-that added to the negation input returns the identity element.
+that, when added to the negation input, gives the identity element.
 Subtraction is the addition of a negated element, and scalar
 multiplication is the repeated addition of an element.</t>
 </section>
@@ -191,8 +189,7 @@ multiplication is the repeated addition of an element.</t>
 interface defined in <xref target="interface"></xref>. This document describes how to
 implement the ristretto255 prime-order group using Curve25519 points as
 internal representations.</t>
-<t>A &quot;ristretto255 group element&quot; is the abstract element of the prime
-order group. An &quot;element encoding&quot; is the unique reversible encoding
+<t>A &quot;ristretto255 group element&quot; is the abstract element of the prime-order group. An &quot;element encoding&quot; is the unique reversible encoding
 of a group element. An &quot;internal representation&quot; is a point on the
 curve used to implement ristretto255. Each group element can have
 multiple equivalent internal representations.</t>
@@ -202,21 +199,19 @@ multiplication are implemented by applying the corresponding operations
 directly to the internal representation.</t>
 <t>The group order is the same as the order of the Curve25519 prime-order subgroup:</t>
 
-<artwork><![CDATA[l = 2^252 + 27742317777372353535851937790883648493
-]]>
+<artwork>l = 2^252 + 27742317777372353535851937790883648493
 </artwork>
 <t>Since ristretto255 is a prime-order group, every element except the
-identity is a generator, but for interoperability a canonical generator
+identity is a generator.  However, for interoperability, a canonical generator
 is selected, which can be internally represented by the Curve25519
-basepoint, enabling reuse of existing precomputation for scalar
+base point, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in <xref target="encoding255"></xref>:</t>
 
-<artwork><![CDATA[e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
-]]>
+<artwork>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 </artwork>
 
-<section anchor="constants255"><name>Implementation constants</name>
+<section anchor="constants255"><name>Implementation Constants</name>
 <t>This document references the following constant field element values
 that are used for the implementation of group operations.</t>
 
@@ -224,7 +219,7 @@ that are used for the implementation of group operations.</t>
 <li><t><tt>D</tt> = 37095705934669439343138083508754565189542113879843219016388785533085940283555</t>
 
 <ul spacing="compact">
-<li>This is the Edwards d parameter for Curve25519, as specified in Section 4.1 of <xref target="RFC7748"></xref>.</li>
+<li>This is the Edwards d parameter for Curve25519, as specified in <xref target="RFC7748" sectionFormat="of" section="4.1"></xref>.</li>
 </ul></li>
 <li><tt>SQRT_M1</tt> = 19681161376707505956807079304988542015446066515923890162744021073123829784752</li>
 <li><tt>SQRT_AD_MINUS_ONE</tt> = 25063068953384623474111414158702152701244531502492656460079210482610430750235</li>
@@ -234,29 +229,29 @@ that are used for the implementation of group operations.</t>
 </ul>
 </section>
 
-<section anchor="sqrtratio255"><name>Square root of a ratio of field elements</name>
-<t>The following function is defined on field elements, and is used to
+<section anchor="sqrtratio255"><name>Square Root of a Ratio of Field Elements</name>
+<t>The following function is defined on field elements and is used to
 implement other ristretto255 functions. This function is only used internally
 to implement some of the group operations.</t>
 <t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
 
 <ul spacing="compact">
-<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square;</li>
 <li><tt>(TRUE, zero)</tt> if u is zero;</li>
-<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
-<li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are non-zero, and u/v is
+<li><tt>(FALSE, zero)</tt> if v is zero and u is nonzero; and</li>
+<li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are nonzero and u/v is
 non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
 </ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x in the
+<t>where <tt>+sqrt(x)</tt> indicates the nonnegative square root of x in the
 field.</t>
-<t>The computation is similar to Section 5.1.3 of <xref target="RFC8032"></xref>, with the
-difference that if the input is non-square, the function returns a
+<t>The computation is similar to what is described in <xref target="RFC8032" sectionFormat="of" section="5.1.3"></xref>, with the
+difference that, if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
 for efficient implementation of the derivation function. The function
 can be refactored from an existing Ed25519 implementation.</t>
 <t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
-<artwork><![CDATA[r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
+<artwork>r = (u * v^3) * (u * v^7)^((p-5)/8) // Note: (p - 5) / 8 is an integer.
 check = v * r^2
 
 correct_sign_sqrt   = CT_EQ(check,          u)
@@ -272,11 +267,10 @@ r = CT_ABS(r)
 was_square = correct_sign_sqrt | flipped_sign_sqrt
 
 return (was_square, r)
-]]>
 </artwork>
 </section>
 
-<section anchor="functions255"><name>ristretto255 group operations</name>
+<section anchor="functions255"><name>ristretto255 Group Operations</name>
 <t>This section describes the implementation of the external functions
 exposed by the ristretto255 prime-order group.</t>
 
@@ -284,12 +278,12 @@ exposed by the ristretto255 prime-order group.</t>
 <t>All elements are encoded as 32-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>First, interpret the string as an unsigned integer s in little-endian
+<li><t>Interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 32 bytes, or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul spacing="compact">
-<li>Note: unlike <xref target="RFC7748"></xref> field element decoding, the most significant
+<li>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, the most significant
 bit is not masked, and non-canonical values are rejected.
 The test vectors in <xref target="invalid255"></xref> exercise these edge cases.</li>
 </ul></li>
@@ -297,7 +291,7 @@ The test vectors in <xref target="invalid255"></xref> exercise these edge cases.
 <li>Process s as follows:</li>
 </ol>
 
-<artwork><![CDATA[ss = s^2
+<artwork>ss = s^2
 u1 = 1 - ss
 u2 = 1 + ss
 u2_sqr = u2^2
@@ -312,11 +306,10 @@ den_y = invsqrt * den_x * v
 x = CT_ABS(2 * s * den_x)
 y = u1 * den_y
 t = x * y
-]]>
 </artwork>
 
 <ol spacing="compact" start="4">
-<li>If was_square is FALSE, or <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
+<li>If was_square is FALSE, <tt>IS_NEGATIVE(t)</tt> returns TRUE, or y =
 0, decoding fails. Otherwise, return the group element represented
 by the internal representation <tt>(x, y, 1, t)</tt> as the result of
 decoding.</li>
@@ -331,7 +324,7 @@ encoded as follows:</t>
 <li>Process the internal representation into a field element s as follows:</li>
 </ol>
 
-<artwork><![CDATA[u1 = (z0 + y0) * (z0 - y0)
+<artwork>u1 = (z0 + y0) * (z0 - y0)
 u2 = x0 * y0
 
 // Ignore was_square since this is always square.
@@ -356,7 +349,6 @@ den_inv = CT_SELECT(enchanted_denominator IF rotate ELSE den2)
 y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 
 s = CT_ABS(den_inv * (z - y))
-]]>
 </artwork>
 
 <ol spacing="compact" start="2">
@@ -371,12 +363,11 @@ yield an identical byte string.</t>
 <section anchor="equals255"><name>Equals</name>
 <t>The equality function returns TRUE when two internal representations
 correspond to the same group element. Note that internal representations
-<bcp14>MUST NOT</bcp14> be compared in any other way than specified here.</t>
+<bcp14>MUST NOT</bcp14> be compared in any way other than specified here.</t>
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork><![CDATA[(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
-]]>
+<artwork>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
 <t>Note that the equality function always returns TRUE when applied to an
@@ -388,11 +379,11 @@ of group elements (produced by <xref target="encoding255"></xref>) for an equiva
 less efficient, result.</t>
 </section>
 
-<section anchor="from_bytes_uniform255"><name>Element derivation</name>
+<section anchor="from_bytes_uniform255"><name>Element Derivation</name>
 <t>The element derivation function operates on 64-byte strings.
 To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
-is out-of-scope for this document.</t>
+is out of scope for this document.</t>
 <t>The element derivation function on an input string b proceeds as follows:</t>
 
 <ol spacing="compact">
@@ -403,7 +394,7 @@ is out-of-scope for this document.</t>
 <t>The MAP function is defined on 32-byte strings as:</t>
 
 <ol>
-<li><t>First, mask the most significant bit in the final byte of the string,
+<li><t>Mask the most significant bit in the final byte of the string,
 and interpret the string as an unsigned integer r in little-endian
 representation. Reduce r modulo p to obtain a field element t.</t>
 
@@ -411,15 +402,15 @@ representation. Reduce r modulo p to obtain a field element t.</t>
 <li>Masking the most significant bit is equivalent to interpreting the
 whole string as an unsigned integer in little-endian representation and then
 reducing it modulo 2^255.</li>
-<li>Note: similarly to <xref target="RFC7748"></xref> field element decoding, and unlike
-field element decoding in <xref target="decoding255"></xref>, the most significant bit
+<li>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
+the field element decoding described in <xref target="decoding255"></xref>, the most significant bit
 is masked, and non-canonical values are accepted.</li>
 </ul></li>
 <li><t>Process t as follows:</t>
 </li>
 </ol>
 
-<artwork><![CDATA[r = SQRT_M1 * t^2
+<artwork>r = SQRT_M1 * t^2
 u = (r + 1) * ONE_MINUS_D_SQ
 v = (-1 - r*D) * (r + D)
 
@@ -434,7 +425,6 @@ w0 = 2 * s * v
 w1 = N * SQRT_AD_MINUS_ONE
 w2 = 1 - s^2
 w3 = 1 + s^2
-]]>
 </artwork>
 
 <ol spacing="compact" start="3">
@@ -444,7 +434,7 @@ w3 = 1 + s^2
 </section>
 </section>
 
-<section anchor="scalar-field"><name>Scalar field</name>
+<section anchor="scalar-field"><name>Scalar Field</name>
 <t>The scalars for the ristretto255 group are integers modulo the order l
 of the ristretto255 group. Note that this is the same scalar field as
 Curve25519, allowing existing implementations to be reused.</t>
@@ -460,7 +450,7 @@ obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l, as in <xref target="RFC8032"></xref>. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
-hash construction, the choice of which is out-of-scope for this document.</t>
+hash construction, the choice of which is out of scope for this document.</t>
 </section>
 </section>
 
@@ -469,7 +459,7 @@ hash construction, the choice of which is out-of-scope for this document.</t>
 interface defined in <xref target="interface"></xref>. This document describes how to
 implement the decaf448 prime-order group using edwards448 points as
 internal representations.</t>
-<t>A &quot;decaf448 group element&quot; is the abstract element of the prime order
+<t>A &quot;decaf448 group element&quot; is the abstract element of the prime-order
 group. An &quot;element encoding&quot; is the unique reversible encoding of a
 group element. An &quot;internal representation&quot; is a point on the curve
 used to implement decaf448. Each group element can have multiple
@@ -480,25 +470,22 @@ multiplication are implemented by applying the corresponding operations
 directly to the internal representation.</t>
 <t>The group order is the same as the order of the edwards448 prime-order subgroup:</t>
 
-<artwork><![CDATA[l = 2^446 -
+<artwork>l = 2^446 -
   13818066809895115352007386748515426880336692474882178609894547503885
-]]>
 </artwork>
 <t>Since decaf448 is a prime-order group, every element except the
-identity is a generator, but for interoperability a canonical generator
-is selected.  This generator can be internally represented by 2*<tt>B</tt>, where <tt>B</tt> is the edwards448
-basepoint, enabling reuse of existing precomputation for scalar
+identity is a generator; however, for interoperability, a canonical generator
+is selected. This generator can be internally represented by 2*B, where B is the edwards448 base point, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in <xref target="encoding448"></xref>:</t>
 
-<artwork><![CDATA[66666666 66666666 66666666 66666666 66666666 66666666 66666666
+<artwork>66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
-]]>
 </artwork>
 <t>This repetitive constant is equal to <tt>1/sqrt(5)</tt> in decaf448's field,
 corresponding to the curve448 base point with x = 5.</t>
 
-<section anchor="constants448"><name>Implementation constants</name>
+<section anchor="constants448"><name>Implementation Constants</name>
 <t>This document references the following constant field element values
 that are used for the implementation of group operations.</t>
 
@@ -507,7 +494,7 @@ that are used for the implementation of group operations.</t>
 
 <ul spacing="compact">
 <li>This is the Edwards d parameter for edwards448, as specified in
-Section 4.2 of <xref target="RFC7748"></xref>, and is equal to -39081 in the field.</li>
+<xref target="RFC7748" sectionFormat="of" section="4.2"></xref>, and is equal to -39081 in the field.</li>
 </ul></li>
 <li><tt>ONE_MINUS_D</tt> = 39082</li>
 <li><tt>ONE_MINUS_TWO_D</tt> = 78163</li>
@@ -516,29 +503,29 @@ Section 4.2 of <xref target="RFC7748"></xref>, and is equal to -39081 in the fie
 </ul>
 </section>
 
-<section anchor="sqrtratio448"><name>Square root of a ratio of field elements</name>
-<t>The following function is defined on field elements, and is used to
+<section anchor="sqrtratio448"><name>Square Root of a Ratio of Field Elements</name>
+<t>The following function is defined on field elements and is used to
 implement other decaf448 functions. This function is only used internally
 to implement some of the group operations.</t>
 <t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
 
 <ul spacing="compact">
-<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are non-zero, and u/v is square;</li>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square;</li>
 <li><tt>(TRUE, zero)</tt> if u is zero;</li>
-<li><tt>(FALSE, zero)</tt> if v is zero and u is non-zero;</li>
-<li><tt>(FALSE, +sqrt(-u/v))</tt> if u and v are non-zero, and u/v is
+<li><tt>(FALSE, zero)</tt> if v is zero and u is nonzero; and</li>
+<li><tt>(FALSE, +sqrt(-u/v))</tt> if u and v are nonzero and u/v is
 non-square (so <tt>-(u/v)</tt> is square),</li>
 </ul>
-<t>where <tt>+sqrt(x)</tt> indicates the non-negative square root of x in
+<t>where <tt>+sqrt(x)</tt> indicates the nonnegative square root of x in
 the field.</t>
-<t>The computation is similar to Section 5.2.3 of <xref target="RFC8032"></xref>, with the
-difference that if the input is non-square, the function returns a
+<t>The computation is similar to what is described in <xref target="RFC8032" sectionFormat="of" section="5.2.3"></xref>, with the
+difference that, if the input is non-square, the function returns a
 result with a defined relationship to the inputs. This result is used
 for efficient implementation of the derivation function. The function
 can be refactored from an existing edwards448 implementation.</t>
 <t><tt>SQRT_RATIO_M1(u, v)</tt> is defined as follows:</t>
 
-<artwork><![CDATA[r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
+<artwork>r = u * (u * v)^((p - 3) / 4) // Note: (p - 3) / 4 is an integer.
 
 check = v * r^2
 was_square = CT_EQ(check, u)
@@ -547,11 +534,10 @@ was_square = CT_EQ(check, u)
 r = CT_ABS(r)
 
 return (was_square, r)
-]]>
 </artwork>
 </section>
 
-<section anchor="functions448"><name>decaf448 group operations</name>
+<section anchor="functions448"><name>decaf448 Group Operations</name>
 <t>This section describes the implementation of the external functions
 exposed by the decaf448 prime-order group.</t>
 
@@ -559,12 +545,12 @@ exposed by the decaf448 prime-order group.</t>
 <t>All elements are encoded as 56-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>First, interpret the string as an unsigned integer s in little-endian
-representation. If the length of the string is not 56 bytes, or if
+<li><t>Interpret the string as an unsigned integer s in little-endian
+representation. If the length of the string is not 56 bytes or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul spacing="compact">
-<li>Note: unlike <xref target="RFC7748"></xref> field element decoding, non-canonical
+<li>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, non-canonical
 values are rejected. The test vectors in <xref target="invalid448"></xref> exercise
 these edge cases.</li>
 </ul></li>
@@ -572,7 +558,7 @@ these edge cases.</li>
 <li>Process s as follows:</li>
 </ol>
 
-<artwork><![CDATA[ss = s^2
+<artwork>ss = s^2
 u1 = 1 + ss
 u2 = u1^2 - 4 * D * ss
 (was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
@@ -580,11 +566,10 @@ u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
 x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
 y = (1 - ss) * invsqrt * u1
 t = x * y
-]]>
 </artwork>
 
 <ol spacing="compact" start="4">
-<li>If was_square is FALSE then decoding fails. Otherwise,
+<li>If was_square is FALSE, then decoding fails. Otherwise,
 return the group element represented by the internal representation
 <tt>(x, y, 1, t)</tt> as the result of decoding.</li>
 </ol>
@@ -598,7 +583,7 @@ encoded as follows:</t>
 <li>Process the internal representation into a field element s as follows:</li>
 </ol>
 
-<artwork><![CDATA[u1 = (x0 + t0) * (x0 - t0)
+<artwork>u1 = (x0 + t0) * (x0 - t0)
 
 // Ignore was_square since this is always square.
 (_, invsqrt) = SQRT_RATIO_M1(1, u1 * ONE_MINUS_D * x0^2)
@@ -606,7 +591,6 @@ encoded as follows:</t>
 ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
 u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
-]]>
 </artwork>
 
 <ol spacing="compact" start="2">
@@ -621,12 +605,11 @@ yield an identical byte string.</t>
 <section anchor="equals448"><name>Equals</name>
 <t>The equality function returns TRUE when two internal representations
 correspond to the same group element. Note that internal representations
-<bcp14>MUST NOT</bcp14> be compared in any other way than specified here.</t>
+<bcp14>MUST NOT</bcp14> be compared in any way other than specified here.</t>
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork><![CDATA[x1 * y2 == y1 * x2
-]]>
+<artwork>x1 * y2 == y1 * x2
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
 <t>Note that the equality function always returns TRUE when applied to an
@@ -638,11 +621,11 @@ of group elements (produced by <xref target="encoding448"></xref>) for an equiva
 less efficient, result.</t>
 </section>
 
-<section anchor="from_bytes_uniform448"><name>Element derivation</name>
+<section anchor="from_bytes_uniform448"><name>Element Derivation</name>
 <t>The element derivation function operates on 112-byte strings.
 To obtain such an input from an arbitrary-length byte string, applications
 should use a domain-separated hash construction, the choice of which
-is out-of-scope for this document.</t>
+is out of scope for this document.</t>
 <t>The element derivation function on an input string b proceeds as follows:</t>
 
 <ol spacing="compact">
@@ -657,15 +640,15 @@ is out-of-scope for this document.</t>
 Reduce r modulo p to obtain a field element t.</t>
 
 <ul spacing="compact">
-<li>Note: similarly to <xref target="RFC7748"></xref> field element decoding, and unlike
-field element decoding in <xref target="decoding448"></xref>, non-canonical values are
+<li>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
+the field element decoding described in <xref target="decoding448"></xref>, non-canonical values are
 accepted.</li>
 </ul></li>
 <li><t>Process t as follows:</t>
 </li>
 </ol>
 
-<artwork><![CDATA[r = -t^2
+<artwork>r = -t^2
 u0 = d * (r-1)
 u1 = (u0 + 1) * (u0 - r)
 
@@ -678,7 +661,6 @@ w0 = 2 * CT_ABS(s)
 w1 = s^2 + 1
 w2 = s^2 - 1
 w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
-]]>
 </artwork>
 
 <ol spacing="compact" start="3">
@@ -688,7 +670,7 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
 </section>
 </section>
 
-<section anchor="scalar-field-1"><name>Scalar field</name>
+<section anchor="scalar-field-1"><name>Scalar Field</name>
 <t>The scalars for the decaf448 group are integers modulo the order l
 of the decaf448 group. Note that this is the same scalar field as
 edwards448, allowing existing implementations to be reused.</t>
@@ -704,12 +686,12 @@ obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
 integer modulo l. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
-construction, the choice of which is out-of-scope for this document.</t>
+construction, the choice of which is out of scope for this document.</t>
 </section>
 </section>
 
 <section anchor="api"><name>API Considerations</name>
-<t>ristretto255 and decaf448 are abstractions which implement two prime-order
+<t>ristretto255 and decaf448 are abstractions that implement two prime-order
 groups, and their elements are represented by curve points, but they are
 not curve points. Implementations <bcp14>SHOULD</bcp14> reflect that: the type
 representing an element of the group <bcp14>SHOULD</bcp14> be opaque to the caller,
@@ -724,11 +706,11 @@ operate on them except as described in this document. In particular,
 implementations <bcp14>SHOULD NOT</bcp14> define any external ristretto255 or decaf448
 interface as operating on arbitrary curve points, and they <bcp14>SHOULD NOT</bcp14>
 construct group elements except via decoding, the element derivation function,
-or group operations on other valid group elements per <xref target="interface"></xref>. They are
-however allowed to apply any optimization strategy to the internal
+or group operations on other valid group elements per <xref target="interface"></xref>. However, they are
+allowed to apply any optimization strategy to the internal
 representations as long as it doesn't change the exposed behavior of the
 API.</t>
-<t>It is <bcp14>RECOMMENDED</bcp14> that implementations do not perform a decoding and
+<t>It is <bcp14>RECOMMENDED</bcp14> that implementations not perform a decoding and
 encoding operation for each group operation, as it is inefficient and
 unnecessary. Implementations <bcp14>SHOULD</bcp14> instead provide an opaque type
 to hold the internal representation through multiple operations.</t>
@@ -747,21 +729,17 @@ of the abstraction can be defeated by implementations that do not follow
 the guidance in <xref target="api"></xref>.</t>
 <t>There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element. The decoding
-function always returns a valid internal representation, or an error, and
+function always returns a valid internal representation or an error, and
 allowed operations on valid internal representations return valid
 internal representations. In this way, an implementation can maintain
 the invariant that an internal representation is always valid, so that
 checking is never necessary, and invalid states are unrepresentable.</t>
 </section>
 
-<section anchor="acknowledgements"><name>Acknowledgements</name>
-<t>The authors would like to thank Daira Hopwood, Riad S. Wahby, Christopher Wood,
-and Thomas Pornin for their comments on the draft.</t>
-</section>
-
 </middle>
 
 <back>
+<references><name>References</name>
 <references><name>Normative References</name>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
@@ -769,7 +747,7 @@ and Thomas Pornin for their comments on the draft.</t>
 <references><name>Informative References</name>
 <reference anchor="Decaf" target="https://www.shiftleft.org/papers/decaf/decaf.pdf">
   <front>
-    <title>Decaf: Eliminating cofactors through point&#xA;compression</title>
+    <title>Decaf: Eliminating cofactors through point compression</title>
     <author fullname="Mike Hamburg" initials="M." surname="Hamburg">
       <organization>Rambus Cryptography Research</organization>
     </author>
@@ -780,26 +758,28 @@ and Thomas Pornin for their comments on the draft.</t>
   <front>
     <title>Exploiting Low Order Generators in One-Time Ring Signatures</title>
     <author fullname="Jonas Nick" initials="J." surname="Nick"></author>
-    <date year="2017"></date>
+    <date year="2017" month="May"></date>
   </front>
 </reference>
 <reference anchor="Naming" target="https://mailarchive.ietf.org/arch/msg/cfrg/-9LEdnzVrE5RORux3Oo_oDDRksU/">
   <front>
-    <title>[Cfrg] 25519 naming</title>
+    <title>Subject: [Cfrg] 25519 naming</title>
     <author fullname="Daniel J. Bernstein" initials="D. J." surname="Bernstein"></author>
-    <date year="2014"></date>
+    <date year="2014" month="August" day="26"></date>
   </front>
+  <refcontent>message to the Cfrg mailing list</refcontent>
 </reference>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7748.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9380.xml"/>
 <reference anchor="RistrettoGroup" target="https://ristretto.group">
   <front>
     <title>The Ristretto Group</title>
     <author fullname="Henry de Valence" initials="H" surname="de Valence"></author>
-    <author fullname="isis lovecruft" initials="I" surname="Lovecruft"></author>
+    <author fullname="Isis Lovecruft" initials="I" surname="Lovecruft"></author>
     <author fullname="Tony Arcieri" initials="T" surname="Arcieri"></author>
     <author fullname="Mike Hamburg" initials="M" surname="Hamburg"></author>
-    <date year="2018"></date>
+    <date></date>
   </front>
 </reference>
 <reference anchor="Twisted" target="https://eprint.iacr.org/2008/522">
@@ -809,33 +789,24 @@ and Thomas Pornin for their comments on the draft.</t>
     <author fullname="Kenneth Koon-Ho Wong" initials="K. K." surname="Wong"></author>
     <author fullname="Gary Carter" initials="G." surname="Carter"></author>
     <author fullname="Ed Dawson" initials="E." surname="Dawson"></author>
-    <date year="2008"></date>
+    <date year="2008" month="December"></date>
   </front>
-</reference>
-<reference anchor="draft-irtf-cfrg-hash-to-curve-16" target="https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve/">
-  <front>
-    <title>Hashing to Elliptic Curves</title>
-    <author fullname="Armando Faz-Hernández" initials="A." surname="Faz-Hernández"></author>
-    <author fullname="Sam Scott" initials="S." surname="Scott"></author>
-    <author fullname="Nick Sullivan" initials="N." surname="Sullivan"></author>
-    <author fullname="Riad S. Wahby" initials="R.S." surname="Wahby"></author>
-    <author fullname="Christopher A. Wood" initials="C.A." surname="Wood"></author>
-    <date year="2022"></date>
-  </front>
+  <refcontent>Cryptology ePrint Archive, Paper 2008/522</refcontent>
 </reference>
 </references>
+</references>
 
-<section anchor="test-vectors-for-ristretto255"><name>Test vectors for ristretto255</name>
+<section anchor="test-vectors-for-ristretto255"><name>Test Vectors for ristretto255</name>
 <t>This section contains test vectors for ristretto255. The octets are
 hex encoded, and whitespace is inserted for readability.</t>
 
-<section anchor="multiples-of-the-generator"><name>Multiples of the generator</name>
+<section anchor="multiples-of-the-generator"><name>Multiples of the Generator</name>
 <t>The following are the encodings of the multiples 0 to 15 of the
 canonical generator, represented as an array of elements. That is,
 the first entry is the encoding of the identity element, and each
 successive entry is obtained by adding the generator to the previous entry.</t>
 
-<artwork><![CDATA[B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+<sourcecode type="test-vectors">B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
 B[ 1]: e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 B[ 2]: 6a493210 f7499cd1 7fecb510 ae0cea23 a110e8d5 b901f8ac add3095c 73a3b919
 B[ 3]: 94741f5d 5d52755e ce4f23f0 44ee27d5 d1ea1e2b d196b462 166b1615 2a9d0259
@@ -851,22 +822,20 @@ B[12]: e4549ee1 6b9aa030 99ca208c 67adafca fa4c3f3e 4e5303de 6026e3ca 8ff84460
 B[13]: aa52e000 df2e16f5 5fb1032f c33bc427 42dad6bd 5a8fc0be 0167436c 5948501f
 B[14]: 46376b80 f409b29d c2b5f6f0 c5259199 0896e571 6f41477c d30085ab 7f10301e
 B[15]: e0c418f7 c8d9c4cd d7395b93 ea124f3a d99021bb 681dfc33 02a9d99a 2e53e64e
-]]>
-</artwork>
+</sourcecode>
 <t>Note that because</t>
 
-<artwork><![CDATA[B[i+1] = B[i] + B[1]
-]]>
+<artwork>B[i+1] = B[i] + B[1]
 </artwork>
-<t>these test vectors allow testing the encoding function and
+<t>these test vectors allow testing of the encoding function and
 the implementation of addition simultaneously.</t>
 </section>
 
-<section anchor="invalid255"><name>Invalid encodings</name>
+<section anchor="invalid255"><name>Invalid Encodings</name>
 <t>These are examples of encodings that <bcp14>MUST</bcp14> be rejected according to
 <xref target="decoding255"></xref>.</t>
 
-<artwork><![CDATA[# Non-canonical field encodings.
+<sourcecode type="test-vectors"># Non-canonical field encodings.
 00ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
 f3ffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
@@ -904,15 +873,14 @@ d483fe81 3c6ba647 ebbfd3ec 41adca1c 6130c2be eee9d9bf 065c8d15 1c5f396e
 
 # s = -1, which causes y = 0.
 ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
-]]>
-</artwork>
+</sourcecode>
 </section>
 
-<section anchor="group-elements-from-byte-strings"><name>Group elements from byte strings</name>
+<section anchor="group-elements-from-byte-strings"><name>Group Elements from Byte Strings</name>
 <t>The following pairs are inputs to the element derivation function of
-<xref target="from_bytes_uniform255"></xref>, and their encoded outputs.</t>
+<xref target="from_bytes_uniform255"></xref> and their encoded outputs.</t>
 
-<artwork><![CDATA[I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
+<sourcecode type="test-vectors">I: 5d1be09e3d0c82fc538112490e35701979d99e06ca3e2b5b54bffe8b4dc772c1
    4d98b696a1bbfb5ca32c436cc61c16563790306c79eaca7705668b47dffe5bb6
 O: 3066f82a 1a747d45 120d1740 f1435853 1a8f04bb ffe6a819 f86dfe50 f44a0a46
 
@@ -939,12 +907,11 @@ O: e2705652 ff9f5e44 d3e841bf 1c251cf7 dddb77d1 40870d1a b2ed64f1 a9ce8628
 I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
    2c9965a697a3b345ec24ee56335b556e677b30e6f90ac77d781064f866a3c982
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
-]]>
-</artwork>
+</sourcecode>
 <t>The following element derivation function inputs all produce the same encoded
 output.</t>
 
-<artwork><![CDATA[I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+<sourcecode type="test-vectors">I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
    1200000000000000000000000000000000000000000000000000000000000000
 I: edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f
    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -954,16 +921,15 @@ I: 0000000000000000000000000000000000000000000000000000000000000000
    1200000000000000000000000000000000000000000000000000000000000080
 
 O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
-]]>
-</artwork>
+</sourcecode>
 </section>
 
-<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square root of a ratio of field elements</name>
+<section anchor="square-root-of-a-ratio-of-field-elements"><name>Square Root of a Ratio of Field Elements</name>
 <t>The following are inputs and outputs of <tt>SQRT_RATIO_M1(u, v)</tt> defined
 in <xref target="sqrtratio255"></xref>. The values are little-endian encodings of field
 elements.</t>
 
-<artwork><![CDATA[u: 0000000000000000000000000000000000000000000000000000000000000000
+<sourcecode type="test-vectors">u: 0000000000000000000000000000000000000000000000000000000000000000
 v: 0000000000000000000000000000000000000000000000000000000000000000
 was_square: TRUE
 r: 0000000000000000000000000000000000000000000000000000000000000000
@@ -992,22 +958,21 @@ u: 0100000000000000000000000000000000000000000000000000000000000000
 v: 0400000000000000000000000000000000000000000000000000000000000000
 was_square: TRUE
 r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
-]]>
-</artwork>
+</sourcecode>
 </section>
 </section>
 
-<section anchor="test-vectors-for-decaf448"><name>Test vectors for decaf448</name>
+<section anchor="test-vectors-for-decaf448"><name>Test Vectors for decaf448</name>
 <t>This section contains test vectors for decaf448. The octets are
 hex encoded, and whitespace is inserted for readability.</t>
 
-<section anchor="multiples-of-the-generator-1"><name>Multiples of the generator</name>
+<section anchor="multiples-of-the-generator-1"><name>Multiples of the Generator</name>
 <t>The following are the encodings of the multiples 0 to 15 of the
 canonical generator, represented as an array of elements. That is,
 the first entry is the encoding of the identity element, and each
 successive entry is obtained by adding the generator to the previous entry.</t>
 
-<artwork><![CDATA[B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+<sourcecode type="test-vectors">B[ 0]: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
        00000000 00000000 00000000 00000000 00000000 00000000 00000000
 B[ 1]: 66666666 66666666 66666666 66666666 66666666 66666666 66666666
        33333333 33333333 33333333 33333333 33333333 33333333 33333333
@@ -1039,15 +1004,14 @@ B[14]: 4ae7fdca e9453f19 5a8ead5c be1a7b96 99673b52 c40ab279 27464887
        be53237f 7f3a21b9 38d40d0e c9e15b1d 5130b13f fed81373 a53e2b43
 B[15]: 841981c3 bfeec3f6 0cfeca75 d9d8dc17 f46cf010 6f2422b5 9aec580a
        58f34227 2e3a5e57 5a055ddb 051390c5 4c24c6ec b1e0aceb 075f6056
-]]>
-</artwork>
+</sourcecode>
 </section>
 
-<section anchor="invalid448"><name>Invalid encodings</name>
+<section anchor="invalid448"><name>Invalid Encodings</name>
 <t>These are examples of encodings that <bcp14>MUST</bcp14> be rejected according to
 <xref target="decoding448"></xref>.</t>
 
-<artwork><![CDATA[# Non-canonical field encodings.
+<sourcecode type="test-vectors"># Non-canonical field encodings.
 8e24f838 059ee9fe f1e20912 6defe53d cd74ef9b 6304601c 6966099e
 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
 
@@ -1112,15 +1076,14 @@ f063769e 4241e76d 815800e4 933a3a14 4327a30e c40758ad 3723a788
 
 5a0104f1 f55d152c eb68bc13 81824998 91d90ee8 f09b4003 8ccc1e07
 cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
-]]>
-</artwork>
+</sourcecode>
 </section>
 
-<section anchor="group-elements-from-uniform-byte-strings"><name>Group elements from uniform byte strings</name>
+<section anchor="group-elements-from-uniform-byte-strings"><name>Group Elements from Uniform Byte Strings</name>
 <t>The following pairs are inputs to the element derivation function of
-<xref target="from_bytes_uniform448"></xref>, and their encoded outputs.</t>
+<xref target="from_bytes_uniform448"></xref> and their encoded outputs.</t>
 
-<artwork><![CDATA[I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
+<sourcecode type="test-vectors">I: cbb8c991fd2f0b7e1913462d6463e4fd2ce4ccdd28274dc2ca1f4165
    d5ee6cdccea57be3416e166fd06718a31af45a2f8e987e301be59ae6
    673e963001dbbda80df47014a21a26d6c7eb4ebe0312aa6fffb8d1b2
    6bc62ca40ed51f8057a635a02c2b8c83f48fa6a2d70f58a1185902c0
@@ -1168,9 +1131,17 @@ I: e9fb440282e07145f1f7f5ecf3c273212cd3d26b836b41b02f108431
    98fdd885608f68bf0fdedd7b894081a63f70016a8abf04953affbefa
 O: 20b171cb 16be977f 15e013b9 752cf86c 54c631c4 fc8cbf7c 03c4d3ac
    9b8e8640 e7b0e930 0b987fe0 ab504466 9314f6ed 1650ae03 7db853f1
-]]>
-</artwork>
+</sourcecode>
 </section>
+</section>
+
+<section anchor="acknowledgements" numbered="false"><name>Acknowledgements</name>
+<t>The authors would like to thank <contact fullname="Daira Hopwood"><organization></organization><address><postal><street></street>
+</postal></address></contact>, <contact fullname="Riad S. Wahby"><organization></organization><address><postal><street></street>
+</postal></address></contact>, <contact fullname="Christopher Wood"><organization></organization><address><postal><street></street>
+</postal></address></contact>,
+and <contact fullname="Thomas Pornin"><organization></organization><address><postal><street></street>
+</postal></address></contact> for their comments on the document.</t>
 </section>
 
 </back>
