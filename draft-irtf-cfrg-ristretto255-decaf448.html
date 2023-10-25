@@ -1580,6 +1580,7 @@ operations, which <span class="bcp14">SHOULD</span> be implemented in constant t
 <p id="section-2.2-3">Note that <code>CT_ABS</code> <span class="bcp14">MAY</span> be implemented as:<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.2-4">
 <pre>CT_SELECT(-u IF IS_NEGATIVE(u) ELSE u)
+
 </pre><a href="#section-2.2-4" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1655,6 +1656,7 @@ directly to the internal representation.<a href="#section-4-3" class="pilcrow">�
 <p id="section-4-4">The group order is the same as the order of the Curve25519 prime-order subgroup:<a href="#section-4-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-5">
 <pre>l = 2^252 + 27742317777372353535851937790883648493
+
 </pre><a href="#section-4-5" class="pilcrow">¶</a>
 </div>
 <p id="section-4-6">Since ristretto255 is a prime-order group, every element except the
@@ -1665,6 +1667,7 @@ multiplication. This is its encoding as produced by the function
 specified in <a href="#encoding255" class="auto internal xref">Section 4.3.2</a>:<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-7">
 <pre>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
+
 </pre><a href="#section-4-7" class="pilcrow">¶</a>
 </div>
 <div id="constants255">
@@ -1749,6 +1752,7 @@ r = CT_ABS(r)
 was_square = correct_sign_sqrt | flipped_sign_sqrt
 
 return (was_square, r)
+
 </pre><a href="#section-4.2-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1799,6 +1803,7 @@ den_y = invsqrt * den_x * v
 x = CT_ABS(2 * s * den_x)
 y = u1 * den_y
 t = x * y
+
 </pre><a href="#section-4.3.1-3" class="pilcrow">¶</a>
 </div>
 <ol start="4" type="1" class="compact type-1" id="section-4.3.1-4">
@@ -1847,6 +1852,7 @@ den_inv = CT_SELECT(enchanted_denominator IF rotate ELSE den2)
 y = CT_SELECT(-y IF IS_NEGATIVE(x * z_inv) ELSE y)
 
 s = CT_ABS(den_inv * (z - y))
+
 </pre><a href="#section-4.3.2-3" class="pilcrow">¶</a>
 </div>
 <ol start="2" type="1" class="compact type-1" id="section-4.3.2-4">
@@ -1871,6 +1877,7 @@ correspond to the same group element. Note that internal representations
 if<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.3.3-3">
 <pre>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+
 </pre><a href="#section-4.3.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-4.3.3-4">evaluates to TRUE, then return TRUE. Otherwise, return FALSE.<a href="#section-4.3.3-4" class="pilcrow">¶</a></p>
@@ -1938,6 +1945,7 @@ w0 = 2 * s * v
 w1 = N * SQRT_AD_MINUS_ONE
 w2 = 1 - s^2
 w3 = 1 + s^2
+
 </pre><a href="#section-4.3.4-6" class="pilcrow">¶</a>
 </div>
 <ol start="3" type="1" class="compact type-1" id="section-4.3.4-7">
@@ -1996,6 +2004,7 @@ directly to the internal representation.<a href="#section-5-3" class="pilcrow">�
 <div class="alignLeft art-text artwork" id="section-5-5">
 <pre>l = 2^446 -
   13818066809895115352007386748515426880336692474882178609894547503885
+
 </pre><a href="#section-5-5" class="pilcrow">¶</a>
 </div>
 <p id="section-5-6">Since decaf448 is a prime-order group, every element except the
@@ -2006,6 +2015,7 @@ specified in <a href="#encoding448" class="auto internal xref">Section 5.3.2</a>
 <div class="alignLeft art-text artwork" id="section-5-7">
 <pre>66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
+
 </pre><a href="#section-5-7" class="pilcrow">¶</a>
 </div>
 <p id="section-5-8">This repetitive constant is equal to <code>1/sqrt(5)</code> in decaf448's field,
@@ -2083,6 +2093,7 @@ was_square = CT_EQ(check, u)
 r = CT_ABS(r)
 
 return (was_square, r)
+
 </pre><a href="#section-5.2-7" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2126,6 +2137,7 @@ u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
 x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
 y = (1 - ss) * invsqrt * u1
 t = x * y
+
 </pre><a href="#section-5.3.1-3" class="pilcrow">¶</a>
 </div>
 <ol start="4" type="1" class="compact type-1" id="section-5.3.1-4">
@@ -2156,6 +2168,7 @@ encoded as follows:<a href="#section-5.3.2-1" class="pilcrow">¶</a></p>
 ratio = CT_ABS(invsqrt * u1 * SQRT_MINUS_D)
 u2 = INVSQRT_MINUS_D * ratio * z0 - t0
 s = CT_ABS(ONE_MINUS_D * invsqrt * x0 * u2)
+
 </pre><a href="#section-5.3.2-3" class="pilcrow">¶</a>
 </div>
 <ol start="2" type="1" class="compact type-1" id="section-5.3.2-4">
@@ -2180,6 +2193,7 @@ correspond to the same group element. Note that internal representations
 if<a href="#section-5.3.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.3.3-3">
 <pre>x1 * y2 == y1 * x2
+
 </pre><a href="#section-5.3.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3.3-4">evaluates to TRUE, then return TRUE. Otherwise, return FALSE.<a href="#section-5.3.3-4" class="pilcrow">¶</a></p>
@@ -2240,6 +2254,7 @@ w0 = 2 * CT_ABS(s)
 w1 = s^2 + 1
 w2 = s^2 - 1
 w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
+
 </pre><a href="#section-5.3.4-6" class="pilcrow">¶</a>
 </div>
 <ol start="3" type="1" class="compact type-1" id="section-5.3.4-7">
@@ -2426,11 +2441,13 @@ B[12]: e4549ee1 6b9aa030 99ca208c 67adafca fa4c3f3e 4e5303de 6026e3ca 8ff84460
 B[13]: aa52e000 df2e16f5 5fb1032f c33bc427 42dad6bd 5a8fc0be 0167436c 5948501f
 B[14]: 46376b80 f409b29d c2b5f6f0 c5259199 0896e571 6f41477c d30085ab 7f10301e
 B[15]: e0c418f7 c8d9c4cd d7395b93 ea124f3a d99021bb 681dfc33 02a9d99a 2e53e64e
+
 </pre><a href="#appendix-A.1-2" class="pilcrow">¶</a>
 </div>
 <p id="appendix-A.1-3">Note that because<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.1-4">
 <pre>B[i+1] = B[i] + B[1]
+
 </pre><a href="#appendix-A.1-4" class="pilcrow">¶</a>
 </div>
 <p id="appendix-A.1-5">these test vectors allow testing of the encoding function and
@@ -2483,6 +2500,7 @@ d483fe81 3c6ba647 ebbfd3ec 41adca1c 6130c2be eee9d9bf 065c8d15 1c5f396e
 
 # s = -1, which causes y = 0.
 ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffff7f
+
 </pre><a href="#appendix-A.2-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2522,6 +2540,7 @@ O: e2705652 ff9f5e44 d3e841bf 1c251cf7 dddb77d1 40870d1a b2ed64f1 a9ce8628
 I: 2cdc11eaeb95daf01189417cdddbf95952993aa9cb9c640eb5058d09702c7462
    2c9965a697a3b345ec24ee56335b556e677b30e6f90ac77d781064f866a3c982
 O: 80bd0726 2511cdde 4863f8a7 434cef69 6750681c b9510eea 557088f7 6d9e5065
+
 </pre><a href="#appendix-A.3-2" class="pilcrow">¶</a>
 </div>
 <p id="appendix-A.3-3">The following element derivation function inputs all produce the same encoded
@@ -2537,6 +2556,7 @@ I: 0000000000000000000000000000000000000000000000000000000000000000
    1200000000000000000000000000000000000000000000000000000000000080
 
 O: 30428279 1023b731 28d277bd cb5c7746 ef2eac08 dde9f298 3379cb8e 5ef0517f
+
 </pre><a href="#appendix-A.3-4" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2579,6 +2599,7 @@ u: 0100000000000000000000000000000000000000000000000000000000000000
 v: 0400000000000000000000000000000000000000000000000000000000000000
 was_square: TRUE
 r: f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3f
+
 </pre><a href="#appendix-A.4-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2634,6 +2655,7 @@ B[14]: 4ae7fdca e9453f19 5a8ead5c be1a7b96 99673b52 c40ab279 27464887
        be53237f 7f3a21b9 38d40d0e c9e15b1d 5130b13f fed81373 a53e2b43
 B[15]: 841981c3 bfeec3f6 0cfeca75 d9d8dc17 f46cf010 6f2422b5 9aec580a
        58f34227 2e3a5e57 5a055ddb 051390c5 4c24c6ec b1e0aceb 075f6056
+
 </pre><a href="#appendix-B.1-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2711,6 +2733,7 @@ f063769e 4241e76d 815800e4 933a3a14 4327a30e c40758ad 3723a788
 
 5a0104f1 f55d152c eb68bc13 81824998 91d90ee8 f09b4003 8ccc1e07
 cb621fd4 62f781d0 45732a4f 0bda73f0 b2acf943 55424ff0 388d4b9c
+
 </pre><a href="#appendix-B.2-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -2771,6 +2794,7 @@ I: e9fb440282e07145f1f7f5ecf3c273212cd3d26b836b41b02f108431
    98fdd885608f68bf0fdedd7b894081a63f70016a8abf04953affbefa
 O: 20b171cb 16be977f 15e013b9 752cf86c 54c631c4 fc8cbf7c 03c4d3ac
    9b8e8640 e7b0e930 0b987fe0 ab504466 9314f6ed 1650ae03 7db853f1
+
 </pre><a href="#appendix-B.3-2" class="pilcrow">¶</a>
 </div>
 </section>
