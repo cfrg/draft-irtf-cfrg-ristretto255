@@ -60,7 +60,7 @@
         email = "ietf@filippo.io"
 
     [[contact]]
-    fullname = "Daira Hopwood"
+    fullname = "Daira Emma Hopwood"
 
     [[contact]]
     fullname = "Riad S. Wahby"
@@ -1202,5 +1202,5 @@ O: 20b171cb 16be977f 15e013b9 752cf86c 54c631c4 fc8cbf7c 03c4d3ac
 {numbered="false"}
 # Acknowledgements
 
-The authors would like to thank [@Daira Hopwood], [@Riad S. Wahby], [@Christopher Wood],
+The authors would like to thank [@Daira Emma Hopwood], [@Riad S. Wahby], [@Christopher Wood],
 and [@Thomas Pornin] for their comments on the document.

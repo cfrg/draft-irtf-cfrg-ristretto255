@@ -1230,7 +1230,7 @@ B.3.  Group Elements from Uniform Byte Strings
 
 Acknowledgements
 
-   The authors would like to thank Daira Hopwood, Riad S. Wahby,
+   The authors would like to thank Daira Emma Hopwood, Riad S. Wahby,
    Christopher Wood, and Thomas Pornin for their comments on the
    document.
 
