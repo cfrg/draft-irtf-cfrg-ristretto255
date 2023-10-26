@@ -122,7 +122,7 @@ elements in the group (the group order) to be prime. Prime-order
 groups are useful because every non-identity element of the group
 is a generator of the entire group. This means the group has a
 cofactor of 1, and all elements are equivalent from the perspective
-of Discrete Log Hardness.
+of hardness of the discrete logarithm problem.
 
 Edwards curves provide a number of implementation benefits for
 cryptography, such as complete addition formulas with no exceptional
