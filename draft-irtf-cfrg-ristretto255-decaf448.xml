@@ -293,7 +293,7 @@ exposed by the ristretto255 prime-order group.</t>
 
 <ol spacing="compact">
 <li><t>Interpret the string as an unsigned integer s in little-endian
-representation. If the length of the string is not 32 bytes, or if
+representation. If the length of the string is not 32 bytes or if
 the resulting value is &gt;= p, decoding fails.</t>
 
 <ul spacing="compact">

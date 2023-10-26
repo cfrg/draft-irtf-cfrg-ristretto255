@@ -417,7 +417,7 @@ exposed by the ristretto255 prime-order group.
 All elements are encoded as 32-byte strings. Decoding proceeds as follows:
 
 1. Interpret the string as an unsigned integer s in little-endian
-   representation. If the length of the string is not 32 bytes, or if
+   representation. If the length of the string is not 32 bytes or if
    the resulting value is >= p, decoding fails.
    * Note: Unlike the field element decoding described in [@RFC7748], the most significant
      bit is not masked, and non-canonical values are rejected.
