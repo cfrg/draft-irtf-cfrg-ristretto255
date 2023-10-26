@@ -606,7 +606,8 @@ The group order is the same as the order of the edwards448 prime-order subgroup:
 
 Since decaf448 is a prime-order group, every element except the
 identity is a generator; however, for interoperability, a canonical generator
-is selected. This generator can be internally represented by 2*B, where B is the edwards448 base point, enabling reuse of existing precomputation for scalar
+is selected. This generator can be internally represented by 2*`B`,
+where `B` is the edwards448 base point, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in (#encoding448):
 

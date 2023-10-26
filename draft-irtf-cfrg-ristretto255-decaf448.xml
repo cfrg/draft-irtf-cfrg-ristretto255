@@ -494,7 +494,8 @@ directly to the internal representation.</t>
 </artwork>
 <t>Since decaf448 is a prime-order group, every element except the
 identity is a generator; however, for interoperability, a canonical generator
-is selected. This generator can be internally represented by 2*B, where B is the edwards448 base point, enabling reuse of existing precomputation for scalar
+is selected. This generator can be internally represented by 2*<tt>B</tt>,
+where <tt>B</tt> is the edwards448 base point, enabling reuse of existing precomputation for scalar
 multiplication. This is its encoding as produced by the function
 specified in <xref target="encoding448"></xref>:</t>
 
