@@ -7,6 +7,18 @@
     area = "Internet"
     workgroup = "Crypto Forum"
     submissionType = "IRTF"
+    keyword = [
+      "cryptographic group",
+      "cryptography",
+      "Curve25519",
+      "ecc",
+      "edwards448",
+      "elliptic curve",
+      "elliptic curve cryptography",
+      "nonmalleable encodings",
+      "prime-order",
+      "prime order",
+    ]
     date = 2023-10-14
     consensus = true
     sortRefs = true

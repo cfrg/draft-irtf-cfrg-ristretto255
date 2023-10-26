@@ -19,6 +19,16 @@
 </address></author><date year="2023" month="October" day="14"></date>
 <area>Internet</area>
 <workgroup>Crypto Forum</workgroup>
+<keyword>cryptographic group</keyword>
+<keyword>cryptography</keyword>
+<keyword>Curve25519</keyword>
+<keyword>ecc</keyword>
+<keyword>edwards448</keyword>
+<keyword>elliptic curve</keyword>
+<keyword>elliptic curve cryptography</keyword>
+<keyword>nonmalleable encodings</keyword>
+<keyword>prime-order</keyword>
+<keyword>prime order</keyword>
 
 <abstract>
 <t>This memo specifies two prime-order groups, ristretto255 and decaf448,
