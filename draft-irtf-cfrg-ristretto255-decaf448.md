@@ -125,8 +125,9 @@ cofactor of 1, and all elements are equivalent from the perspective
 of hardness of the discrete logarithm problem.
 
 Edwards curves provide a number of implementation benefits for
-cryptography, such as complete addition formulas with no exceptional
-points and formulas known to be among the fastest for curve operations.
+cryptography. These benefits include formulas for curve operations
+that are among the fastest currently known, and for which the
+addition formulas are complete with no exceptional points.
 However, the group of points on the curve is not of prime order,
 i.e., it has a cofactor larger than 1.
 This abstraction mismatch is usually handled by means of ad hoc
