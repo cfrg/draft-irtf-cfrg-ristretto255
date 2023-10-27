@@ -131,7 +131,7 @@ Table of Contents
    subtle issues.  For instance, Ed25519 implementations may have
    different validation behavior between batched and singleton
    verification, and at least as specified in [RFC8032], the set of
-   valid signatures is not defined by the standard.
+   valid signatures is not defined precisely [Ed25519ValidCrit].
 
    For more complex protocols, careful analysis is required as the
    original security proofs may no longer apply, and the tweaks for one
@@ -858,6 +858,11 @@ return (was_square, r)
    [Decaf]    Hamburg, M., "Decaf: Eliminating cofactors through point
               compression", 2015,
               <https://www.shiftleft.org/papers/decaf/decaf.pdf>.
+
+   [Ed25519ValidCrit]
+              de Valence, H., "It’s 255:19AM. Do you know what your
+              validation criteria are?", 4 October 2020,
+              <https://hdevalence.ca/blog/2020-10-04-its-25519am>.
 
    [MoneroVuln]
               Nick, J., "Exploiting Low Order Generators in One-Time

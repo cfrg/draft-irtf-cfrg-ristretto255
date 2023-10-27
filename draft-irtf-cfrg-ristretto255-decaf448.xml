@@ -69,7 +69,7 @@ tweaks such as multiplying by the cofactor in an appropriate place.</t>
 subtle issues. For instance, Ed25519 implementations may have
 different validation behavior between batched and singleton
 verification, and at least as specified in <xref target="RFC8032"></xref>, the set of
-valid signatures is not defined by the standard.</t>
+valid signatures is not defined precisely <xref target="Ed25519ValidCrit"></xref>.</t>
 <t>For more complex protocols, careful analysis is required as the
 original security proofs may no longer apply, and the tweaks for one
 protocol may have disastrous effects when applied to another (for
@@ -778,6 +778,13 @@ checking is never necessary, and invalid states are unrepresentable.</t>
       <organization>Rambus Cryptography Research</organization>
     </author>
     <date year="2015"></date>
+  </front>
+</reference>
+<reference anchor="Ed25519ValidCrit" target="https://hdevalence.ca/blog/2020-10-04-its-25519am">
+  <front>
+    <title>It’s 255:19AM. Do you know what your validation criteria are?</title>
+    <author fullname="Henry de Valence" initials="H" surname="de Valence"></author>
+    <date year="2020" month="October" day="4"></date>
   </front>
 </reference>
 <reference anchor="MoneroVuln" target="https://jonasnick.github.io/blog/2017/05/23/exploiting-low-order-generators-in-one-time-ring-signatures/">

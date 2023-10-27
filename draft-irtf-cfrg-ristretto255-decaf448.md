@@ -137,7 +137,7 @@ Even for simple protocols such as signatures, these tweaks can cause
 subtle issues. For instance, Ed25519 implementations may have
 different validation behavior between batched and singleton
 verification, and at least as specified in [@RFC8032], the set of
-valid signatures is not defined by the standard.
+valid signatures is not defined precisely [@Ed25519ValidCrit].
 
 For more complex protocols, careful analysis is required as the
 original security proofs may no longer apply, and the tweaks for one
@@ -175,6 +175,14 @@ This document is not an IETF product and is not a standard.
         <author initials='T' surname='Arcieri' fullname='Tony Arcieri'/>
         <author initials='M' surname='Hamburg' fullname='Mike Hamburg'/>
         <date />
+    </front>
+</reference>
+
+<reference anchor='Ed25519ValidCrit' target='https://hdevalence.ca/blog/2020-10-04-its-25519am'>
+    <front>
+        <title>It’s 255:19AM. Do you know what your validation criteria are?</title>
+        <author initials='H' surname='de Valence' fullname='Henry de Valence'/>
+        <date year='2020' month='October' day='4'/>
     </front>
 </reference>
 

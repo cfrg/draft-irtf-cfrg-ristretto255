@@ -1498,7 +1498,7 @@ tweaks such as multiplying by the cofactor in an appropriate place.<a href="#sec
 subtle issues. For instance, Ed25519 implementations may have
 different validation behavior between batched and singleton
 verification, and at least as specified in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>, the set of
-valid signatures is not defined by the standard.<a href="#section-1-4" class="pilcrow">¶</a></p>
+valid signatures is not defined precisely <span>[<a href="#Ed25519ValidCrit" class="cite xref">Ed25519ValidCrit</a>]</span>.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">For more complex protocols, careful analysis is required as the
 original security proofs may no longer apply, and the tweaks for one
 protocol may have disastrous effects when applied to another (for
@@ -2387,6 +2387,10 @@ checking is never necessary, and invalid states are unrepresentable.<a href="#se
 <dt id="Decaf">[Decaf]</dt>
         <dd>
 <span class="refAuthor">Hamburg, M.</span>, <span class="refTitle">"Decaf: Eliminating cofactors through point compression"</span>, <time datetime="2015" class="refDate">2015</time>, <span>&lt;<a href="https://www.shiftleft.org/papers/decaf/decaf.pdf">https://www.shiftleft.org/papers/decaf/decaf.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Ed25519ValidCrit">[Ed25519ValidCrit]</dt>
+        <dd>
+<span class="refAuthor">de Valence, H.</span>, <span class="refTitle">"It’s 255:19AM. Do you know what your validation criteria are?"</span>, <time datetime="2020-10-04" class="refDate">4 October 2020</time>, <span>&lt;<a href="https://hdevalence.ca/blog/2020-10-04-its-25519am">https://hdevalence.ca/blog/2020-10-04-its-25519am</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="MoneroVuln">[MoneroVuln]</dt>
         <dd>
