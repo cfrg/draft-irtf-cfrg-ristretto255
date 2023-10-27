@@ -348,11 +348,11 @@ The group order is the same as the order of the Curve25519 prime-order subgroup:
     l = 2^252 + 27742317777372353535851937790883648493
 
 Since ristretto255 is a prime-order group, every element except the
-identity is a generator.  However, for interoperability, a canonical generator
-is selected, which can be internally represented by the Curve25519
-base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in (#encoding255):
+identity is a generator.  However, for interoperability, a canonical
+generator is selected, which can be internally represented by the
+Curve25519 base point, enabling reuse of existing precomputation for
+scalar multiplication. The encoding of this canonical generator, as
+produced by the function specified in (#encoding255), is:
 
 ```
 e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
@@ -613,11 +613,12 @@ The group order is the same as the order of the edwards448 prime-order subgroup:
       13818066809895115352007386748515426880336692474882178609894547503885
 
 Since decaf448 is a prime-order group, every element except the
-identity is a generator; however, for interoperability, a canonical generator
-is selected. This generator can be internally represented by 2*`B`,
-where `B` is the edwards448 base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in (#encoding448):
+identity is a generator; however, for interoperability, a canonical
+generator is selected. This generator can be internally represented
+by 2*`B`, where `B` is the edwards448 base point, enabling reuse of
+existing precomputation for scalar multiplication. The encoding of
+this canonical generator, as produced by the function specified in
+(#encoding448), is:
 
 ```
 66666666 66666666 66666666 66666666 66666666 66666666 66666666

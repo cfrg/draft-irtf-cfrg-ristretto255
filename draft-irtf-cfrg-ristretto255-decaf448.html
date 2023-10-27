@@ -1670,11 +1670,11 @@ directly to the internal representation.<a href="#section-4-3" class="pilcrow">�
 </pre><a href="#section-4-5" class="pilcrow">¶</a>
 </div>
 <p id="section-4-6">Since ristretto255 is a prime-order group, every element except the
-identity is a generator.  However, for interoperability, a canonical generator
-is selected, which can be internally represented by the Curve25519
-base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in <a href="#encoding255" class="auto internal xref">Section 4.3.2</a>:<a href="#section-4-6" class="pilcrow">¶</a></p>
+identity is a generator.  However, for interoperability, a canonical
+generator is selected, which can be internally represented by the
+Curve25519 base point, enabling reuse of existing precomputation for
+scalar multiplication. The encoding of this canonical generator, as
+produced by the function specified in <a href="#encoding255" class="auto internal xref">Section 4.3.2</a>, is:<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-7">
 <pre>e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 
@@ -2018,11 +2018,12 @@ directly to the internal representation.<a href="#section-5-3" class="pilcrow">�
 </pre><a href="#section-5-5" class="pilcrow">¶</a>
 </div>
 <p id="section-5-6">Since decaf448 is a prime-order group, every element except the
-identity is a generator; however, for interoperability, a canonical generator
-is selected. This generator can be internally represented by 2*<code>B</code>,
-where <code>B</code> is the edwards448 base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in <a href="#encoding448" class="auto internal xref">Section 5.3.2</a>:<a href="#section-5-6" class="pilcrow">¶</a></p>
+identity is a generator; however, for interoperability, a canonical
+generator is selected. This generator can be internally represented
+by 2*<code>B</code>, where <code>B</code> is the edwards448 base point, enabling reuse of
+existing precomputation for scalar multiplication. The encoding of
+this canonical generator, as produced by the function specified in
+<a href="#encoding448" class="auto internal xref">Section 5.3.2</a>, is:<a href="#section-5-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5-7">
 <pre>66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333

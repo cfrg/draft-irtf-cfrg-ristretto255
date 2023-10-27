@@ -306,8 +306,8 @@ Table of Contents
    identity is a generator.  However, for interoperability, a canonical
    generator is selected, which can be internally represented by the
    Curve25519 base point, enabling reuse of existing precomputation for
-   scalar multiplication.  This is its encoding as produced by the
-   function specified in Section 4.3.2:
+   scalar multiplication.  The encoding of this canonical generator, as
+   produced by the function specified in Section 4.3.2, is:
 
  e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 
@@ -580,8 +580,9 @@ return (was_square, r)
    identity is a generator; however, for interoperability, a canonical
    generator is selected.  This generator can be internally represented
    by 2*B, where B is the edwards448 base point, enabling reuse of
-   existing precomputation for scalar multiplication.  This is its
-   encoding as produced by the function specified in Section 5.3.2:
+   existing precomputation for scalar multiplication.  The encoding of
+   this canonical generator, as produced by the function specified in
+   Section 5.3.2, is:
 
    66666666 66666666 66666666 66666666 66666666 66666666 66666666
    33333333 33333333 33333333 33333333 33333333 33333333 33333333

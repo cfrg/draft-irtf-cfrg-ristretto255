@@ -214,11 +214,11 @@ directly to the internal representation.</t>
 ]]>
 </artwork>
 <t>Since ristretto255 is a prime-order group, every element except the
-identity is a generator.  However, for interoperability, a canonical generator
-is selected, which can be internally represented by the Curve25519
-base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in <xref target="encoding255"></xref>:</t>
+identity is a generator.  However, for interoperability, a canonical
+generator is selected, which can be internally represented by the
+Curve25519 base point, enabling reuse of existing precomputation for
+scalar multiplication. The encoding of this canonical generator, as
+produced by the function specified in <xref target="encoding255"></xref>, is:</t>
 
 <artwork><![CDATA[e2f2ae0a 6abc4e71 a884a961 c500515f 58e30b6a a582dd8d b6a65945 e08d2d76
 ]]>
@@ -493,11 +493,12 @@ directly to the internal representation.</t>
 ]]>
 </artwork>
 <t>Since decaf448 is a prime-order group, every element except the
-identity is a generator; however, for interoperability, a canonical generator
-is selected. This generator can be internally represented by 2*<tt>B</tt>,
-where <tt>B</tt> is the edwards448 base point, enabling reuse of existing precomputation for scalar
-multiplication. This is its encoding as produced by the function
-specified in <xref target="encoding448"></xref>:</t>
+identity is a generator; however, for interoperability, a canonical
+generator is selected. This generator can be internally represented
+by 2*<tt>B</tt>, where <tt>B</tt> is the edwards448 base point, enabling reuse of
+existing precomputation for scalar multiplication. The encoding of
+this canonical generator, as produced by the function specified in
+<xref target="encoding448"></xref>, is:</t>
 
 <artwork><![CDATA[66666666 66666666 66666666 66666666 66666666 66666666 66666666
 33333333 33333333 33333333 33333333 33333333 33333333 33333333
