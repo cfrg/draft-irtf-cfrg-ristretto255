@@ -205,10 +205,10 @@ when, and only when, they appear in all capitals, as shown here.
 Readers are cautioned that the term "Curve25519" has varying
 interpretations in the literature and that the canonical meaning of the
 term has shifted over time. Originally, it referred to a specific
-Diffie-Hellman key exchange mechanism. Use shifted over time, and
+Diffie–Hellman key exchange mechanism. Use shifted over time, and
 "Curve25519" has been used to refer to the abstract underlying
 curve, its concrete representation in Montgomery form, or the
-specific Diffie-Hellman mechanism. This document uses the term
+specific Diffie–Hellman mechanism. This document uses the term
 "Curve25519" to refer to the abstract underlying curve, as recommended
 in [@Naming]. The abstract Edwards form of the curve we refer to here
 as "Curve25519" is referred to in [@?RFC7748] as "edwards25519",
