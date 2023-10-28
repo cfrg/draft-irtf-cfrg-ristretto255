@@ -2315,8 +2315,8 @@ construction, the choice of which is out of scope for this document.<a href="#se
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-api-considerations" class="section-name selfRef">API Considerations</a>
       </h2>
 <p id="section-6-1">ristretto255 and decaf448 are abstractions that implement two prime-order
-groups, and their elements are represented by curve points, but they are
-not curve points. Implementations <span class="bcp14">SHOULD</span> reflect that: the type
+groups. Their elements are represented by curve points, but are not curve
+points, and implementations <span class="bcp14">SHOULD</span> reflect that fact. That is, the type
 representing an element of the group <span class="bcp14">SHOULD</span> be opaque to the caller,
 meaning they do not expose the underlying curve point or field elements.
 Moreover, implementations <span class="bcp14">SHOULD NOT</span> expose any internal constants

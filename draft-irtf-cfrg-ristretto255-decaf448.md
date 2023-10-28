@@ -835,8 +835,8 @@ construction, the choice of which is out of scope for this document.
 # API Considerations {#api}
 
 ristretto255 and decaf448 are abstractions that implement two prime-order
-groups, and their elements are represented by curve points, but they are
-not curve points. Implementations **SHOULD** reflect that: the type 
+groups. Their elements are represented by curve points, but are not curve
+points, and implementations **SHOULD** reflect that fact. That is, the type
 representing an element of the group **SHOULD** be opaque to the caller,
 meaning they do not expose the underlying curve point or field elements.
 Moreover, implementations **SHOULD NOT** expose any internal constants
