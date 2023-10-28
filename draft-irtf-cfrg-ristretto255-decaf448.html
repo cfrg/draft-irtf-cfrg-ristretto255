@@ -1547,8 +1547,8 @@ and its isogenous Montgomery form is referred to as "curve25519".<a href="#secti
 <p id="section-2-3">Elliptic curve points in this document are represented in extended
 Edwards coordinates in the <code>(x, y, z, t)</code> format <span>[<a href="#Twisted" class="cite xref">Twisted</a>]</span>, also called
 extended homogeneous coordinates in <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.4" class="relref">Section 5.1.4</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. Field
-elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-edwards448 prime 2^448 - 2^224 - 1, as specified in Sections <a href="https://rfc-editor.org/rfc/rfc7748#section-4.1" class="relref">4.1</a> and <a href="https://rfc-editor.org/rfc/rfc7748#section-4.2" class="relref">4.2</a> of <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, respectively. All formulas specify field operations
+elements are values modulo p, the Curve25519 prime 2<sup>255</sup> - 19 or the
+edwards448 prime 2<sup>448</sup> - 2<sup>224</sup> - 1, as specified in Sections <a href="https://rfc-editor.org/rfc/rfc7748#section-4.1" class="relref">4.1</a> and <a href="https://rfc-editor.org/rfc/rfc7748#section-4.2" class="relref">4.2</a> of <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, respectively. All formulas specify field operations
 unless otherwise noted. The symbol ^ denotes exponentiation.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">The <code>|</code> symbol represents a constant-time logical OR.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">The notation <code>array[A:B]</code> means the elements of <code>array</code> from <code>A</code>
@@ -1927,7 +1927,7 @@ representation. Reduce r modulo p to obtain a field element t.<a href="#section-
 <ul class="compact">
 <li class="compact" id="section-4.3.4-5.1.2.1">Masking the most significant bit is equivalent to interpreting the
 whole string as an unsigned integer in little-endian representation and then
-reducing it modulo 2^255.<a href="#section-4.3.4-5.1.2.1" class="pilcrow">¶</a>
+reducing it modulo 2<sup>255</sup>.<a href="#section-4.3.4-5.1.2.1" class="pilcrow">¶</a>
 </li>
                 <li class="compact" id="section-4.3.4-5.1.2.2">Note: Similar to the field element decoding described in <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, and unlike
 the field element decoding described in <a href="#decoding255" class="auto internal xref">Section 4.3.1</a>, the most significant bit

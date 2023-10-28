@@ -217,8 +217,8 @@ and its isogenous Montgomery form is referred to as "curve25519".
 Elliptic curve points in this document are represented in extended
 Edwards coordinates in the `(x, y, z, t)` format [@Twisted], also called
 extended homogeneous coordinates in [@?RFC8032, section 5.1.4]. Field
-elements are values modulo p, the Curve25519 prime 2^255 - 19 or the
-edwards448 prime 2^448 - 2^224 - 1, as specified in Sections [@RFC7748, 4.1] and [@RFC7748, 4.2] of [@RFC7748], respectively. All formulas specify field operations
+elements are values modulo p, the Curve25519 prime 2^255^ - 19 or the
+edwards448 prime 2^448^ - 2^224^ - 1, as specified in Sections [@RFC7748, 4.1] and [@RFC7748, 4.2] of [@RFC7748], respectively. All formulas specify field operations
 unless otherwise noted. The symbol ^ denotes exponentiation.
 
 The `|` symbol represents a constant-time logical OR.
@@ -540,7 +540,7 @@ The MAP function is defined on 32-byte strings as:
    representation. Reduce r modulo p to obtain a field element t.
    * Masking the most significant bit is equivalent to interpreting the
      whole string as an unsigned integer in little-endian representation and then
-     reducing it modulo 2^255.
+     reducing it modulo 2^255^.
    * Note: Similar to the field element decoding described in [@RFC7748], and unlike
      the field element decoding described in (#decoding255), the most significant bit
      is masked, and non-canonical values are accepted.
