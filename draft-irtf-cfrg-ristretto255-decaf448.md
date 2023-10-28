@@ -268,7 +268,7 @@ operations, which **SHOULD** be implemented in constant time:
 
 * `CT_EQ(u, v)`: return TRUE if u = v, FALSE otherwise.
 * `CT_SELECT(v IF cond ELSE u)`: return v if cond is TRUE, else return u.
-* `CT_ABS(u)`: return -u if IS_NEGATIVE(u), else return u.
+* `CT_ABS(u)`: return -u if `IS_NEGATIVE(u)`, else return u.
 
 Note that `CT_ABS` **MAY** be implemented as:
 
@@ -319,7 +319,7 @@ derivation function is suitable for use in algorithms such as
 `hash_to_curve` [@RFC9380].
 
 Addition is the group operation. The group has an identity element and
-prime order l. Adding together l copies of the same element gives the
+prime order `l`. Adding together `l` copies of the same element gives the
 identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
 that, when added to the negation input, gives the identity element.
@@ -570,14 +570,14 @@ w3 = 1 + s^2
 
 ## Scalar Field
 
-The scalars for the ristretto255 group are integers modulo the order l
+The scalars for the ristretto255 group are integers modulo the order `l`
 of the ristretto255 group. Note that this is the same scalar field as
 Curve25519, allowing existing implementations to be reused.
 
 Scalars are encoded as 32-byte strings in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
-0 <= s < l when parsing them and reject non-canonical scalar
-encodings. Implementations **SHOULD** reduce scalars modulo l when
+0 <= s < `l` when parsing them and reject non-canonical scalar
+encodings. Implementations **SHOULD** reduce scalars modulo `l` when
 encoding them as byte strings. Omitting these strict range checks is
 **NOT RECOMMENDED** but is allowed to enable reuse of scalar
 arithmetic implementations in existing Curve25519 libraries.
@@ -585,7 +585,7 @@ arithmetic implementations in existing Curve25519 libraries.
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l, as in [@RFC8032]. To obtain such an input from an
+integer modulo `l`, as in [@RFC8032]. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out of scope for this document.
 
@@ -806,14 +806,14 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
 
 ## Scalar Field
 
-The scalars for the decaf448 group are integers modulo the order l
+The scalars for the decaf448 group are integers modulo the order `l`
 of the decaf448 group. Note that this is the same scalar field as
 edwards448, allowing existing implementations to be reused.
 
 Scalars are encoded as 56-byte strings in little-endian order.
 Implementations **SHOULD** check that any scalar s falls in the range
-0 <= s < l when parsing them and reject non-canonical scalar
-encodings. Implementations **SHOULD** reduce scalars modulo l when
+0 <= s < `l` when parsing them and reject non-canonical scalar
+encodings. Implementations **SHOULD** reduce scalars modulo `l` when
 encoding them as byte strings. Omitting these strict range checks is
 **NOT RECOMMENDED** but is allowed to enable reuse of scalar
 arithmetic implementations in existing edwards448 libraries.
@@ -821,7 +821,7 @@ arithmetic implementations in existing edwards448 libraries.
 Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l. To obtain such an input from an arbitrary-length
+integer modulo `l`. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out of scope for this document.
 

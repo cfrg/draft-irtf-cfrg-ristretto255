@@ -1584,7 +1584,7 @@ operations, which <span class="bcp14">SHOULD</span> be implemented in constant t
             <code>CT_SELECT(v IF cond ELSE u)</code>: return v if cond is TRUE, else return u.<a href="#section-2.2-2.2" class="pilcrow">¶</a>
 </li>
           <li class="compact" id="section-2.2-2.3">
-            <code>CT_ABS(u)</code>: return -u if IS_NEGATIVE(u), else return u.<a href="#section-2.2-2.3" class="pilcrow">¶</a>
+            <code>CT_ABS(u)</code>: return -u if <code>IS_NEGATIVE(u)</code>, else return u.<a href="#section-2.2-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-2.2-3">Note that <code>CT_ABS</code> <span class="bcp14">MAY</span> be implemented as:<a href="#section-2.2-3" class="pilcrow">¶</a></p>
@@ -1638,7 +1638,7 @@ it means that a combination of a cryptographic hash function and the element
 derivation function is suitable for use in algorithms such as
 <code>hash_to_curve</code> <span>[<a href="#RFC9380" class="cite xref">RFC9380</a>]</span>.<a href="#section-3-7" class="pilcrow">¶</a></p>
 <p id="section-3-8">Addition is the group operation. The group has an identity element and
-prime order l. Adding together l copies of the same element gives the
+prime order <code>l</code>. Adding together <code>l</code> copies of the same element gives the
 identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
 that, when added to the negation input, gives the identity element.
@@ -1972,20 +1972,20 @@ w3 = 1 + s^2
         <h3 id="name-scalar-field">
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-scalar-field" class="section-name selfRef">Scalar Field</a>
         </h3>
-<p id="section-4.4-1">The scalars for the ristretto255 group are integers modulo the order l
+<p id="section-4.4-1">The scalars for the ristretto255 group are integers modulo the order <code>l</code>
 of the ristretto255 group. Note that this is the same scalar field as
 Curve25519, allowing existing implementations to be reused.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 <p id="section-4.4-2">Scalars are encoded as 32-byte strings in little-endian order.
 Implementations <span class="bcp14">SHOULD</span> check that any scalar s falls in the range
-0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
-encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo l when
+0 &lt;= s &lt; <code>l</code> when parsing them and reject non-canonical scalar
+encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo <code>l</code> when
 encoding them as byte strings. Omitting these strict range checks is
 <span class="bcp14">NOT RECOMMENDED</span> but is allowed to enable reuse of scalar
 arithmetic implementations in existing Curve25519 libraries.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <p id="section-4.4-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l, as in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. To obtain such an input from an
+integer modulo <code>l</code>, as in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out of scope for this document.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
@@ -2287,20 +2287,20 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
         <h3 id="name-scalar-field-2">
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-scalar-field-2" class="section-name selfRef">Scalar Field</a>
         </h3>
-<p id="section-5.4-1">The scalars for the decaf448 group are integers modulo the order l
+<p id="section-5.4-1">The scalars for the decaf448 group are integers modulo the order <code>l</code>
 of the decaf448 group. Note that this is the same scalar field as
 edwards448, allowing existing implementations to be reused.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.4-2">Scalars are encoded as 56-byte strings in little-endian order.
 Implementations <span class="bcp14">SHOULD</span> check that any scalar s falls in the range
-0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
-encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo l when
+0 &lt;= s &lt; <code>l</code> when parsing them and reject non-canonical scalar
+encodings. Implementations <span class="bcp14">SHOULD</span> reduce scalars modulo <code>l</code> when
 encoding them as byte strings. Omitting these strict range checks is
 <span class="bcp14">NOT RECOMMENDED</span> but is allowed to enable reuse of scalar
 arithmetic implementations in existing edwards448 libraries.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <p id="section-5.4-3">Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l. To obtain such an input from an arbitrary-length
+integer modulo <code>l</code>. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out of scope for this document.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
 </section>

@@ -140,7 +140,7 @@ operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 <ul spacing="compact">
 <li><tt>CT_EQ(u, v)</tt>: return TRUE if u = v, FALSE otherwise.</li>
 <li><tt>CT_SELECT(v IF cond ELSE u)</tt>: return v if cond is TRUE, else return u.</li>
-<li><tt>CT_ABS(u)</tt>: return -u if IS_NEGATIVE(u), else return u.</li>
+<li><tt>CT_ABS(u)</tt>: return -u if <tt>IS_NEGATIVE(u)</tt>, else return u.</li>
 </ul>
 <t>Note that <tt>CT_ABS</tt> <bcp14>MAY</bcp14> be implemented as:</t>
 
@@ -187,7 +187,7 @@ it means that a combination of a cryptographic hash function and the element
 derivation function is suitable for use in algorithms such as
 <tt>hash_to_curve</tt> <xref target="RFC9380"></xref>.</t>
 <t>Addition is the group operation. The group has an identity element and
-prime order l. Adding together l copies of the same element gives the
+prime order <tt>l</tt>. Adding together <tt>l</tt> copies of the same element gives the
 identity. Adding the identity element to
 any element returns that element unchanged. Negation returns an element
 that, when added to the negation input, gives the identity element.
@@ -453,20 +453,20 @@ w3 = 1 + s^2
 </section>
 
 <section anchor="scalar-field"><name>Scalar Field</name>
-<t>The scalars for the ristretto255 group are integers modulo the order l
+<t>The scalars for the ristretto255 group are integers modulo the order <tt>l</tt>
 of the ristretto255 group. Note that this is the same scalar field as
 Curve25519, allowing existing implementations to be reused.</t>
 <t>Scalars are encoded as 32-byte strings in little-endian order.
 Implementations <bcp14>SHOULD</bcp14> check that any scalar s falls in the range
-0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
-encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo l when
+0 &lt;= s &lt; <tt>l</tt> when parsing them and reject non-canonical scalar
+encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo <tt>l</tt> when
 encoding them as byte strings. Omitting these strict range checks is
 <bcp14>NOT RECOMMENDED</bcp14> but is allowed to enable reuse of scalar
 arithmetic implementations in existing Curve25519 libraries.</t>
 <t>Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l, as in <xref target="RFC8032"></xref>. To obtain such an input from an
+integer modulo <tt>l</tt>, as in <xref target="RFC8032"></xref>. To obtain such an input from an
 arbitrary-length byte string, applications should use a domain-separated
 hash construction, the choice of which is out of scope for this document.</t>
 </section>
@@ -702,20 +702,20 @@ w3 = v_prime * s * (r - 1) * ONE_MINUS_TWO_D + sgn
 </section>
 
 <section anchor="scalar-field-1"><name>Scalar Field</name>
-<t>The scalars for the decaf448 group are integers modulo the order l
+<t>The scalars for the decaf448 group are integers modulo the order <tt>l</tt>
 of the decaf448 group. Note that this is the same scalar field as
 edwards448, allowing existing implementations to be reused.</t>
 <t>Scalars are encoded as 56-byte strings in little-endian order.
 Implementations <bcp14>SHOULD</bcp14> check that any scalar s falls in the range
-0 &lt;= s &lt; l when parsing them and reject non-canonical scalar
-encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo l when
+0 &lt;= s &lt; <tt>l</tt> when parsing them and reject non-canonical scalar
+encodings. Implementations <bcp14>SHOULD</bcp14> reduce scalars modulo <tt>l</tt> when
 encoding them as byte strings. Omitting these strict range checks is
 <bcp14>NOT RECOMMENDED</bcp14> but is allowed to enable reuse of scalar
 arithmetic implementations in existing edwards448 libraries.</t>
 <t>Given a uniformly distributed 64-byte string b, implementations can
 obtain a uniformly distributed scalar by interpreting the 64-byte
 string as a 512-bit unsigned integer in little-endian order and reducing the
-integer modulo l. To obtain such an input from an arbitrary-length
+integer modulo <tt>l</tt>. To obtain such an input from an arbitrary-length
 byte string, applications should use a domain-separated hash
 construction, the choice of which is out of scope for this document.</t>
 </section>
