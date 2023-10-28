@@ -315,8 +315,9 @@ given an arbitrary abstract group element `P`, there is an efficient algorithm
 to randomly sample from byte strings that map to `P`.  In some contexts, this
 property would be a weakness, but it is important in some contexts: in particular,
 it means that a combination of a cryptographic hash function and the element
-derivation function is suitable for use in algorithms such as
-`hash_to_curve` [@RFC9380].
+derivation function is suitable to define encoding functions such as
+`hash_to_ristretto255` ([@RFC9380, section B]) and `hash_to_decaf448`
+([@RFC9380, section C]).
 
 Addition is the group operation. The group has an identity element and
 prime order `l`. Adding together `l` copies of the same element gives the

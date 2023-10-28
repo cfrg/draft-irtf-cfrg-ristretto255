@@ -1635,8 +1635,9 @@ given an arbitrary abstract group element <code>P</code>, there is an efficient 
 to randomly sample from byte strings that map to <code>P</code>.  In some contexts, this
 property would be a weakness, but it is important in some contexts: in particular,
 it means that a combination of a cryptographic hash function and the element
-derivation function is suitable for use in algorithms such as
-<code>hash_to_curve</code> <span>[<a href="#RFC9380" class="cite xref">RFC9380</a>]</span>.<a href="#section-3-7" class="pilcrow">¶</a></p>
+derivation function is suitable to define encoding functions such as
+<code>hash_to_ristretto255</code> (<span><a href="https://rfc-editor.org/rfc/rfc9380#appendix-B" class="relref">Appendix B</a> of [<a href="#RFC9380" class="cite xref">RFC9380</a>]</span>) and <code>hash_to_decaf448</code>
+(<span><a href="https://rfc-editor.org/rfc/rfc9380#appendix-C" class="relref">Appendix C</a> of [<a href="#RFC9380" class="cite xref">RFC9380</a>]</span>).<a href="#section-3-7" class="pilcrow">¶</a></p>
 <p id="section-3-8">Addition is the group operation. The group has an identity element and
 prime order <code>l</code>. Adding together <code>l</code> copies of the same element gives the
 identity. Adding the identity element to
