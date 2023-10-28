@@ -292,15 +292,17 @@ exposed by the ristretto255 prime-order group.</t>
 <t>All elements are encoded as 32-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>Interpret the string as an unsigned integer s in little-endian
+<li>Interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 32 bytes or if
-the resulting value is &gt;= p, decoding fails.</t>
+the resulting value is &gt;= p, decoding fails.</li>
+</ol>
 
-<ul spacing="compact">
-<li>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, the most significant
+<aside><t>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, the most significant
 bit is not masked, and non-canonical values are rejected.
-The test vectors in <xref target="invalid255"></xref> exercise these edge cases.</li>
-</ul></li>
+The test vectors in <xref target="invalid255"></xref> exercise these edge cases.</t>
+</aside>
+
+<ol spacing="compact" start="2">
 <li>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</li>
 <li>Process s as follows:</li>
 </ol>
@@ -410,7 +412,7 @@ is out of scope for this document.</t>
 </ol>
 <t>The MAP function is defined on 32-byte strings as:</t>
 
-<ol>
+<ol spacing="compact">
 <li><t>Mask the most significant bit in the final byte of the string,
 and interpret the string as an unsigned integer r in little-endian
 representation. Reduce r modulo p to obtain a field element t.</t>
@@ -419,12 +421,16 @@ representation. Reduce r modulo p to obtain a field element t.</t>
 <li>Masking the most significant bit is equivalent to interpreting the
 whole string as an unsigned integer in little-endian representation and then
 reducing it modulo 2<sup>255</sup>.</li>
-<li>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
-the field element decoding described in <xref target="decoding255"></xref>, the most significant bit
-is masked, and non-canonical values are accepted.</li>
 </ul></li>
-<li><t>Process t as follows:</t>
-</li>
+</ol>
+
+<aside><t>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
+the field element decoding described in <xref target="decoding255"></xref>, the most significant bit
+is masked, and non-canonical values are accepted.</t>
+</aside>
+
+<ol spacing="compact" start="2">
+<li>Process t as follows:</li>
 </ol>
 
 <artwork><![CDATA[r = SQRT_M1 * t^2
@@ -568,15 +574,17 @@ exposed by the decaf448 prime-order group.</t>
 <t>All elements are encoded as 56-byte strings. Decoding proceeds as follows:</t>
 
 <ol spacing="compact">
-<li><t>Interpret the string as an unsigned integer s in little-endian
+<li>Interpret the string as an unsigned integer s in little-endian
 representation. If the length of the string is not 56 bytes or if
-the resulting value is &gt;= p, decoding fails.</t>
+the resulting value is &gt;= p, decoding fails.</li>
+</ol>
 
-<ul spacing="compact">
-<li>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, non-canonical
+<aside><t>Note: Unlike the field element decoding described in <xref target="RFC7748"></xref>, non-canonical
 values are rejected. The test vectors in <xref target="invalid448"></xref> exercise
-these edge cases.</li>
-</ul></li>
+these edge cases.</t>
+</aside>
+
+<ol spacing="compact" start="2">
 <li>If <tt>IS_NEGATIVE(s)</tt> returns TRUE, decoding fails.</li>
 <li>Process s as follows:</li>
 </ol>
@@ -665,17 +673,18 @@ is out of scope for this document.</t>
 </ol>
 <t>The MAP function is defined on 56-byte strings as:</t>
 
-<ol>
-<li><t>Interpret the string as an unsigned integer r in little-endian representation.
-Reduce r modulo p to obtain a field element t.</t>
+<ol spacing="compact">
+<li>Interpret the string as an unsigned integer r in little-endian representation.
+Reduce r modulo p to obtain a field element t.</li>
+</ol>
 
-<ul spacing="compact">
-<li>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
+<aside><t>Note: Similar to the field element decoding described in <xref target="RFC7748"></xref>, and unlike
 the field element decoding described in <xref target="decoding448"></xref>, non-canonical values are
-accepted.</li>
-</ul></li>
-<li><t>Process t as follows:</t>
-</li>
+accepted.</t>
+</aside>
+
+<ol spacing="compact" start="2">
+<li>Process t as follows:</li>
 </ol>
 
 <artwork><![CDATA[r = -t^2

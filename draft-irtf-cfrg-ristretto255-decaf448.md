@@ -427,9 +427,11 @@ All elements are encoded as 32-byte strings. Decoding proceeds as follows:
 1. Interpret the string as an unsigned integer s in little-endian
    representation. If the length of the string is not 32 bytes or if
    the resulting value is >= p, decoding fails.
-   * Note: Unlike the field element decoding described in [@RFC7748], the most significant
-     bit is not masked, and non-canonical values are rejected.
-     The test vectors in (#invalid255) exercise these edge cases.
+
+   A> Note: Unlike the field element decoding described in [@RFC7748], the most significant
+   A> bit is not masked, and non-canonical values are rejected.
+   A> The test vectors in (#invalid255) exercise these edge cases.
+
 2. If `IS_NEGATIVE(s)` returns TRUE, decoding fails.
 3. Process s as follows:
 
@@ -541,9 +543,10 @@ The MAP function is defined on 32-byte strings as:
    * Masking the most significant bit is equivalent to interpreting the
      whole string as an unsigned integer in little-endian representation and then
      reducing it modulo 2^255^.
-   * Note: Similar to the field element decoding described in [@RFC7748], and unlike
-     the field element decoding described in (#decoding255), the most significant bit
-     is masked, and non-canonical values are accepted.
+
+   A> Note: Similar to the field element decoding described in [@RFC7748], and unlike
+   A> the field element decoding described in (#decoding255), the most significant bit
+   A> is masked, and non-canonical values are accepted.
 
 2. Process t as follows:
 
@@ -690,9 +693,11 @@ All elements are encoded as 56-byte strings. Decoding proceeds as follows:
 1. Interpret the string as an unsigned integer s in little-endian
    representation. If the length of the string is not 56 bytes or if
    the resulting value is >= p, decoding fails.
-   * Note: Unlike the field element decoding described in [@RFC7748], non-canonical
-     values are rejected. The test vectors in (#invalid448) exercise
-     these edge cases.
+
+   A> Note: Unlike the field element decoding described in [@RFC7748], non-canonical
+   A> values are rejected. The test vectors in (#invalid448) exercise
+   A> these edge cases.
+
 2. If `IS_NEGATIVE(s)` returns TRUE, decoding fails.
 3. Process s as follows:
 
@@ -779,9 +784,10 @@ The MAP function is defined on 56-byte strings as:
 
 1. Interpret the string as an unsigned integer r in little-endian representation.
    Reduce r modulo p to obtain a field element t.
-   * Note: Similar to the field element decoding described in [@RFC7748], and unlike
-     the field element decoding described in (#decoding448), non-canonical values are
-     accepted.
+
+   A> Note: Similar to the field element decoding described in [@RFC7748], and unlike
+   A> the field element decoding described in (#decoding448), non-canonical values are
+   A> accepted.
 
 2. Process t as follows:
 

@@ -388,10 +388,12 @@ return (was_square, r)
    1.  Interpret the string as an unsigned integer s in little-endian
        representation.  If the length of the string is not 32 bytes or
        if the resulting value is >= p, decoding fails.
-       *  Note: Unlike the field element decoding described in
-          [RFC7748], the most significant bit is not masked, and non-
-          canonical values are rejected.  The test vectors in
-          Appendix A.2 exercise these edge cases.
+
+      |  Note: Unlike the field element decoding described in [RFC7748],
+      |  the most significant bit is not masked, and non-canonical
+      |  values are rejected.  The test vectors in Appendix A.2 exercise
+      |  these edge cases.
+
    2.  If IS_NEGATIVE(s) returns TRUE, decoding fails.
    3.  Process s as follows:
 
@@ -500,14 +502,14 @@ return (was_square, r)
        and interpret the string as an unsigned integer r in little-
        endian representation.  Reduce r modulo p to obtain a field
        element t.
-
        *  Masking the most significant bit is equivalent to interpreting
           the whole string as an unsigned integer in little-endian
           representation and then reducing it modulo 2^255.
-       *  Note: Similar to the field element decoding described in
-          [RFC7748], and unlike the field element decoding described in
-          Section 4.3.1, the most significant bit is masked, and non-
-          canonical values are accepted.
+
+      |  Note: Similar to the field element decoding described in
+      |  [RFC7748], and unlike the field element decoding described in
+      |  Section 4.3.1, the most significant bit is masked, and non-
+      |  canonical values are accepted.
 
    2.  Process t as follows:
 
@@ -659,9 +661,11 @@ return (was_square, r)
    1.  Interpret the string as an unsigned integer s in little-endian
        representation.  If the length of the string is not 56 bytes or
        if the resulting value is >= p, decoding fails.
-       *  Note: Unlike the field element decoding described in
-          [RFC7748], non-canonical values are rejected.  The test
-          vectors in Appendix B.2 exercise these edge cases.
+
+      |  Note: Unlike the field element decoding described in [RFC7748],
+      |  non-canonical values are rejected.  The test vectors in
+      |  Appendix B.2 exercise these edge cases.
+
    2.  If IS_NEGATIVE(s) returns TRUE, decoding fails.
    3.  Process s as follows:
 
@@ -748,9 +752,9 @@ return (was_square, r)
    1.  Interpret the string as an unsigned integer r in little-endian
        representation.  Reduce r modulo p to obtain a field element t.
 
-       *  Note: Similar to the field element decoding described in
-          [RFC7748], and unlike the field element decoding described in
-          Section 5.3.1, non-canonical values are accepted.
+      |  Note: Similar to the field element decoding described in
+      |  [RFC7748], and unlike the field element decoding described in
+      |  Section 5.3.1, non-canonical values are accepted.
 
    2.  Process t as follows:
 
