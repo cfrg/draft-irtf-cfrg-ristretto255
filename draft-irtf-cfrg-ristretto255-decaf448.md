@@ -699,9 +699,13 @@ All elements are encoded as 56-byte strings. Decoding proceeds as follows:
 ```
 ss = s^2
 u1 = 1 + ss
+
 u2 = u1^2 - 4 * D * ss
+
 (was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
+
 u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
+
 x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
 y = (1 - ss) * invsqrt * u1
 t = x * y
@@ -1025,7 +1029,7 @@ ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
 ffffff7f
 ~~~
 
-## Group Elements from Byte Strings
+## Group Elements from Uniform Byte Strings
 
 The following pairs are inputs to the element derivation function of
 (#from_bytes_uniform255) and their encoded outputs.

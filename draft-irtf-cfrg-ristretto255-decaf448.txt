@@ -93,7 +93,7 @@ Table of Contents
    Appendix A.  Test Vectors for ristretto255
      A.1.  Multiples of the Generator
      A.2.  Invalid Encodings
-     A.3.  Group Elements from Byte Strings
+     A.3.  Group Elements from Uniform Byte Strings
      A.4.  Square Root of a Ratio of Field Elements
    Appendix B.  Test Vectors for decaf448
      B.1.  Multiples of the Generator
@@ -667,9 +667,13 @@ return (was_square, r)
 
    ss = s^2
    u1 = 1 + ss
+
    u2 = u1^2 - 4 * D * ss
+
    (was_square, invsqrt) = SQRT_RATIO_M1(1, u2 * u1^2)
+
    u3 = CT_ABS(2 * s * invsqrt * u1 * SQRT_MINUS_D)
+
    x = u3 * invsqrt * u2 * INVSQRT_MINUS_D
    y = (1 - ss) * invsqrt * u1
    t = x * y
@@ -1049,7 +1053,7 @@ A.2.  Invalid Encodings
    ecffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
    ffffff7f
 
-A.3.  Group Elements from Byte Strings
+A.3.  Group Elements from Uniform Byte Strings
 
    The following pairs are inputs to the element derivation function of
    Section 4.3.4 and their encoded outputs.
