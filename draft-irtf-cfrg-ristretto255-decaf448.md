@@ -876,8 +876,9 @@ the guidance in (#api).
 There is no function to test whether an elliptic curve point is a
 valid internal representation of a group element. The decoding
 function always returns a valid internal representation or an error, and
-allowed operations on valid internal representations return valid
-internal representations. In this way, an implementation can maintain
+operations exposed by the group per (#interface) return valid internal
+representations when applied to valid internal representations.
+In this way, an implementation can maintain
 the invariant that an internal representation is always valid, so that
 checking is never necessary, and invalid states are unrepresentable.
 
