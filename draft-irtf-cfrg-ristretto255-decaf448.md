@@ -219,8 +219,10 @@ Elliptic curve points in this document are represented in extended
 Edwards coordinates in the `(x, y, z, t)` format [@Twisted], also called
 extended homogeneous coordinates in [@?RFC8032, section 5.1.4]. Field
 elements are values modulo p, the Curve25519 prime 2^255^ - 19 or the
-edwards448 prime 2^448^ - 2^224^ - 1, as specified in Sections [@RFC7748, 4.1] and [@RFC7748, 4.2] of [@RFC7748], respectively. All formulas specify field operations
-unless otherwise noted. The symbol ^ denotes exponentiation.
+edwards448 prime 2^448^ - 2^224^ - 1, as specified in Sections
+[@RFC7748, 4.1] and [@RFC7748, 4.2] of [@RFC7748], respectively. All
+formulas specify field operations unless otherwise noted. The symbol
+`^` denotes exponentiation.
 
 The `|` symbol represents a constant-time logical OR.
 
@@ -262,7 +264,7 @@ As in [@RFC8032], given a field element e, define `IS_NEGATIVE(e)` as
 TRUE if the least nonnegative integer representing e is odd and
 FALSE if it is even. This **SHOULD** be implemented in constant time.
 
-## Constant Time Operations
+## Constant-Time Operations
 
 We assume that the field element implementation supports the following
 operations, which **SHOULD** be implemented in constant time:
@@ -294,7 +296,7 @@ elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.
 
 Encoding is a function from abstract elements to byte strings.  Internally,
-an abstract element might have more than one possible representation -- for
+an abstract element might have more than one possible representation; for
 example, the implementation might use projective coordinates.  When encoding,
 all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
@@ -335,7 +337,8 @@ interface defined in (#interface). This document describes how to
 implement the ristretto255 prime-order group using Curve25519 points as
 internal representations.
 
-A "ristretto255 group element" is the abstract element of the prime-order group. An "element encoding" is the unique reversible encoding
+A "ristretto255 group element" is the abstract element of the
+prime-order group. An "element encoding" is the unique reversible encoding
 of a group element. An "internal representation" is a point on the
 curve used to implement ristretto255. Each group element can have
 multiple equivalent internal representations.
@@ -1008,7 +1011,7 @@ f4a9e534 fc0d216c 44b218fa 0c42d996 35a0127e e2e53c71 2f706096
 2810e5cb c2cc4d4e ece54f61 c6f69758 e289aa7a b440b3cb eaa21995
 c2f4232b
 
-# Negative xy value.
+# Negative x * y value.
 3eb858e7 8f5a7254 d8c97311 74a94f76 755fd394 1c0ac937 35c07ba1
 4579630e
 

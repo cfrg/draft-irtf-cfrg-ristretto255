@@ -1339,7 +1339,7 @@ decaf448 group can be implemented using edwards448.<a href="#section-abstract-1"
                 <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-negative-field-elements" class="internal xref">Negative Field Elements</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1" class="keepWithNext"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-constant-time-operations" class="internal xref">Constant Time Operations</a></p>
+                <p id="section-toc.1-1.2.2.2.1" class="keepWithNext"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-constant-time-operations" class="internal xref">Constant-Time Operations</a></p>
 </li>
             </ul>
 </li>
@@ -1549,8 +1549,10 @@ referred to in <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> a
 Edwards coordinates in the <code>(x, y, z, t)</code> format <span>[<a href="#Twisted" class="cite xref">Twisted</a>]</span>, also called
 extended homogeneous coordinates in <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.4" class="relref">Section 5.1.4</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. Field
 elements are values modulo p, the Curve25519 prime 2<sup>255</sup> - 19 or the
-edwards448 prime 2<sup>448</sup> - 2<sup>224</sup> - 1, as specified in Sections <a href="https://rfc-editor.org/rfc/rfc7748#section-4.1" class="relref">4.1</a> and <a href="https://rfc-editor.org/rfc/rfc7748#section-4.2" class="relref">4.2</a> of <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, respectively. All formulas specify field operations
-unless otherwise noted. The symbol ^ denotes exponentiation.<a href="#section-2-3" class="pilcrow">¶</a></p>
+edwards448 prime 2<sup>448</sup> - 2<sup>224</sup> - 1, as specified in Sections
+<a href="https://rfc-editor.org/rfc/rfc7748#section-4.1" class="relref">4.1</a> and <a href="https://rfc-editor.org/rfc/rfc7748#section-4.2" class="relref">4.2</a> of <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, respectively. All
+formulas specify field operations unless otherwise noted. The symbol
+<code>^</code> denotes exponentiation.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">The <code>|</code> symbol represents a constant-time logical OR.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">The notation <code>array[A:B]</code> means the elements of <code>array</code> from <code>A</code>
 to <code>B-1</code>. That is, it is exclusive of <code>B</code>. Arrays are indexed
@@ -1573,7 +1575,7 @@ FALSE if it is even. This <span class="bcp14">SHOULD</span> be implemented in co
 <div id="constant-time-operations">
 <section id="section-2.2">
         <h3 id="name-constant-time-operations">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-constant-time-operations" class="section-name selfRef">Constant Time Operations</a>
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-constant-time-operations" class="section-name selfRef">Constant-Time Operations</a>
         </h3>
 <p id="section-2.2-1">We assume that the field element implementation supports the following
 operations, which <span class="bcp14">SHOULD</span> be implemented in constant time:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
@@ -1617,7 +1619,7 @@ built-in validation, so that only the canonical encodings of valid
 elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <p id="section-3-4">Encoding is a function from abstract elements to byte strings.  Internally,
-an abstract element might have more than one possible representation -- for
+an abstract element might have more than one possible representation; for
 example, the implementation might use projective coordinates.  When encoding,
 all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
@@ -1657,7 +1659,8 @@ multiplication is the repeated addition of an element.<a href="#section-3-8" cla
 interface defined in <a href="#interface" class="auto internal xref">Section 3</a>. This document describes how to
 implement the ristretto255 prime-order group using Curve25519 points as
 internal representations.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">A "ristretto255 group element" is the abstract element of the prime-order group. An "element encoding" is the unique reversible encoding
+<p id="section-4-2">A "ristretto255 group element" is the abstract element of the
+prime-order group. An "element encoding" is the unique reversible encoding
 of a group element. An "internal representation" is a point on the
 curve used to implement ristretto255. Each group element can have
 multiple equivalent internal representations.<a href="#section-4-2" class="pilcrow">¶</a></p>
@@ -2565,7 +2568,7 @@ f4a9e534 fc0d216c 44b218fa 0c42d996 35a0127e e2e53c71 2f706096
 2810e5cb c2cc4d4e ece54f61 c6f69758 e289aa7a b440b3cb eaa21995
 c2f4232b
 
-# Negative xy value.
+# Negative x * y value.
 3eb858e7 8f5a7254 d8c97311 74a94f76 755fd394 1c0ac937 35c07ba1
 4579630e
 

@@ -64,7 +64,7 @@ Table of Contents
    1.  Introduction
    2.  Notation and Conventions Used in This Document
      2.1.  Negative Field Elements
-     2.2.  Constant Time Operations
+     2.2.  Constant-Time Operations
    3.  The Group Abstraction
    4.  ristretto255
      4.1.  Implementation Constants
@@ -210,7 +210,7 @@ Table of Contents
    TRUE if the least nonnegative integer representing e is odd and FALSE
    if it is even.  This SHOULD be implemented in constant time.
 
-2.2.  Constant Time Operations
+2.2.  Constant-Time Operations
 
    We assume that the field element implementation supports the
    following operations, which SHOULD be implemented in constant time:
@@ -245,11 +245,11 @@ Table of Contents
 
    Encoding is a function from abstract elements to byte strings.
    Internally, an abstract element might have more than one possible
-   representation -- for example, the implementation might use
-   projective coordinates.  When encoding, all equivalent
-   representations of the same element are encoded as identical byte
-   strings.  Decoding the output of the encoding function always
-   succeeds and returns an element equivalent to the encoding input.
+   representation; for example, the implementation might use projective
+   coordinates.  When encoding, all equivalent representations of the
+   same element are encoded as identical byte strings.  Decoding the
+   output of the encoding function always succeeds and returns an
+   element equivalent to the encoding input.
 
    The equality check reports whether two representations of an abstract
    element are equivalent.
@@ -1031,7 +1031,7 @@ A.2.  Invalid Encodings
    2810e5cb c2cc4d4e ece54f61 c6f69758 e289aa7a b440b3cb eaa21995
    c2f4232b
 
-   # Negative xy value.
+   # Negative x * y value.
    3eb858e7 8f5a7254 d8c97311 74a94f76 755fd394 1c0ac937 35c07ba1
    4579630e
 

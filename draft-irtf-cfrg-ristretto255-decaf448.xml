@@ -116,8 +116,10 @@ referred to in <xref target="RFC7748"></xref> as &quot;curve25519&quot;.</t>
 Edwards coordinates in the <tt>(x, y, z, t)</tt> format <xref target="Twisted"></xref>, also called
 extended homogeneous coordinates in <xref target="RFC8032" sectionFormat="of" section="5.1.4"></xref>. Field
 elements are values modulo p, the Curve25519 prime 2<sup>255</sup> - 19 or the
-edwards448 prime 2<sup>448</sup> - 2<sup>224</sup> - 1, as specified in Sections <xref target="RFC7748" sectionFormat="bare" section="4.1"></xref> and <xref target="RFC7748" sectionFormat="bare" section="4.2"></xref> of <xref target="RFC7748"></xref>, respectively. All formulas specify field operations
-unless otherwise noted. The symbol ^ denotes exponentiation.</t>
+edwards448 prime 2<sup>448</sup> - 2<sup>224</sup> - 1, as specified in Sections
+<xref target="RFC7748" sectionFormat="bare" section="4.1"></xref> and <xref target="RFC7748" sectionFormat="bare" section="4.2"></xref> of <xref target="RFC7748"></xref>, respectively. All
+formulas specify field operations unless otherwise noted. The symbol
+<tt>^</tt> denotes exponentiation.</t>
 <t>The <tt>|</tt> symbol represents a constant-time logical OR.</t>
 <t>The notation <tt>array[A:B]</tt> means the elements of <tt>array</tt> from <tt>A</tt>
 to <tt>B-1</tt>. That is, it is exclusive of <tt>B</tt>. Arrays are indexed
@@ -134,7 +136,7 @@ TRUE if the least nonnegative integer representing e is odd and
 FALSE if it is even. This <bcp14>SHOULD</bcp14> be implemented in constant time.</t>
 </section>
 
-<section anchor="constant-time-operations"><name>Constant Time Operations</name>
+<section anchor="constant-time-operations"><name>Constant-Time Operations</name>
 <t>We assume that the field element implementation supports the following
 operations, which <bcp14>SHOULD</bcp14> be implemented in constant time:</t>
 
@@ -166,7 +168,7 @@ built-in validation, so that only the canonical encodings of valid
 elements are accepted. The built-in validation avoids the need for
 explicit invalid curve checks.</t>
 <t>Encoding is a function from abstract elements to byte strings.  Internally,
-an abstract element might have more than one possible representation -- for
+an abstract element might have more than one possible representation; for
 example, the implementation might use projective coordinates.  When encoding,
 all equivalent representations of the same element are encoded as identical
 byte strings. Decoding the output of the encoding function always
@@ -202,7 +204,8 @@ multiplication is the repeated addition of an element.</t>
 interface defined in <xref target="interface"></xref>. This document describes how to
 implement the ristretto255 prime-order group using Curve25519 points as
 internal representations.</t>
-<t>A &quot;ristretto255 group element&quot; is the abstract element of the prime-order group. An &quot;element encoding&quot; is the unique reversible encoding
+<t>A &quot;ristretto255 group element&quot; is the abstract element of the
+prime-order group. An &quot;element encoding&quot; is the unique reversible encoding
 of a group element. An &quot;internal representation&quot; is a point on the
 curve used to implement ristretto255. Each group element can have
 multiple equivalent internal representations.</t>
@@ -966,7 +969,7 @@ f4a9e534 fc0d216c 44b218fa 0c42d996 35a0127e e2e53c71 2f706096
 2810e5cb c2cc4d4e ece54f61 c6f69758 e289aa7a b440b3cb eaa21995
 c2f4232b
 
-# Negative xy value.
+# Negative x * y value.
 3eb858e7 8f5a7254 d8c97311 74a94f76 755fd394 1c0ac937 35c07ba1
 4579630e
 
