@@ -510,7 +510,7 @@ correspond to the same group element. Note that internal representations
 For two internal representations `(x1, y1, z1, t1)` and `(x2, y2, z2, t2)`,
 if
 
-    (x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+    CT_EQ(x1 * y2, y1 * x2) | CT_EQ(y1 * y2, x1 * x2)
 
 evaluates to TRUE, then return TRUE. Otherwise, return FALSE.
 
@@ -519,7 +519,7 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Implementations **MAY** also perform byte comparisons on the encodings
+Implementations **MAY** also perform constant-time byte comparisons on the encodings
 of group elements (produced by (#encoding255)) for an equivalent, although
 less efficient, result.
 
@@ -755,7 +755,7 @@ correspond to the same group element. Note that internal representations
 For two internal representations `(x1, y1, z1, t1)` and `(x2, y2, z2, t2)`,
 if
 
-    x1 * y2 == y1 * x2
+    CT_EQ(x1 * y2, y1 * x2)
 
 evaluates to TRUE, then return TRUE. Otherwise, return FALSE.
 
@@ -764,7 +764,7 @@ internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.
 
-Implementations **MAY** also perform byte comparisons on the encodings
+Implementations **MAY** also perform constant-time byte comparisons on the encodings
 of group elements (produced by (#encoding448)) for an equivalent, although
 less efficient, result.
 

@@ -386,7 +386,7 @@ correspond to the same group element. Note that internal representations
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork><![CDATA[(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+<artwork><![CDATA[CT_EQ(x1 * y2, y1 * x2) | CT_EQ(y1 * y2, x1 * x2)
 ]]>
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
@@ -394,7 +394,7 @@ if</t>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.</t>
-<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on the encodings
+<t>Implementations <bcp14>MAY</bcp14> also perform constant-time byte comparisons on the encodings
 of group elements (produced by <xref target="encoding255"></xref>) for an equivalent, although
 less efficient, result.</t>
 </section>
@@ -647,7 +647,7 @@ correspond to the same group element. Note that internal representations
 <t>For two internal representations <tt>(x1, y1, z1, t1)</tt> and <tt>(x2, y2, z2, t2)</tt>,
 if</t>
 
-<artwork><![CDATA[x1 * y2 == y1 * x2
+<artwork><![CDATA[CT_EQ(x1 * y2, y1 * x2)
 ]]>
 </artwork>
 <t>evaluates to TRUE, then return TRUE. Otherwise, return FALSE.</t>
@@ -655,7 +655,7 @@ if</t>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.</t>
-<t>Implementations <bcp14>MAY</bcp14> also perform byte comparisons on the encodings
+<t>Implementations <bcp14>MAY</bcp14> also perform constant-time byte comparisons on the encodings
 of group elements (produced by <xref target="encoding448"></xref>) for an equivalent, although
 less efficient, result.</t>
 </section>

@@ -1887,7 +1887,7 @@ correspond to the same group element. Note that internal representations
 <p id="section-4.3.3-2">For two internal representations <code>(x1, y1, z1, t1)</code> and <code>(x2, y2, z2, t2)</code>,
 if<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.3.3-3">
-<pre>(x1 * y2 == y1 * x2) | (y1 * y2 == x1 * x2)
+<pre>CT_EQ(x1 * y2, y1 * x2) | CT_EQ(y1 * y2, x1 * x2)
 
 </pre><a href="#section-4.3.3-3" class="pilcrow">¶</a>
 </div>
@@ -1896,7 +1896,7 @@ if<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.<a href="#section-4.3.3-5" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-6">Implementations <span class="bcp14">MAY</span> also perform byte comparisons on the encodings
+<p id="section-4.3.3-6">Implementations <span class="bcp14">MAY</span> also perform constant-time byte comparisons on the encodings
 of group elements (produced by <a href="#encoding255" class="auto internal xref">Section 4.3.2</a>) for an equivalent, although
 less efficient, result.<a href="#section-4.3.3-6" class="pilcrow">¶</a></p>
 </section>
@@ -2211,7 +2211,7 @@ correspond to the same group element. Note that internal representations
 <p id="section-5.3.3-2">For two internal representations <code>(x1, y1, z1, t1)</code> and <code>(x2, y2, z2, t2)</code>,
 if<a href="#section-5.3.3-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.3.3-3">
-<pre>x1 * y2 == y1 * x2
+<pre>CT_EQ(x1 * y2, y1 * x2)
 
 </pre><a href="#section-5.3.3-3" class="pilcrow">¶</a>
 </div>
@@ -2220,7 +2220,7 @@ if<a href="#section-5.3.3-2" class="pilcrow">¶</a></p>
 internal representation and to the internal representation obtained by
 encoding and then re-decoding it. However, the internal
 representations themselves might not be identical.<a href="#section-5.3.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3.3-6">Implementations <span class="bcp14">MAY</span> also perform byte comparisons on the encodings
+<p id="section-5.3.3-6">Implementations <span class="bcp14">MAY</span> also perform constant-time byte comparisons on the encodings
 of group elements (produced by <a href="#encoding448" class="auto internal xref">Section 5.3.2</a>) for an equivalent, although
 less efficient, result.<a href="#section-5.3.3-6" class="pilcrow">¶</a></p>
 </section>
