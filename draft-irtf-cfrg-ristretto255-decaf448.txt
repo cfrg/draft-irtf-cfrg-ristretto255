@@ -180,8 +180,8 @@ Table of Contents
    "Curve25519" to refer to the abstract underlying curve, as
    recommended in [Naming].  The abstract Edwards form of the curve we
    refer to here as "Curve25519" is referred to in [RFC7748] as
-   "edwards25519", and its isogenous Montgomery form is referred to as
-   "curve25519".
+   "edwards25519", and the Montgomery form that is isogenous to the
+   Edwards form is referred to in [RFC7748] as "curve25519".
 
    Elliptic curve points in this document are represented in extended
    Edwards coordinates in the (x, y, z, t) format [Twisted], also called

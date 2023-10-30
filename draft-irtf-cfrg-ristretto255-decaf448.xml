@@ -110,7 +110,8 @@ specific Diffie–Hellman mechanism. This document uses the term
 &quot;Curve25519&quot; to refer to the abstract underlying curve, as recommended
 in <xref target="Naming"></xref>. The abstract Edwards form of the curve we refer to here
 as &quot;Curve25519&quot; is referred to in <xref target="RFC7748"></xref> as &quot;edwards25519&quot;,
-and its isogenous Montgomery form is referred to as &quot;curve25519&quot;.</t>
+and the Montgomery form that is isogenous to the Edwards form is
+referred to in <xref target="RFC7748"></xref> as &quot;curve25519&quot;.</t>
 <t>Elliptic curve points in this document are represented in extended
 Edwards coordinates in the <tt>(x, y, z, t)</tt> format <xref target="Twisted"></xref>, also called
 extended homogeneous coordinates in <xref target="RFC8032" sectionFormat="of" section="5.1.4"></xref>. Field
