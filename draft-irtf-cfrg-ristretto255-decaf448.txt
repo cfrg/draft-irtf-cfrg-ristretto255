@@ -341,11 +341,12 @@ Table of Contents
    On input field elements u and v, the function SQRT_RATIO_M1(u, v)
    returns:
 
-   *  (TRUE, +sqrt(u/v)) if u and v are nonzero and u/v is square;
+   *  (TRUE, +sqrt(u/v)) if u and v are nonzero and u/v is square in the
+      field;
    *  (TRUE, zero) if u is zero;
    *  (FALSE, zero) if v is zero and u is nonzero; and
    *  (FALSE, +sqrt(SQRT_M1*(u/v))) if u and v are nonzero and u/v is
-      non-square (so SQRT_M1*(u/v) is square),
+      non-square in the field (so SQRT_M1*(u/v) is square in the field),
 
    where +sqrt(x) indicates the nonnegative square root of x in the
    field.
@@ -621,11 +622,12 @@ return (was_square, r)
    On input field elements u and v, the function SQRT_RATIO_M1(u, v)
    returns:
 
-   *  (TRUE, +sqrt(u/v)) if u and v are nonzero and u/v is square;
+   *  (TRUE, +sqrt(u/v)) if u and v are nonzero and u/v is square in the
+      field;
    *  (TRUE, zero) if u is zero;
    *  (FALSE, zero) if v is zero and u is nonzero; and
    *  (FALSE, +sqrt(-u/v)) if u and v are nonzero and u/v is non-square
-      (so -(u/v) is square),
+      in the field (so -(u/v) is square in the field),
 
    where +sqrt(x) indicates the nonnegative square root of x in the
    field.

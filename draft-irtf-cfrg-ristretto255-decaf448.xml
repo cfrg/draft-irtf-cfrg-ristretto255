@@ -250,11 +250,11 @@ to implement some of the group operations.</t>
 <t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
 
 <ul spacing="compact">
-<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square;</li>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square in the field;</li>
 <li><tt>(TRUE, zero)</tt> if u is zero;</li>
 <li><tt>(FALSE, zero)</tt> if v is zero and u is nonzero; and</li>
 <li><tt>(FALSE, +sqrt(SQRT_M1*(u/v)))</tt> if u and v are nonzero and u/v is
-non-square (so <tt>SQRT_M1*(u/v)</tt> is square),</li>
+non-square in the field (so <tt>SQRT_M1*(u/v)</tt> is square in the field),</li>
 </ul>
 <t>where <tt>+sqrt(x)</tt> indicates the nonnegative square root of x in the
 field.</t>
@@ -539,11 +539,11 @@ to implement some of the group operations.</t>
 <t>On input field elements u and v, the function <tt>SQRT_RATIO_M1(u, v)</tt> returns:</t>
 
 <ul spacing="compact">
-<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square;</li>
+<li><tt>(TRUE, +sqrt(u/v))</tt> if u and v are nonzero and u/v is square in the field;</li>
 <li><tt>(TRUE, zero)</tt> if u is zero;</li>
 <li><tt>(FALSE, zero)</tt> if v is zero and u is nonzero; and</li>
 <li><tt>(FALSE, +sqrt(-u/v))</tt> if u and v are nonzero and u/v is
-non-square (so <tt>-(u/v)</tt> is square),</li>
+non-square in the field (so <tt>-(u/v)</tt> is square in the field),</li>
 </ul>
 <t>where <tt>+sqrt(x)</tt> indicates the nonnegative square root of x in
 the field.</t>
